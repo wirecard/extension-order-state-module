@@ -4,6 +4,7 @@
 namespace Wirecard\Order\State;
 
 use Wirecard\Order\State\Implementation\Calculator;
+use Wirecard\Order\State\Implementation\State\CalculableState;
 
 class OrderState
 {
@@ -19,7 +20,17 @@ class OrderState
 
     public function getNextState(OrderDTO $order)
     {
-        $calculator = new Calculator($this->ccTransactionType, $order->getCurrentState());
+        $calculableState = $this->toCalculableState($order->getCurrentState());
+        $calculator = new Calculator($this->ccTransactionType, $calculableState);
         return $calculator->calculate();
+    }
+
+    /**
+     * @param State $state
+     * @return CalculableState
+     */
+    private function toCalculableState(State $state)
+    {
+        return $state;
     }
 }

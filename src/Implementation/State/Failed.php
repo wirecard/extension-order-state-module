@@ -3,19 +3,20 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
+use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
 
-class Failed implements State, StateTransitions
+class Failed implements CalculableState
 {
     use StateHelper;
-
-    public function __construct()
-    {
-        $this->value = 2;
-    }
 
     public function getPossibleNextStates()
     {
         return [];
+    }
+
+    public function getNextState(TransitionData $transitionData)
+    {
+        throw new \RuntimeException("Once a payment has failed, nothing else can happen to it");
     }
 }

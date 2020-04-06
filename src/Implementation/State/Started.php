@@ -7,14 +7,9 @@ use Wirecard\Order\State\Implementation\Transition\ToPendingTransition;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
 
-class Started implements State, StateTransitions
+class Started implements CalculableState
 {
     use StateHelper;
-
-    public function __construct()
-    {
-        $this->value = 5;
-    }
 
     public function getPossibleNextStates()
     {
@@ -23,13 +18,6 @@ class Started implements State, StateTransitions
 
     public function getNextState(TransitionData $transitionData)
     {
-        if ($transitionData instanceof ToPendingTransition) {
-            return $this->transitionToPending($transitionData);
-        }
-        return new Failed();
-    }
-
-    private function transitionToPending(ToPendingTransition $toPendingTransition)
-    {
+        return new Pending();
     }
 }

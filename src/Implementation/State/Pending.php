@@ -3,12 +3,20 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
-class Pending
+use Wirecard\Order\State\Implementation\TransitionData;
+use Wirecard\Order\State\State;
+
+class Pending implements CalculableState
 {
     use StateHelper;
 
-    public function __construct()
+    public function getPossibleNextStates()
     {
-        $this->value = 3;
+        return [];
+    }
+
+    public function getNextState(TransitionData $transitionData)
+    {
+        return new Failed();
     }
 }

@@ -3,14 +3,20 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
+use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
 
-class Authorized implements State
+class Authorized implements CalculableState
 {
     use StateHelper;
 
-    public function __construct()
+    public function getPossibleNextStates()
     {
-        $this->value = 1;
+
+    }
+
+    public function getNextState(TransitionData $transitionData)
+    {
+
     }
 }
