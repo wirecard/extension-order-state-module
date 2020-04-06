@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
-
 use Wirecard\Order\State\State;
 
 class Authorized implements State
@@ -14,5 +13,4 @@ class Authorized implements State
     {
         $this->value = 1;
     }
-
 }

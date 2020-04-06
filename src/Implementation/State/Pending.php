@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
-
 class Pending
 {
     use StateHelper;
@@ -12,6 +11,4 @@ class Pending
     {
         $this->value = 3;
     }
-
-
 }

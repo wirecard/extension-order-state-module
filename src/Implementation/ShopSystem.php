@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Implementation;
 
-
 class ShopSystem
 {
 
@@ -16,5 +15,4 @@ class ShopSystem
     {
         $this->creditCardTransactionType = $creditCardTransactionType;
     }
-
 }

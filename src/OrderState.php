@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State;
 
-
 use Wirecard\Order\State\Implementation\Calculator;
 
 class OrderState
@@ -23,5 +22,4 @@ class OrderState
         $calculator = new Calculator($this->ccTransactionType, $order->getCurrentState());
         return $calculator->calculate();
     }
-
 }

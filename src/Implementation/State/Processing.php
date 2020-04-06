@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
-
 class Processing
 {
     use StateHelper;
@@ -12,6 +11,4 @@ class Processing
     {
         $this->value = 4;
     }
-
-
 }

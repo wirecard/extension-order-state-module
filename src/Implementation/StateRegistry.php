@@ -23,7 +23,5 @@ class StateRegistry
             /** @var  StateHelper $this */
             return $this->value;
         };
-
     }
-
 }

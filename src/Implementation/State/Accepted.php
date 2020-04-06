@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
-
 use Wirecard\Order\State\State;
 
 class Accepted implements State, StateTransitions

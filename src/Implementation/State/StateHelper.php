@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Implementation\State;
 
-
 use Wirecard\Order\State\State;
 
 trait StateHelper
@@ -19,5 +18,4 @@ trait StateHelper
     {
         return $this->value === $other->value;
     }
-
 }
