@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<ruleset name="Extensions Credentials Module">
+    <description>Extensions Credentials Module</description>
+
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+    </rule>
+
+    <rule ref="PSR2"/>
+
+    <!-- Paths to ignore -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+</ruleset>
