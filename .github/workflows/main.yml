@@ -1,0 +1,42 @@
+name: CS, Unit Tests, Coverage
+
+# Controls when the action will run. Triggers the workflow on push
+on:
+  push:
+    tags:
+      - '!refs/tags/*'
+    branches:
+      - '*'
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['5.6', '7.0', '7.1', '7.2']
+    name: PHP ${{ matrix.php-versions }} Test
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: PHP Setup
+        uses: wirecard/setup-php@master
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: simplexml,mbstring,dom
+
+      - name: Install Composer
+        run: composer install
+
+      - name: Style Check
+        run: composer cs-check
+
+      - name: Unit Test
+        run: composer test
+
+      - name: MD Check
+        run: composer md
