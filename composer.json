@@ -20,5 +20,8 @@
     "psr-4": {
       "Wirecard\\Order\\State\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": { "": "tests/doubles/" }
   }
 }
