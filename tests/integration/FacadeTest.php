@@ -1,5 +1,6 @@
 <?php
 
+use Wirecard\Order\State\Implementation\AuthorizationTransaction;
 use Wirecard\Order\State\Implementation\CreditCardTransactionType;
 use Wirecard\Order\State\Implementation\PurchaseTransaction;
 use Wirecard\Order\State\Implementation\State\Failed;
@@ -35,6 +36,13 @@ class FacadeTest extends PHPUnit_Framework_TestCase
                 new Pending(),
                 new Failed(),//so we expect the order to go to failed
                 "backend CC=purchase, engine=success, order state=started, desired state=failed"
+            ],
+            [
+                new AuthorizationTransaction(),//back-end is set to authorization
+                new TransactionType\None(),//there has been no interaction with the engine yet
+                new Started(),//the current state of the order is started
+                new Pending(),//the desired new state is pending
+                "backend CC=authorization, engine=none, order state=started, desired state=pending"
             ],
         ];
     }
