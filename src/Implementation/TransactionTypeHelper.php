@@ -1,9 +1,8 @@
 <?php
 
 
-namespace Wirecard\Order\State\TransactionType;
+namespace Wirecard\Order\State\Implementation;
 
-use Wirecard\Order\State\Implementation\StatefulUnaryValueObject;
 use Wirecard\Order\State\TransactionType;
 
 trait TransactionTypeHelper
