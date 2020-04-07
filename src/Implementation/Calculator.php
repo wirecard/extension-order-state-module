@@ -6,7 +6,6 @@ namespace Wirecard\Order\State\Implementation;
 use RuntimeException;
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\Extension\CalculableState;
-use Wirecard\Order\State\Implementation\Transition;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\TransactionType;
 
