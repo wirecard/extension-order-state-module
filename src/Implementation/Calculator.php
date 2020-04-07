@@ -5,7 +5,7 @@ namespace Wirecard\Order\State\Implementation;
 
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\Extension\CalculableState;
-use Wirecard\Order\State\Implementation\Transition\ToPendingTransition;
+use Wirecard\Order\State\Implementation\Transition;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\TransactionType;
 
@@ -29,7 +29,7 @@ class Calculator
 
     public function calculate(TransactionType $transactionType)
     {
-        $transitionData = new ToPendingTransition($this->ccType, $transactionType);
+        $transitionData = new Transition($this->ccType, $transactionType);
         $nextState = $this->currentState->getNextState($transitionData);
         $this->checkConstraints($nextState);
         return $nextState;

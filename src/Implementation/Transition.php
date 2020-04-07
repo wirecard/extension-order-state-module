@@ -1,19 +1,18 @@
 <?php
 
 
-namespace Wirecard\Order\State\Implementation\Transition;
+namespace Wirecard\Order\State\Implementation;
 
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\TransactionType;
 
 /**
- * Class ToPendingTransition
- * @package Wirecard\Order\State\Implementation\Transition
+ * Class Transition
  *
- * @todo: move this out of directory and rename
+ * @package Wirecard\Order\State\Implementation
  */
-class ToPendingTransition implements TransitionData
+class Transition implements TransitionData
 {
 
     /**
