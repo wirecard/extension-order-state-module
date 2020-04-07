@@ -2,6 +2,7 @@
 
 use Wirecard\Order\State\Implementation\CreditCardTransactionType;
 use Wirecard\Order\State\Implementation\PurchaseTransaction;
+use Wirecard\Order\State\Implementation\State\Failed;
 use Wirecard\Order\State\Implementation\State\Pending;
 use Wirecard\Order\State\Implementation\State\Started;
 use Wirecard\Order\State\Implementation\State\Success;
@@ -17,6 +18,7 @@ class FacadeTest extends PHPUnit_Framework_TestCase
         return [
             [new PurchaseTransaction(), new TransactionType\None(), new Started(), new Pending(), "backend CC=purchase, engine=none, order state=started, desired state=pending"],
             [new PurchaseTransaction(), new TransactionType\Success(), new Pending(), new Success(), "backend CC=purchase, engine=success, order state=started, desired state=success"],
+            [new PurchaseTransaction(), new TransactionType\Failure(), new Pending(), new Failed(), "backend CC=purchase, engine=success, order state=started, desired state=failed"],
         ];
     }
 
