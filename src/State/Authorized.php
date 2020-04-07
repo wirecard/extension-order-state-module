@@ -10,6 +10,7 @@ use Wirecard\Order\State\Implementation\TransitionData;
 /**
  * Class Authorized
  * @package Wirecard\Order\State
+ * @codeCoverageIgnore
  */
 class Authorized implements CalculableState
 {

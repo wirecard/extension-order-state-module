@@ -11,6 +11,7 @@ use Wirecard\Order\State\Implementation\TransitionData;
 /**
  * Class Failed
  * @package Wirecard\Order\State
+ * @codeCoverageIgnore
  */
 class Failed implements CalculableState
 {

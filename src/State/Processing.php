@@ -10,6 +10,7 @@ use Wirecard\Order\State\Implementation\TransitionData;
 /**
  * Class Processing
  * @package Wirecard\Order\State
+ * @codeCoverageIgnore
  *
  * In some cases, you can think of this as a success response.
  *
