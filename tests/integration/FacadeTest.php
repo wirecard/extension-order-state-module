@@ -45,6 +45,13 @@ class FacadeTest extends PHPUnit_Framework_TestCase
                 new Pending(),//the desired new state is pending
                 "backend CC=authorization, engine=none, order state=started, desired state=pending"
             ],
+            [//case 4: happens after case 3 on the happy path
+                new AuthorizationTransaction(),
+                new TransactionType\Success(),
+                new Pending(),
+                new Success(),
+                "backend CC=authorization, engine=success, order state=pending, desired state=success"
+            ],
         ];
     }
 
