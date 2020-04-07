@@ -15,8 +15,8 @@ class FacadeTest extends PHPUnit_Framework_TestCase
     public function simple_cases_provider()
     {
         return [
-            [new PurchaseTransaction(), new TransactionType\Success(), new Started(), new Pending(), "backend CC=purchase, order state=started, desired state=accepted"],
-            [new PurchaseTransaction(), new TransactionType\Success(), new Pending(), new Success(), "backend CC=purchase, order state=started, desired state=accepted"],
+            [new PurchaseTransaction(), new TransactionType\None(), new Started(), new Pending(), "backend CC=purchase, engine=none, order state=started, desired state=pending"],
+            [new PurchaseTransaction(), new TransactionType\Success(), new Pending(), new Success(), "backend CC=purchase, engine=success, order state=started, desired state=success"],
         ];
     }
 
