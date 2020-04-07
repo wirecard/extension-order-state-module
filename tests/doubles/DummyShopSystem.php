@@ -2,6 +2,8 @@
 
 
 use Wirecard\Order\State\Implementation\CreditCardTransactionType as CreditCardTransactionType;
+use Wirecard\Order\State\Implementation\State\Pending;
+use Wirecard\Order\State\State;
 
 class DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO
 {
@@ -16,9 +18,9 @@ class DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO
         $this->transactionType = $transactionType;
     }
 
-    public function mapState(\Wirecard\Order\State\State $state)
+    public function mapState(State $state)
     {
-        // TODO: Implement mapState() method.
+        return $state;
     }
 
     /**
