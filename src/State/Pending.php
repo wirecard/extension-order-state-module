@@ -18,7 +18,7 @@ class Pending implements CalculableState
 
     public function getNextState(TransitionData $transitionData)
     {
-        if($transitionData->getTransactionType()->equals(new \Wirecard\Order\State\TransactionType\Success())) {
+        if ($transitionData->getTransactionType()->equals(new \Wirecard\Order\State\TransactionType\Success())) {
             return new Success();
         }
         return new Failed();

@@ -13,7 +13,6 @@ use Wirecard\Order\State\OrderState;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\TransactionType;
 
-
 class FacadeTest extends PHPUnit_Framework_TestCase
 {
     public function simple_cases_provider()
@@ -87,8 +86,8 @@ class FacadeTest extends PHPUnit_Framework_TestCase
         TransactionType $engineTransactionType,//what the engine has said about this so far
         State $currentOrderState,//the current state of the order
         State $expected,//the desired state of the order after the transition
-        $message)//message, in case the assertion fails
-    {
+        $message
+    ) {//message, in case the assertion fails
         $shopSystem = new DummyShopSystem($creditCardTransactionType);
         $order = new DummyOrder($currentOrderState, $engineTransactionType);
 
@@ -112,7 +111,5 @@ class FacadeTest extends PHPUnit_Framework_TestCase
      */
     public function reverse_simple_combinations()
     {
-
     }
-
 }

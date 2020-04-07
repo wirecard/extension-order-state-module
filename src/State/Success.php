@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\State;
 
-
 use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;
 use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\StateHelper;
@@ -20,7 +19,7 @@ class Success implements CalculableState
 
     public function getNextState(TransitionData $transitionData)
     {
-        if($transitionData->getShopsystemCreditCardTransactionType()->equals(new PurchaseTransaction())) {
+        if ($transitionData->getShopsystemCreditCardTransactionType()->equals(new PurchaseTransaction())) {
             return new Processing();
         }
         return new Authorized();

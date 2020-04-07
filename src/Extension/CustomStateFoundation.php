@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Extension;
 
-
 use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
@@ -38,5 +37,4 @@ abstract class CustomStateFoundation implements CalculableState
 
         return $haystack;
     }
-
 }

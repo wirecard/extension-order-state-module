@@ -31,5 +31,4 @@ class StartedTest extends PHPUnit_Framework_TestCase
         $failure = new Failed();
         $this->assertFalse($success->equals($failure));
     }
-
 }

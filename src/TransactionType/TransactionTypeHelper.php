@@ -18,5 +18,4 @@ trait TransactionTypeHelper
     {
         return $this->strictlyEquals($other);
     }
-
 }

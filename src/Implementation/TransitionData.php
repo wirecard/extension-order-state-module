@@ -18,5 +18,4 @@ interface TransitionData
      * @return TransactionType
      */
     public function getTransactionType();
-
 }

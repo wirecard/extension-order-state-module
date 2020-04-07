@@ -16,5 +16,4 @@ interface TransactionType
      * @return bool
      */
     public function equals(TransactionType $other);
-
 }

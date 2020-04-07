@@ -22,7 +22,9 @@ trait StatefulUnaryValueObject
      */
     private function strictlyEquals($other)
     {
-        $getter = function() { return $this->value; };
+        $getter = function () {
+            return $this->value;
+        };
         $getter = \Closure::bind($getter, $other, get_class($other));
         return $this->value === $getter();
     }
