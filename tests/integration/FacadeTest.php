@@ -36,7 +36,7 @@ class FacadeTest extends PHPUnit_Framework_TestCase
                 new TransactionType\Failure(),//the engine said it's a failure
                 new Pending(),
                 new Failed(),//so we expect the order to go to failed
-                "backend CC=purchase, engine=success, order state=pending, desired state=failed"
+                "backend CC=purchase, engine=failure, order state=pending, desired state=failed"
             ],
             [//case 3: initial authorization transaction, like 0, but a different back-end setting
                 new AuthorizationTransaction(),//back-end is set to authorization
