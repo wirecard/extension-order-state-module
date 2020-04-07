@@ -8,6 +8,8 @@ namespace Wirecard\Order\State;
  * @package Wirecard\Order\State
  *
  * This is a value-object which stands for the transaction type, as received from the payment gateway.
+ *
+ * @todo name
  */
 interface TransactionType
 {

@@ -8,6 +8,8 @@ namespace Wirecard\Order\State;
  * @package Wirecard\Order\State
  *
  * The implementors of this type are types of credit-card settings, as specified in the shopsystem's backend.
+ *
+ * @todo name
  */
 interface CreditCardTransactionType
 {
