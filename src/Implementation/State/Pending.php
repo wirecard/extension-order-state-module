@@ -4,7 +4,6 @@
 namespace Wirecard\Order\State\Implementation\State;
 
 use Wirecard\Order\State\Implementation\TransitionData;
-use Wirecard\Order\State\State;
 
 class Pending implements CalculableState
 {
@@ -12,11 +11,14 @@ class Pending implements CalculableState
 
     public function getPossibleNextStates()
     {
-        return [];
+        return [new Success(), new Failed()];
     }
 
     public function getNextState(TransitionData $transitionData)
     {
+        if($transitionData->getTransactionType()->equals(new \Wirecard\Order\State\TransactionType\Success())) {
+            return new Success();
+        }
         return new Failed();
     }
 }

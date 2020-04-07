@@ -26,7 +26,7 @@ class OrderState
     }
 
     /**
-     * @param State $state
+     * @param State|CalculableState $state
      * @return CalculableState
      */
     private function toCalculableState(State $state)

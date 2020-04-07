@@ -13,7 +13,7 @@ class Started implements CalculableState
 
     public function getPossibleNextStates()
     {
-        return [new Pending(), new Failed()];
+        return [new Pending()];
     }
 
     public function getNextState(TransitionData $transitionData)
