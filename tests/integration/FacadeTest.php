@@ -3,6 +3,7 @@
 use Wirecard\Order\State\Implementation\AuthorizationTransaction;
 use Wirecard\Order\State\Implementation\CreditCardTransactionType;
 use Wirecard\Order\State\Implementation\PurchaseTransaction;
+use Wirecard\Order\State\Implementation\State\Authorized;
 use Wirecard\Order\State\Implementation\State\Failed;
 use Wirecard\Order\State\Implementation\State\Pending;
 use Wirecard\Order\State\Implementation\State\Processing;
@@ -66,6 +67,13 @@ class FacadeTest extends PHPUnit_Framework_TestCase
                 new Success(),
                 new Processing(),
                 "backend CC=purchase, engine=success, order state=success, desired state=processing"
+            ],
+            [//case 7: success goes into processing, next step on the happy path after case 1
+                new AuthorizationTransaction(),
+                new TransactionType\Success(),
+                new Success(),
+                new Authorized(),
+                "backend CC=authorization, engine=success, order state=success, desired state=authorized"
             ],
         ];
     }
