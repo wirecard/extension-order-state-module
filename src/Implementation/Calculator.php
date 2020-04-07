@@ -9,6 +9,10 @@ use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\TransactionType;
 
+/**
+ * Class Calculator
+ * @package Wirecard\Order\State\Implementation
+ */
 class Calculator
 {
 
@@ -16,8 +20,9 @@ class Calculator
      * @var CreditCardTransactionType
      */
     private $ccType;
+
     /**
-     * @var \Wirecard\Order\State\Extension\CalculableState
+     * @var CalculableState
      */
     private $currentState;
 
@@ -40,18 +45,41 @@ class Calculator
      */
     private function checkConstraints(State $nextState)
     {
-        if (!is_object($nextState) || !($nextState instanceof CalculableState)) {
+        if (!$this->isValidObject($nextState)) {
             $nextStateName = (string)$nextState;
             $message = "Invalid state: $nextStateName. It must implement " . CalculableState::class;
             throw new RuntimeException($message);
         }
         $currentStateName = get_class($this->currentState);
-        $nextStateName = get_class($nextState);
         $candidates = $this->currentState->getPossibleNextStates();
         if (!is_array($candidates)) {
             $message = "Current state $currentStateName did not provide a list of possible next states";
             throw new RuntimeException($message);
         }
+        $isPossible = $this->isPossible($nextState, $candidates);
+        if (!$isPossible) {
+            $nextStateName = get_class($nextState);
+            $message = "Calculated next state $nextStateName is not declared as possible by $currentStateName";
+            throw new RuntimeException($message);
+        }
+    }
+
+    /**
+     * @param State $nextState
+     * @return bool
+     */
+    private function isValidObject(State $nextState)
+    {
+        return is_object($nextState) && ($nextState instanceof CalculableState);
+    }
+
+    /**
+     * @param State $nextState
+     * @param $candidates
+     * @return bool
+     */
+    private function isPossible(State $nextState, $candidates)
+    {
         $isPossible = false;
         foreach ($candidates as $candidate) {
             if ($nextState->equals($candidate)) {
@@ -59,9 +87,6 @@ class Calculator
                 break;
             }
         }
-        if (!$isPossible) {
-            $message = "Calculated next state $nextStateName is not declared as possible by $currentStateName";
-            throw new RuntimeException($message);
-        }
+        return $isPossible;
     }
 }

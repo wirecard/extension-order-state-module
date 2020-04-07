@@ -5,6 +5,10 @@ namespace Wirecard\Order\State\Implementation;
 
 use Wirecard\Order\State\TransactionType;
 
+/**
+ * Trait TransactionTypeHelper
+ * @package Wirecard\Order\State\Implementation
+ */
 trait TransactionTypeHelper
 {
     use StatefulUnaryValueObject;

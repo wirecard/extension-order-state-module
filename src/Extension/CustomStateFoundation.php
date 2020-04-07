@@ -9,7 +9,7 @@ use Wirecard\Order\State\State;
 
 /**
  * Class CustomStateFoundation
- * @package Wirecard\Order\State\Extension
+ * @package Wirecard\Order\State
  *
  * @todo: name
  */

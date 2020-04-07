@@ -7,6 +7,10 @@ use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
 
+/**
+ * Class Started
+ * @package Wirecard\Order\State
+ */
 class Started implements CalculableState
 {
     use StateHelper;

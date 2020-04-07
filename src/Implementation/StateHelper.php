@@ -9,7 +9,7 @@ use Wirecard\Order\State\TransactionType\Success as SuccessRemoteTransaction;
 
 /**
  * Trait StateHelper
- * @package Wirecard\Order\State\Implementation\State
+ * @package Wirecard\Order\State\Implementation
  *
  * Provides additional type checking for equals for all states.
  */

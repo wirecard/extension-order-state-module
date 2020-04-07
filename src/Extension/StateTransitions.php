@@ -8,7 +8,7 @@ use Wirecard\Order\State\State;
 
 /**
  * Interface StateTransitions
- * @package Wirecard\Order\State\Extension
+ * @package Wirecard\Order\State
  * @todo name
  */
 interface StateTransitions

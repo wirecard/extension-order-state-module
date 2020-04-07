@@ -7,7 +7,7 @@ use Wirecard\Order\State\State;
 
 /**
  * Interface CalculableState stands for a state which can be calculable.
- * @package Wirecard\Order\State\Extension
+ * @package Wirecard\Order\State
  *
  * This interface simply aggregates the two implementees, StateTransition and State.
  *
