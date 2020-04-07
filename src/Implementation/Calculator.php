@@ -32,7 +32,11 @@ class Calculator
         if (!is_object($nextState) || !($nextState instanceof CalculableState)) {
             throw new \RuntimeException("Invalid next state: " . ((string)$nextState) . ". It must implement " . CalculableState::class);
         }
+        $currentStateName = get_class($this->currentState);
         $candidates = $this->currentState->getPossibleNextStates();
+        if (!is_array($candidates)) {
+            throw new \RuntimeException("Current state $currentStateName did not provide a list of possible next states");
+        }
         $isPossible = false;
         foreach ($candidates as $candidate) {
             if ($nextState->equals($candidate)) {
