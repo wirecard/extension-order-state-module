@@ -17,27 +17,28 @@ class FacadeTest extends PHPUnit_Framework_TestCase
     public function simple_cases_provider()
     {
         return [
-            [
+            [//case 0
                 new PurchaseTransaction(),//back-end is set to purchase
                 new TransactionType\None(),//there has been no interaction with the engine yet
                 new Started(),//the current state of the order is started
                 new Pending(),//the desired new state is pending
                 "backend CC=purchase, engine=none, order state=started, desired state=pending"
             ],
-            [
+            [// case 1: happens after case 0 on the happy path
                 new PurchaseTransaction(),
                 new TransactionType\Success(),
-                new Pending(), new Success(),
-                "backend CC=purchase, engine=success, order state=started, desired state=success"
+                new Pending(),
+                new Success(),
+                "backend CC=purchase, engine=success, order state=pending, desired state=success"
             ],
-            [
+            [//case 2: failure alternative to case 1
                 new PurchaseTransaction(),
                 new TransactionType\Failure(),//the engine said it's a failure
                 new Pending(),
                 new Failed(),//so we expect the order to go to failed
-                "backend CC=purchase, engine=success, order state=started, desired state=failed"
+                "backend CC=purchase, engine=success, order state=pending, desired state=failed"
             ],
-            [
+            [//case 3: initial authorization transaction, like 0, but a different back-end setting
                 new AuthorizationTransaction(),//back-end is set to authorization
                 new TransactionType\None(),//there has been no interaction with the engine yet
                 new Started(),//the current state of the order is started
