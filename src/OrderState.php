@@ -12,15 +12,22 @@ class OrderState
      * @var Implementation\CreditCardTransactionType
      */
     private $ccTransactionType;
+    /**
+     * @var ShopSystemDTO
+     * @todo extract an actual mapper
+     */
+    private $shopSystemState;
 
     public function __construct(ShopSystemDTO $shopSystemState)
     {
         $this->ccTransactionType = $shopSystemState->getCreditCardTransactionType();
+        $this->shopSystemState = $shopSystemState;
     }
 
     public function getNextState(OrderDTO $order)
     {
-        $calculableState = $this->toCalculableState($order->getCurrentState());
+        $mapped = $this->shopSystemState->mapState($order->getCurrentState());
+        $calculableState = $this->toCalculableState($mapped);
         $calculator = new Calculator($this->ccTransactionType, $calculableState);
         return $calculator->calculate($order->getTransactionType());
     }

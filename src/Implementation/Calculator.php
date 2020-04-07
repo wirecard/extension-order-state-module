@@ -46,7 +46,7 @@ class Calculator
         }
         if (!$isPossible) {
             $nextStateName = get_class($nextState);
-            $currentStateName = get_class($this->currentState);
+
             throw new \RuntimeException("Calculated next state $nextStateName is not declared as possible by $currentStateName");
         }
         return $nextState;
