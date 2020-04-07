@@ -3,7 +3,7 @@
 
 namespace Wirecard\Order\State;
 
-use Wirecard\Order\State\Implementation\CreditCardTransactionType;
+use Wirecard\Order\State\CreditCardTransactionType;
 
 interface ShopSystemDTO
 {

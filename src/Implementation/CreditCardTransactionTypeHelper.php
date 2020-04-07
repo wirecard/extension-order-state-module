@@ -3,6 +3,8 @@
 
 namespace Wirecard\Order\State\Implementation;
 
+use Wirecard\Order\State\CreditCardTransactionType;
+
 trait CreditCardTransactionTypeHelper
 {
     use StatefulUnaryValueObject;

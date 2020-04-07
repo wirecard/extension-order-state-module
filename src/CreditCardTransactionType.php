@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Wirecard\Order\State\Implementation;
+namespace Wirecard\Order\State;
 
 interface CreditCardTransactionType
 {

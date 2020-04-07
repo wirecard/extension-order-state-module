@@ -9,7 +9,7 @@ use Wirecard\Order\State\Implementation\State\CalculableState;
 class OrderState
 {
     /**
-     * @var Implementation\CreditCardTransactionType
+     * @var \Wirecard\Order\State\CreditCardTransactionType
      */
     private $ccTransactionType;
     /**

@@ -3,6 +3,7 @@
 
 namespace Wirecard\Order\State\Implementation;
 
+use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\TransactionType;
 
 interface TransitionData

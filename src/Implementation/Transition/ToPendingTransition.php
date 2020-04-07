@@ -3,7 +3,7 @@
 
 namespace Wirecard\Order\State\Implementation\Transition;
 
-use Wirecard\Order\State\Implementation\CreditCardTransactionType;
+use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\TransactionType;
 
@@ -17,7 +17,7 @@ class ToPendingTransition implements TransitionData
 {
 
     /**
-     * @var CreditCardTransactionType
+     * @var \Wirecard\Order\State\CreditCardTransactionType
      */
     private $creditCardTransactionType;
 

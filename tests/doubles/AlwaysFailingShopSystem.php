@@ -10,7 +10,7 @@ class AlwaysFailingShopSystem implements \Wirecard\Order\State\ShopSystemDTO
     }
 
     /**
-     * @return \Wirecard\Order\State\Implementation\CreditCardTransactionType
+     * @return \Wirecard\Order\State\CreditCardTransactionType
      */
     public function getCreditCardTransactionType()
     {

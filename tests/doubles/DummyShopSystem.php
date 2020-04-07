@@ -1,7 +1,7 @@
 <?php
 
 
-use Wirecard\Order\State\Implementation\CreditCardTransactionType as CreditCardTransactionType;
+use Wirecard\Order\State\CreditCardTransactionType as CreditCardTransactionType;
 use Wirecard\Order\State\Implementation\State\Pending;
 use Wirecard\Order\State\State;
 
@@ -9,7 +9,7 @@ class DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO
 {
 
     /**
-     * @var CreditCardTransactionType
+     * @var \Wirecard\Order\State\CreditCardTransactionType
      */
     private $transactionType;
 
@@ -24,7 +24,7 @@ class DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO
     }
 
     /**
-     * @return CreditCardTransactionType
+     * @return \Wirecard\Order\State\CreditCardTransactionType
      */
     public function getCreditCardTransactionType()
     {
