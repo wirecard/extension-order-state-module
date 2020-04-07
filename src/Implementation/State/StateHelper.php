@@ -10,10 +10,7 @@ use Wirecard\Order\State\State;
  * Trait StateHelper
  * @package Wirecard\Order\State\Implementation\State
  *
- * This can be a trait or an abstract base class.
- *
- * Either way, free the inheritance tree and leave it to the domain by using traits, once support for php 5.6 is
- * dropped.
+ * Provides additional type checking for equals for all states.
  */
 trait StateHelper
 {

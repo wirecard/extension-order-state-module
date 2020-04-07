@@ -9,14 +9,11 @@ trait StatefulUnaryValueObject
 
     private static $stateMap = [];
 
-    //TODO: make this final
     public function __construct()
     {
         $class = get_class($this);
-        if(!isset(self::$stateMap[$class])) {
-            self::$stateMap[$class] = count(self::$stateMap);
-        }
-        $this->value = self::$stateMap[$class];
+        $cacher = $this->getCacher();
+        $this->value = $cacher($class);
     }
 
     /**
@@ -25,6 +22,23 @@ trait StatefulUnaryValueObject
      */
     private function strictlyEquals($other)
     {
-        return $this->value === $other->value;
+        $getter = function() { return $this->value; };
+        $getter = \Closure::bind($getter, $other, get_class($other));
+        return $this->value === $getter();
+    }
+
+    /**
+     * @return \Closure
+     */
+    private function getCacher()
+    {
+        $cacher = function ($class) {
+            if (!isset(self::$stateMap[$class])) {
+                self::$stateMap[$class] = count(self::$stateMap) + 1;
+            }
+            return self::$stateMap[$class];
+        };
+        $cacher = \Closure::bind($cacher, null, StatefulUnaryValueObject::class);
+        return $cacher;
     }
 }

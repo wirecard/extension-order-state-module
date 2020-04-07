@@ -5,6 +5,7 @@ namespace Wirecard\Order\State\Implementation;
 
 use Wirecard\Order\State\Implementation\State\CalculableState;
 use Wirecard\Order\State\Implementation\Transition\ToPendingTransition;
+use Wirecard\Order\State\TransactionType;
 
 class Calculator
 {
@@ -24,9 +25,9 @@ class Calculator
         $this->currentState = $currentState;
     }
 
-    public function calculate()
+    public function calculate(TransactionType $transactionType)
     {
-        $transitionData = new ToPendingTransition($this->ccType);
+        $transitionData = new ToPendingTransition($this->ccType, $transactionType);
         $nextState = $this->currentState->getNextState($transitionData);
         if (!is_object($nextState) || !($nextState instanceof CalculableState)) {
             throw new \RuntimeException("Invalid next state: " . ((string)$nextState) . ". It must implement " . CalculableState::class);

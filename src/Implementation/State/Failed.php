@@ -4,7 +4,6 @@
 namespace Wirecard\Order\State\Implementation\State;
 
 use Wirecard\Order\State\Implementation\TransitionData;
-use Wirecard\Order\State\State;
 
 class Failed implements CalculableState
 {

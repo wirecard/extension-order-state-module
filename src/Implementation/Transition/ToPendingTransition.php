@@ -6,7 +6,6 @@ namespace Wirecard\Order\State\Implementation\Transition;
 use Wirecard\Order\State\Implementation\CreditCardTransactionType;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\TransactionType;
-use Wirecard\Order\State\TransactionType\Failure;
 
 /**
  * Class ToPendingTransition
@@ -22,9 +21,15 @@ class ToPendingTransition implements TransitionData
      */
     private $creditCardTransactionType;
 
-    public function __construct(CreditCardTransactionType $creditCardTransactionType)
+    /**
+     * @var TransactionType
+     */
+    private $transactionType;
+
+    public function __construct(CreditCardTransactionType $creditCardTransactionType, TransactionType $transactionType)
     {
         $this->creditCardTransactionType = $creditCardTransactionType;
+        $this->transactionType = $transactionType;
     }
 
     /**
@@ -40,6 +45,6 @@ class ToPendingTransition implements TransitionData
      */
     public function getTransactionType()
     {
-        return new Failure();
+        return $this->transactionType;
     }
 }

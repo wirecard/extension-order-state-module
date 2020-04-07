@@ -22,7 +22,7 @@ class OrderState
     {
         $calculableState = $this->toCalculableState($order->getCurrentState());
         $calculator = new Calculator($this->ccTransactionType, $calculableState);
-        return $calculator->calculate();
+        return $calculator->calculate($order->getTransactionType());
     }
 
     /**
