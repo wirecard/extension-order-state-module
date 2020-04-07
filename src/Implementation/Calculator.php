@@ -43,7 +43,7 @@ class Calculator
     /**
      * @param State $nextState
      */
-    private function checkConstraints(State $nextState)
+    private function checkConstraints($nextState)
     {
         if (!$this->isValidObject($nextState)) {
             $nextStateName = (string)$nextState;
@@ -68,7 +68,7 @@ class Calculator
      * @param State $nextState
      * @return bool
      */
-    private function isValidObject(State $nextState)
+    private function isValidObject($nextState)
     {
         return is_object($nextState) && ($nextState instanceof CalculableState);
     }
