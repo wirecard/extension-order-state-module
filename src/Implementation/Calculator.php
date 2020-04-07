@@ -4,7 +4,7 @@
 namespace Wirecard\Order\State\Implementation;
 
 use Wirecard\Order\State\CreditCardTransactionType;
-use Wirecard\Order\State\Implementation\CalculableState;
+use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\Transition\ToPendingTransition;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\TransactionType;
@@ -17,7 +17,7 @@ class Calculator
      */
     private $ccType;
     /**
-     * @var CalculableState
+     * @var \Wirecard\Order\State\Extension\CalculableState
      */
     private $currentState;
 
@@ -40,7 +40,7 @@ class Calculator
      */
     private function checkConstraints(State $nextState)
     {
-        if (!is_object($nextState) || !($nextState instanceof CalculableState)) {
+        if (!is_object($nextState) || !($nextState instanceof \Wirecard\Order\State\Extension\CalculableState)) {
             throw new \RuntimeException("Invalid next state: " . ((string)$nextState) . ". It must implement " . CalculableState::class);
         }
         $currentStateName = get_class($this->currentState);

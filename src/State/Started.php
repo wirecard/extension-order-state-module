@@ -3,14 +3,13 @@
 
 namespace Wirecard\Order\State\State;
 
-use Wirecard\Order\State\Implementation\CalculableState;
+use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
-use Wirecard\Order\State\State\Pending;
 
 class Started implements CalculableState
 {
-    use \Wirecard\Order\State\Implementation\StateHelper;
+    use StateHelper;
 
     public function getPossibleNextStates()
     {

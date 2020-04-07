@@ -3,13 +3,11 @@
 
 namespace Wirecard\Order\State\State;
 
-use Wirecard\Order\State\Implementation\CalculableState;
+use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\StateHelper;
-use Wirecard\Order\State\State\Success;
 use Wirecard\Order\State\Implementation\TransitionData;
-use Wirecard\Order\State\State\Failed;
 
-class Pending implements \Wirecard\Order\State\Implementation\CalculableState
+class Pending implements CalculableState
 {
     use StateHelper;
 

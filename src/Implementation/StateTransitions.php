@@ -3,7 +3,6 @@
 
 namespace Wirecard\Order\State\Implementation;
 
-use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
 
 interface StateTransitions

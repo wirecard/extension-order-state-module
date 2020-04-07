@@ -4,7 +4,7 @@
 namespace Wirecard\Order\State;
 
 use Wirecard\Order\State\Implementation\Calculator;
-use Wirecard\Order\State\Implementation\CalculableState;
+use Wirecard\Order\State\Extension\CalculableState;
 
 class OrderState
 {

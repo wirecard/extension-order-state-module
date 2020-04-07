@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Wirecard\Order\State\Implementation;
+namespace Wirecard\Order\State\Extension;
 
 
 use Wirecard\Order\State\Implementation\StateTransitions;
