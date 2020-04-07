@@ -1,11 +1,12 @@
 <?php
 
 
-namespace Wirecard\Order\State\Implementation;
+namespace Wirecard\Order\State\CreditCardTransactionType;
 
 use Wirecard\Order\State\CreditCardTransactionType;
+use Wirecard\Order\State\Implementation\CreditCardTransactionTypeHelper;
 
-class AuthorizationTransaction implements CreditCardTransactionType
+class PurchaseTransaction implements CreditCardTransactionType
 {
     use CreditCardTransactionTypeHelper;
 

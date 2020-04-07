@@ -1,8 +1,8 @@
 <?php
 
-use Wirecard\Order\State\Implementation\AuthorizationTransaction;
+use Wirecard\Order\State\CreditCardTransactionType\AuthorizationTransaction;
 use Wirecard\Order\State\CreditCardTransactionType;
-use Wirecard\Order\State\Implementation\PurchaseTransaction;
+use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;
 use Wirecard\Order\State\Implementation\State\Authorized;
 use Wirecard\Order\State\Implementation\State\Failed;
 use Wirecard\Order\State\Implementation\State\Pending;
