@@ -13,6 +13,6 @@ class MallorysFirstOrder implements \Wirecard\Order\State\OrderDTO
      */
     public function getCurrentState()
     {
-        return new \Wirecard\Order\State\Implementation\State\Started();
+        return new \Wirecard\Order\State\State\Started();
     }
 }

@@ -2,7 +2,7 @@
 
 
 use Wirecard\Order\State\CreditCardTransactionType as CreditCardTransactionType;
-use Wirecard\Order\State\Implementation\State\Pending;
+use Wirecard\Order\State\State\Pending;
 use Wirecard\Order\State\State;
 
 class DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO

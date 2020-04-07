@@ -1,13 +1,15 @@
 <?php
 
 
-namespace Wirecard\Order\State\Implementation\State;
+namespace Wirecard\Order\State\State;
 
+use Wirecard\Order\State\Implementation\CalculableState;
+use Wirecard\Order\State\Implementation\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
 
 class Failed implements CalculableState
 {
-    use StateHelper;
+    use \Wirecard\Order\State\Implementation\StateHelper;
 
     public function getPossibleNextStates()
     {

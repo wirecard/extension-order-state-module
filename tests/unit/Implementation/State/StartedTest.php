@@ -1,9 +1,9 @@
 <?php
 
 
-use Wirecard\Order\State\Implementation\State\Failed;
-use Wirecard\Order\State\Implementation\State\Started;
-use Wirecard\Order\State\Implementation\State\Success;
+use Wirecard\Order\State\State\Failed;
+use Wirecard\Order\State\State\Started;
+use Wirecard\Order\State\State\Success;
 
 class StartedTest extends PHPUnit_Framework_TestCase
 {

@@ -2,10 +2,11 @@
 
 
 use Wirecard\Order\State\Extension\CustomStateFoundation;
-use Wirecard\Order\State\Implementation\State\Pending;
-use Wirecard\Order\State\Implementation\State\Success as SuccessAlias;
+use Wirecard\Order\State\State\Pending;
+use Wirecard\Order\State\State\Success as SuccessAlias;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
+use Wirecard\Order\State\State\Success;
 
 /**
  * Class CustomPendingSuccess
@@ -19,7 +20,7 @@ class CustomPendingSuccess extends CustomStateFoundation
     /**
      * The state in the state machine at which our overriding/hooking starts.
      *
-     * @var Pending
+     * @var \Wirecard\Order\State\State\Pending
      */
     private $referenceHead;
 

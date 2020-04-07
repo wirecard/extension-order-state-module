@@ -4,7 +4,7 @@
 namespace Wirecard\Order\State\Implementation;
 
 use Wirecard\Order\State\CreditCardTransactionType;
-use Wirecard\Order\State\Implementation\State\CalculableState;
+use Wirecard\Order\State\Implementation\CalculableState;
 use Wirecard\Order\State\Implementation\Transition\ToPendingTransition;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\TransactionType;

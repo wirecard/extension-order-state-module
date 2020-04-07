@@ -2,7 +2,7 @@
 
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;
-use Wirecard\Order\State\Implementation\State\Success;
+use Wirecard\Order\State\State\Success;
 use Wirecard\Order\State\OrderState;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\TransactionType;

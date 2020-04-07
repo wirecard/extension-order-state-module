@@ -1,7 +1,7 @@
 <?php
 
 
-use Wirecard\Order\State\Implementation\State\Pending;
+use Wirecard\Order\State\State\Pending;
 use Wirecard\Order\State\State;
 
 class CustomShopSystem extends DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO

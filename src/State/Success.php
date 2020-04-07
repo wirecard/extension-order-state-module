@@ -1,15 +1,19 @@
 <?php
 
 
-namespace Wirecard\Order\State\Implementation\State;
+namespace Wirecard\Order\State\State;
 
 
 use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;
+use Wirecard\Order\State\Implementation\CalculableState;
+use Wirecard\Order\State\Implementation\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
+use Wirecard\Order\State\State\Authorized;
+use Wirecard\Order\State\State\Processing;
 
-class Success implements CalculableState
+class Success implements \Wirecard\Order\State\Implementation\CalculableState
 {
-    use StateHelper;
+    use \Wirecard\Order\State\Implementation\StateHelper;
 
     public function getPossibleNextStates()
     {

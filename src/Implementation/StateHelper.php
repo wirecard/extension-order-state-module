@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Wirecard\Order\State\Implementation\State;
+namespace Wirecard\Order\State\Implementation;
 
 use Wirecard\Order\State\Implementation\StatefulUnaryValueObject;
 use Wirecard\Order\State\State;

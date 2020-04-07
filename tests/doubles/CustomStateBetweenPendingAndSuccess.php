@@ -1,7 +1,7 @@
 <?php
 
 use Wirecard\Order\State\Extension\CustomStateFoundation;
-use Wirecard\Order\State\Implementation\State\Success;
+use Wirecard\Order\State\State\Success;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
 
