@@ -39,6 +39,7 @@ trait StateHelper
     /**
      * @param TransitionData $transitionData
      * @return bool
+     * @todo: name
      */
     private function isSuccessfulRemoteTransaction(TransitionData $transitionData)
     {

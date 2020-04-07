@@ -3,11 +3,16 @@
 
 namespace Wirecard\Order\State\Extension;
 
-use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
 
+/**
+ * Class CustomStateFoundation
+ * @package Wirecard\Order\State\Extension
+ *
+ * @todo: name
+ */
 abstract class CustomStateFoundation implements CalculableState
 {
     use StateHelper;

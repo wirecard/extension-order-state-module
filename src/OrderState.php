@@ -40,6 +40,11 @@ class OrderState
         $this->shopSystemState = $shopSystemState;
     }
 
+    /**
+     * @param OrderDTO $order
+     * @return State
+     * @todo name
+     */
     public function getNextState(OrderDTO $order)
     {
         $mapped = $this->shopSystemState->mapState($order->getCurrentState());
