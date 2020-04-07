@@ -40,13 +40,17 @@ class Calculator
      */
     private function checkConstraints(State $nextState)
     {
-        if (!is_object($nextState) || !($nextState instanceof \Wirecard\Order\State\Extension\CalculableState)) {
-            throw new \RuntimeException("Invalid next state: " . ((string)$nextState) . ". It must implement " . CalculableState::class);
+        if (!is_object($nextState) || !($nextState instanceof CalculableState)) {
+            $nextStateName = (string)$nextState;
+            $message = "Invalid state: $nextStateName. It must implement " . CalculableState::class;
+            throw new \RuntimeException($message);
         }
         $currentStateName = get_class($this->currentState);
+        $nextStateName = get_class($nextState);
         $candidates = $this->currentState->getPossibleNextStates();
         if (!is_array($candidates)) {
-            throw new \RuntimeException("Current state $currentStateName did not provide a list of possible next states");
+            $message = "Current state $currentStateName did not provide a list of possible next states";
+            throw new \RuntimeException($message);
         }
         $isPossible = false;
         foreach ($candidates as $candidate) {
@@ -56,9 +60,8 @@ class Calculator
             }
         }
         if (!$isPossible) {
-            $nextStateName = get_class($nextState);
-
-            throw new \RuntimeException("Calculated next state $nextStateName is not declared as possible by $currentStateName");
+            $message = "Calculated next state $nextStateName is not declared as possible by $currentStateName";
+            throw new \RuntimeException($message);
         }
     }
 }
