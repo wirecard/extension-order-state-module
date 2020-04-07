@@ -3,6 +3,7 @@
 
 namespace Wirecard\Order\State\Implementation;
 
+use RuntimeException;
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\Transition;
@@ -43,14 +44,14 @@ class Calculator
         if (!is_object($nextState) || !($nextState instanceof CalculableState)) {
             $nextStateName = (string)$nextState;
             $message = "Invalid state: $nextStateName. It must implement " . CalculableState::class;
-            throw new \RuntimeException($message);
+            throw new RuntimeException($message);
         }
         $currentStateName = get_class($this->currentState);
         $nextStateName = get_class($nextState);
         $candidates = $this->currentState->getPossibleNextStates();
         if (!is_array($candidates)) {
             $message = "Current state $currentStateName did not provide a list of possible next states";
-            throw new \RuntimeException($message);
+            throw new RuntimeException($message);
         }
         $isPossible = false;
         foreach ($candidates as $candidate) {
@@ -61,7 +62,7 @@ class Calculator
         }
         if (!$isPossible) {
             $message = "Calculated next state $nextStateName is not declared as possible by $currentStateName";
-            throw new \RuntimeException($message);
+            throw new RuntimeException($message);
         }
     }
 }

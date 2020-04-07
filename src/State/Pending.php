@@ -6,6 +6,7 @@ namespace Wirecard\Order\State\State;
 use Wirecard\Order\State\Extension\CalculableState;
 use Wirecard\Order\State\Implementation\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
+use Wirecard\Order\State\TransactionType\Success as SuccessRemoteTransaction;
 
 class Pending implements CalculableState
 {
@@ -18,7 +19,7 @@ class Pending implements CalculableState
 
     public function getNextState(TransitionData $transitionData)
     {
-        if ($transitionData->getTransactionType()->equals(new \Wirecard\Order\State\TransactionType\Success())) {
+        if ($transitionData->getTransactionType()->equals(new SuccessRemoteTransaction())) {
             return new Success();
         }
         return new Failed();

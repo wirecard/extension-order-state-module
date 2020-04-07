@@ -18,16 +18,16 @@ class Transition implements TransitionData
     /**
      * @var \Wirecard\Order\State\CreditCardTransactionType
      */
-    private $creditCardTransactionType;
+    private $transactionSetting;
 
     /**
      * @var TransactionType
      */
     private $transactionType;
 
-    public function __construct(CreditCardTransactionType $creditCardTransactionType, TransactionType $transactionType)
+    public function __construct(CreditCardTransactionType $transactionSetting, TransactionType $transactionType)
     {
-        $this->creditCardTransactionType = $creditCardTransactionType;
+        $this->transactionSetting = $transactionSetting;
         $this->transactionType = $transactionType;
     }
 
@@ -36,7 +36,7 @@ class Transition implements TransitionData
      */
     public function getShopsystemCreditCardTransactionType()
     {
-        return $this->creditCardTransactionType;
+        return $this->transactionSetting;
     }
 
     /**

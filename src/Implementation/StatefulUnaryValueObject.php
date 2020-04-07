@@ -3,6 +3,13 @@
 
 namespace Wirecard\Order\State\Implementation;
 
+/**
+ * Trait StatefulUnaryValueObject
+ * @package Wirecard\Order\State\Implementation
+ * @SuppressWarnings(PHPMD)
+ *
+ * Isolates the ugly part for value objects.
+ */
 trait StatefulUnaryValueObject
 {
     private $value;
