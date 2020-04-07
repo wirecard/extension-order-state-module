@@ -1,12 +1,13 @@
 <?php
 
 
-namespace Wirecard\Order\State;
+namespace Wirecard\Order\State\Extension;
 
 
 use Wirecard\Order\State\Implementation\State\CalculableState;
 use Wirecard\Order\State\Implementation\State\StateHelper;
 use Wirecard\Order\State\Implementation\TransitionData;
+use Wirecard\Order\State\State;
 
 abstract class CustomStateFoundation implements CalculableState
 {
