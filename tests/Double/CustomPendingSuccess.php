@@ -4,7 +4,6 @@ namespace Test\Double;
 
 use Wirecard\Order\State\Extension\CustomStateFoundation;
 use Wirecard\Order\State\State\Pending;
-use Wirecard\Order\State\State\Success as SuccessAlias;
 use Wirecard\Order\State\Implementation\TransitionData;
 use Wirecard\Order\State\State;
 use Wirecard\Order\State\State\Success;
@@ -28,7 +27,7 @@ class CustomPendingSuccess extends CustomStateFoundation
     /**
      * The state in the state machine at which our hooking stops.
      *
-     * @var SuccessAlias
+     * @var Success
      */
     private $referenceTail;
 
@@ -41,7 +40,7 @@ class CustomPendingSuccess extends CustomStateFoundation
     {
         parent::__construct();
         $this->referenceHead = new Pending();
-        $this->referenceTail = new SuccessAlias();
+        $this->referenceTail = new Success();
         $this->replacement = new CustomStateBetweenPendingAndSuccess();
     }
 
