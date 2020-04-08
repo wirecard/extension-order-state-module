@@ -1,6 +1,8 @@
 <?php
 
 
+namespace Test\Double\Stub;
+
 use Wirecard\Order\State\CreditCardTransactionType as CreditCardTransactionType;
 use Wirecard\Order\State\State\Pending;
 use Wirecard\Order\State\State;

@@ -1,5 +1,7 @@
 <?php
 
+namespace Test\Double;
+
 use Wirecard\Order\State\Extension\CustomStateFoundation;
 use Wirecard\Order\State\State\Success;
 use Wirecard\Order\State\Implementation\TransitionData;

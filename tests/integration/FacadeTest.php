@@ -1,5 +1,7 @@
 <?php
 
+use Test\Double\Stub\OrderStub;
+use Test\Double\Stub\ShopSystemStub;
 use Wirecard\Order\State\CreditCardTransactionType\AuthorizationTransaction;
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;

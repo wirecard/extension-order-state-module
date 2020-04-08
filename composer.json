@@ -25,6 +25,6 @@
     }
   },
   "autoload-dev": {
-    "psr-4": { "": "tests/doubles/" }
+    "psr-4": { "": "tests/doubles/", "Test\\Double\\": "tests/Double" }
   }
 }

@@ -1,6 +1,9 @@
 <?php
 
 
+namespace Test\Double\Stub;
+
+use Test\Double\CustomPendingSuccess;
 use Wirecard\Order\State\State\Pending;
 use Wirecard\Order\State\State;
 

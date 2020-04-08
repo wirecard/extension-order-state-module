@@ -1,5 +1,9 @@
 <?php
 
+use Test\Double\CustomPendingSuccess;
+use Test\Double\CustomStateBetweenPendingAndSuccess;
+use Test\Double\Stub\CustomShopSystemStub;
+use Test\Double\Stub\OrderStub;
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;
 use Wirecard\Order\State\State\Success;

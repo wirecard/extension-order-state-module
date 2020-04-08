@@ -1,5 +1,7 @@
 <?php
 
+namespace Test\Double\Stub;
+
 /**
  * Class MallorysFirstOrder
  *

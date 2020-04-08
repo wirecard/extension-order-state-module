@@ -1,5 +1,6 @@
 <?php
 
+namespace Test\Double\Stub;
 
 use Wirecard\Order\State\CreditCardTransactionType;
 use Wirecard\Order\State\ShopSystem;

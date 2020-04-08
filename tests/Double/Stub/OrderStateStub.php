@@ -1,6 +1,8 @@
 <?php
 
 
+namespace Test\Double\Stub;
+
 use Wirecard\Order\State\Extension\CustomStateFoundation;
 use Wirecard\Order\State\Implementation\TransitionData;
 

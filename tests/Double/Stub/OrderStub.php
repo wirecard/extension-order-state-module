@@ -1,6 +1,8 @@
 <?php
 
 
+namespace Test\Double\Stub;
+
 use Wirecard\Order\State\State;
 
 class OrderStub implements \Wirecard\Order\State\Order

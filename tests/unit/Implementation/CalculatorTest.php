@@ -1,6 +1,7 @@
 <?php
 
 
+use Test\Double\Stub\OrderStateStub;
 use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;
 use Wirecard\Order\State\TransactionType\None;
 
