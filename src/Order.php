@@ -10,7 +10,7 @@ namespace Wirecard\Order\State;
  * This is the DTO for orders as we need them. Users of this type must pass it in to the facade.
  * @todo name
  */
-interface OrderDTO
+interface Order
 {
 
     /**

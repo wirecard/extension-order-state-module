@@ -15,6 +15,8 @@ use Wirecard\Order\State\Implementation\TransitionData;
  * In some cases, you can think of this as a success response.
  *
  * Particularly, this is success for purchase-type transactions.
+ *
+ * When an order is in this state, it means that its payment has been processed and it can be packaged, develivered, ...
  */
 class Processing implements CalculableState
 {

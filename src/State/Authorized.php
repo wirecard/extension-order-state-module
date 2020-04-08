@@ -18,9 +18,11 @@ class Authorized implements CalculableState
 
     public function getPossibleNextStates()
     {
+        return [];
     }
 
     public function getNextState(TransitionData $transitionData)
     {
+        return new Failed();
     }
 }

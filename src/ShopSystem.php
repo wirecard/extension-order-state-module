@@ -13,10 +13,15 @@ namespace Wirecard\Order\State;
  *
  * @todo name
  */
-interface ShopSystemDTO
+interface ShopSystem
 {
 
     public function mapState(State $state);
+
+    /**
+     * @return State[]
+     */
+    public function knownStates();
 
     /**
      * @return CreditCardTransactionType
