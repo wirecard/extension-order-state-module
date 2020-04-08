@@ -32,6 +32,11 @@ class CustomStateTest extends PHPUnit_Framework_TestCase
     /**
      * @test Tests what should happen
      * @dataProvider simple_cases_provider
+     * @param CreditCardTransactionType $creditCardTransactionType
+     * @param TransactionType $engineTransactionType
+     * @param State $currentOrderState
+     * @param State $expected
+     * @param $message
      */
     public function all_simple_combinations(
         CreditCardTransactionType $creditCardTransactionType,//backend setting for CC
@@ -40,8 +45,8 @@ class CustomStateTest extends PHPUnit_Framework_TestCase
         State $expected,//the desired state of the order after the transition
         $message
     ) {//message, in case the assertion fails
-        $shopSystem = new CustomShopSystem($creditCardTransactionType);
-        $order = new DummyOrder($currentOrderState, $engineTransactionType);
+        $shopSystem = new CustomShopSystemStub($creditCardTransactionType);
+        $order = new OrderStub($currentOrderState, $engineTransactionType);
 
         $module = new OrderState($shopSystem);
         $newState = $module->getNextState($order);

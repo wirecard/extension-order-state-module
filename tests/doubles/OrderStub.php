@@ -3,7 +3,7 @@
 
 use Wirecard\Order\State\State;
 
-class DummyOrder implements \Wirecard\Order\State\OrderDTO
+class OrderStub implements \Wirecard\Order\State\Order
 {
 
     /**
@@ -36,5 +36,13 @@ class DummyOrder implements \Wirecard\Order\State\OrderDTO
     public function getTransactionType()
     {
         return $this->transactionType;
+    }
+
+    /**
+     * @param State $state
+     */
+    public function changeState(State $state)
+    {
+        $this->currentState = $state;
     }
 }

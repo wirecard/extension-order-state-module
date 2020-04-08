@@ -5,7 +5,7 @@ use Wirecard\Order\State\CreditCardTransactionType as CreditCardTransactionType;
 use Wirecard\Order\State\State\Pending;
 use Wirecard\Order\State\State;
 
-class DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO
+class ShopSystemStub implements \Wirecard\Order\State\ShopSystem
 {
 
     /**
@@ -29,5 +29,13 @@ class DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO
     public function getCreditCardTransactionType()
     {
         return $this->transactionType;
+    }
+
+    /**
+     * @return State[]
+     */
+    public function knownStates()
+    {
+        return [];
     }
 }

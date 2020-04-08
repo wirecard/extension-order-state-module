@@ -5,7 +5,7 @@
  *
  * When ordering for the first time, Mallory tried to outright break the system by providing invalid data.
  */
-class MallorysFirstOrder implements \Wirecard\Order\State\OrderDTO
+class MallorysFirstOrder implements \Wirecard\Order\State\Order
 {
 
     /**

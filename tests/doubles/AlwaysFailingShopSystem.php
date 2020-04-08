@@ -1,19 +1,32 @@
 <?php
 
 
-class AlwaysFailingShopSystem implements \Wirecard\Order\State\ShopSystemDTO
+use Wirecard\Order\State\CreditCardTransactionType;
+use Wirecard\Order\State\ShopSystem;
+use Wirecard\Order\State\State;
+
+class AlwaysFailingShopSystem implements ShopSystem
 {
 
-    public function mapState(\Wirecard\Order\State\State $state)
+    public function mapState(State $state)
     {
-        // TODO: Implement mapState() method.
+        return $state;
     }
 
     /**
-     * @return \Wirecard\Order\State\CreditCardTransactionType
+     * @return CreditCardTransactionType
      */
     public function getCreditCardTransactionType()
     {
-        // TODO: Implement getCreditCardTransactionType() method.
+        return new CreditCardTransactionType\AuthorizationTransaction();
     }
+
+    /**
+     * @return State[]
+     */
+    public function knownStates()
+    {
+        return [];
+    }
+
 }

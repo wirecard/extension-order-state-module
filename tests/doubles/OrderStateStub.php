@@ -4,7 +4,7 @@
 use Wirecard\Order\State\Extension\CustomStateFoundation;
 use Wirecard\Order\State\Implementation\TransitionData;
 
-class DummyState extends CustomStateFoundation
+class OrderStateStub extends CustomStateFoundation
 {
 
     private $possible;

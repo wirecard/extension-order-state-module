@@ -4,7 +4,7 @@
 use Wirecard\Order\State\State\Pending;
 use Wirecard\Order\State\State;
 
-class CustomShopSystem extends DummyShopSystem implements \Wirecard\Order\State\ShopSystemDTO
+class CustomShopSystemStub extends ShopSystemStub implements \Wirecard\Order\State\ShopSystem
 {
 
     public function mapState(State $state)
@@ -14,5 +14,17 @@ class CustomShopSystem extends DummyShopSystem implements \Wirecard\Order\State\
             return new CustomPendingSuccess();
         }
         return $state;
+    }
+
+
+    /**
+     * @return State[]
+     */
+    public function knownStates()
+    {
+        return [
+            new Pending(),
+            new CustomPendingSuccess(),
+        ];
     }
 }
