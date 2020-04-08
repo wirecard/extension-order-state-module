@@ -1,7 +1,8 @@
 <?php
 
 
-use Test\Double\Stub\OrderStateStub;
+use Test\Double\Dummy\StateDummy;
+use Test\Double\Stub\StateStub;
 use Wirecard\Order\State\CreditCardTransactionType\PurchaseTransaction;
 use Wirecard\Order\State\TransactionType\None;
 
@@ -17,7 +18,7 @@ class CalculatorTest extends PHPUnit_Framework_TestCase
     public function does_not_allow_null()
     {
         $ccType = new PurchaseTransaction();
-        $currentState = new OrderStateStub([], null);
+        $currentState = new StateStub([], null);
         $calculator = new \Wirecard\Order\State\Implementation\Calculator($ccType, $currentState);
         $calculator->calculate(new None());
     }
@@ -31,7 +32,7 @@ class CalculatorTest extends PHPUnit_Framework_TestCase
     public function does_not_allow_empty_array()
     {
         $ccType = new PurchaseTransaction();
-        $currentState = new OrderStateStub([], new OrderStateStub(null, null));
+        $currentState = new StateStub([], new StateDummy());
         $calculator = new \Wirecard\Order\State\Implementation\Calculator($ccType, $currentState);
         $calculator->calculate(new None());
     }
@@ -45,7 +46,7 @@ class CalculatorTest extends PHPUnit_Framework_TestCase
     public function does_not_allow_non_array_next()
     {
         $ccType = new PurchaseTransaction();
-        $currentState = new OrderStateStub(null, new OrderStateStub(null, null));
+        $currentState = new StateStub(null, new StateDummy());
         $calculator = new \Wirecard\Order\State\Implementation\Calculator($ccType, $currentState);
         $calculator->calculate(new None());
     }
