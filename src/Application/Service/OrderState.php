@@ -3,7 +3,7 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Application\Service;
 
-use Wirecard\ExtensionOrderStateModule\Domain\OrderStateManagerFactory;
+use Wirecard\ExtensionOrderStateModule\Domain\Factories\OrderStateManagerFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
 

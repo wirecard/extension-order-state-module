@@ -1,11 +1,10 @@
 <?php
 
-namespace Wirecard\ExtensionOrderStateModule\Domain;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Factories;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType\Notification;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType\Returned;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueException;
-use Wirecard\ExtensionOrderStateModule\Domain\Factories\ProcessTypeFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment\NotificationOrderStateManager;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment\ReturnOrderStateManager;

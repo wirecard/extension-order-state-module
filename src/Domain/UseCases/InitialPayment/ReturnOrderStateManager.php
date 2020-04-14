@@ -11,7 +11,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\Processing;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType\Authorize;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType\Debit;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType\Purchase;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\UseCases\InputAdapterDTO;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCases\InputAdapterDTO;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateManager;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
@@ -61,42 +61,60 @@ class ReturnOrderStateManager implements OrderStateManager
     /**
      * @param InputAdapterDTO $internalDTO
      * @return OrderStateValueObject
+     * @throws \Exception
      */
     private function calculateOrderState(InputAdapterDTO $internalDTO)
     {
-        if ($internalDTO->getTransactionState()->isFailure()) {
-            return new Failed();
+        $newState = null;
+
+        if ($internalDTO->getCurrentOrderState()->equalsTo(new Failed()) ||
+            $internalDTO->getTransactionState()->isFailure()) {
+            $newState = new Failed();
         }
 
         if ($this->isStartedPayment($internalDTO)) {
-            return new Pending();
+            $newState = new Pending();
         }
 
         if ($this->isStartedDebit($internalDTO)) {
-            return new Processing();
+            $newState = new Processing();
         }
 
         if ($this->isPendingPurchase($internalDTO)) {
-            return new Processing();
+            $newState = new Processing();
         }
 
         if ($this->isPendingAuthorization($internalDTO)) {
-            return new Authorized();
+            $newState = new Authorized();
         }
+
+        if (null === $newState) {
+            throw new \Exception("Can't compute next order state!");
+        }
+        return $newState;
     }
 
     /**
      * @param OrderStateValueObject $orderState
      * @param OrderStateMapper $mapper
      * @return string
+     * @throws \Exception
      */
     public function toExternal(OrderStateValueObject $orderState, OrderStateMapper $mapper)
     {
+        $foundType = null;
         foreach ($mapper->map() as $externalType => $orderStateVO) {
             if ($orderState->equalsTo($orderStateVO)) {
-                return $externalType;
+                $foundType = $externalType;
+                break;
             }
         }
+
+        if (null === $foundType) {
+            throw new \Exception("{$orderState} isn't defined in mapper!");
+        }
+
+        return $foundType;
     }
 
     /**
@@ -104,6 +122,7 @@ class ReturnOrderStateManager implements OrderStateManager
      * @param OrderStateMapper $mapper
      * @return string
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueException
+     * @throws \Exception
      */
     public function process(InputDataTransferObject $input, OrderStateMapper $mapper)
     {

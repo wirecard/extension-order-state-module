@@ -1,10 +1,9 @@
 <?php
 
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\UseCases;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCases;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Factories\OrderStateFactory;
-use Wirecard\ExtensionOrderStateModule\Domain\Factories\ProcessTypeFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Factories\TransactionStateFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Factories\TransactionTypeFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;

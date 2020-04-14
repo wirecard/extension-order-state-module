@@ -5,7 +5,6 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Factories;
 
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType\TransactionStateValueObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState\Failure;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState\Success;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueException;
@@ -14,7 +13,7 @@ class TransactionStateFactory
 {
     /**
      * @param $transactionState
-     * @return TransactionStateValueObject
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState\TransactionStateValueObject
      * @throws InvalidValueException
      */
     public function create($transactionState)
