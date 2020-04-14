@@ -1,15 +1,14 @@
 <?php
 
-
 namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
 
 /**
- * Class Processing
+ * Class Pending
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState
  */
-class Processing extends OrderStateValueObject
+class Pending extends OrderStateValueObject
 {
-    protected $value = Constant::ORDER_STATE_PROCESSING;
+    protected $value = Constant::ORDER_STATE_PENDING;
 }

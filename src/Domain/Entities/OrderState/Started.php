@@ -6,10 +6,10 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
 
 /**
- * Class Processing
+ * Class Started
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState
  */
-class Processing extends OrderStateValueObject
+class Started extends OrderStateValueObject
 {
-    protected $value = Constant::ORDER_STATE_PROCESSING;
+    protected $value = Constant::ORDER_STATE_STARTED;
 }

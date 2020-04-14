@@ -3,8 +3,13 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Interfaces;
 
-
 interface OrderStateManager
 {
-    public function process(OrderStateMapper $mapper, InputDataTransferObject $input);
+
+    /**
+     * @param InputDataTransferObject $input
+     * @param OrderStateMapper $mapper
+     * @return mixed
+     */
+    public function process(InputDataTransferObject $input, OrderStateMapper $mapper);
 }

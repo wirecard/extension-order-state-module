@@ -1,12 +1,11 @@
 <?php
 
-
 namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
 
-class Authorize extends TransactionTypeValueObject
+class Debit extends TransactionTypeValueObject
 {
     /** @var string  */
-    protected $value = Constant::TRANSACTION_TYPE_AUTHORIZE;
+    protected $value = Constant::TRANSACTION_TYPE_DEBIT;
 }

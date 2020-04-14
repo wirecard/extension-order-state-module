@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderState;
-
-class Authorized implements OrderState
+class Authorized extends OrderStateValueObject
 {
-
+    protected $value = Constant::ORDER_STATE_AUTHORIZED;
 }

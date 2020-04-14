@@ -1,7 +1,5 @@
 <?php
 
-use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
-
 class OrderStateService extends PHPUnit_Framework_TestCase
 {
     private $orderStateService;
