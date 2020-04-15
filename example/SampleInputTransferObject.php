@@ -82,9 +82,9 @@ class SampleInputTransferObject implements InputDataTransferObject
     public function __toString()
     {
         $str = "";
-        $str .= "PT: {$this->getProcessType()} |";
-        $str .= "TT: {$this->getTransactionType()} |";
-        $str .= "TS: {$this->getTransactionState()} |";
+        $str .= "PT: {$this->getProcessType()} | ";
+        $str .= "TT: {$this->getTransactionType()} | ";
+        $str .= "TS: {$this->getTransactionState()} | ";
         $str .= "CO: {$this->getCurrentOrderState()}";
         return $str;
     }
