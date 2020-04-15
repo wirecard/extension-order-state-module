@@ -36,7 +36,6 @@ try {
 
     $result = $orderStateService->process($inputDTO);
     print_r($result . PHP_EOL);
-
 } catch (InvalidValueException $e) {
     print_r($e->getMessage() . PHP_EOL);
 }
