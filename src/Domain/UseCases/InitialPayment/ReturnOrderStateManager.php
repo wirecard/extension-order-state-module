@@ -65,33 +65,28 @@ class ReturnOrderStateManager implements OrderStateManager
      */
     private function calculateOrderState(InputAdapterDTO $internalDTO)
     {
-        $newState = null;
-
         if ($internalDTO->getCurrentOrderState()->equalsTo(new Failed()) ||
             $internalDTO->getTransactionState()->isFailure()) {
-            $newState = new Failed();
+            return new Failed();
         }
 
         if ($this->isStartedPayment($internalDTO)) {
-            $newState = new Pending();
+            return new Pending();
         }
 
         if ($this->isStartedDebit($internalDTO)) {
-            $newState = new Processing();
+            return new Processing();
         }
 
         if ($this->isPendingPurchase($internalDTO)) {
-            $newState = new Processing();
+            return new Processing();
         }
 
         if ($this->isPendingAuthorization($internalDTO)) {
-            $newState = new Authorized();
+            return new Authorized();
         }
 
-        if (null === $newState) {
-            throw new \Exception("Can't compute next order state!");
-        }
-        return $newState;
+        throw new \Exception("Can't compute next order state!");
     }
 
     /**
