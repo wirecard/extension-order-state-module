@@ -3,7 +3,6 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Factories;
 
-
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState\Failure;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState\Success;

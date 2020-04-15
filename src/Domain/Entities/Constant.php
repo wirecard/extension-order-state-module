@@ -3,7 +3,6 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Entities;
 
-
 class Constant
 {
     // Process Type

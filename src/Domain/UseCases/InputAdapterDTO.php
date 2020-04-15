@@ -63,6 +63,4 @@ class InputAdapterDTO
     {
         return $this->currentOrderState;
     }
-
-
 }

@@ -3,7 +3,6 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
 
-
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\StringValueObject;
 
 /**

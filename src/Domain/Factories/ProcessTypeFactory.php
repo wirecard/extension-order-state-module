@@ -28,5 +28,4 @@ class ProcessTypeFactory
                 throw new InvalidValueException("Invalid or not implemented process type {$processType}");
         }
     }
-
 }
