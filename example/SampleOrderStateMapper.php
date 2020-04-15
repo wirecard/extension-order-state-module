@@ -12,7 +12,6 @@ use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
 
 class SampleOrderStateMapper implements OrderStateMapper
 {
-
     public function map()
     {
         return [

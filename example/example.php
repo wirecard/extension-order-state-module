@@ -9,7 +9,6 @@ require_once  dirname($pwd) . "/vendor/autoload.php";
 require_once $pwd . DIRECTORY_SEPARATOR . 'SampleInputTransferObject.php';
 require_once $pwd . DIRECTORY_SEPARATOR . 'SampleOrderStateMapper.php';
 
-
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueException;
