@@ -26,7 +26,9 @@ try {
     $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_STARTED);
     $result = $orderStateService->process($inputDTO);
 
-    print_r($result . PHP_EOL);
+    print_r((string)$inputDTO . PHP_EOL);
+    print_r("Result: {$result}" . PHP_EOL);
+    print_r("-----------------------" . PHP_EOL);
 
     // Failed
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_RETURN);
@@ -35,7 +37,8 @@ try {
     $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_STARTED);
 
     $result = $orderStateService->process($inputDTO);
-    print_r($result . PHP_EOL);
+    print_r((string)$inputDTO . PHP_EOL);
+    print_r("Result: {$result}" . PHP_EOL);
 } catch (InvalidValueException $e) {
     print_r($e->getMessage() . PHP_EOL);
 }
