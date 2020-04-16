@@ -7,12 +7,17 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Interfaces;
 
 /**
- * Class Notification
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType
+ * Interface OrderStateMapDefinition
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Interfaces
  */
-class Notification
+interface MapDefinition
 {
+    /**
+     * @return array
+     * @since 1.0.0
+     */
+    public function map();
 }

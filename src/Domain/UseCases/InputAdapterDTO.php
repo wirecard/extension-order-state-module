@@ -1,11 +1,17 @@
 <?php
-
+/**
+ * Shop System Extensions:
+ * - Terms of Use can be found at:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
+ */
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCases;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Factories\OrderStateFactory;
-use Wirecard\ExtensionOrderStateModule\Domain\Factories\TransactionStateFactory;
-use Wirecard\ExtensionOrderStateModule\Domain\Factories\TransactionTypeFactory;
+use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType;
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
 
 /**
@@ -15,41 +21,43 @@ use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject
 class InputAdapterDTO
 {
     /**
-     * @var \Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState\TransactionStateValueObject
+     * @var TransactionState
      */
     private $transactionState;
     /**
-     * @var \Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType\TransactionTypeValueObject
+     * @var TransactionType
      */
     private $transactionType;
     /**
-     * @var \Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\OrderStateValueObject
+     * @var OrderState
      */
-    private $currentOrderState;
-
+    private $orderState;
 
     /**
      * InputAdapterDTO constructor.
      * @param InputDataTransferObject $input
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @since 1.0.0
      */
     public function __construct(InputDataTransferObject $input)
     {
-        $this->transactionType = (new TransactionTypeFactory())->create($input->getTransactionType());
-        $this->transactionState = (new TransactionStateFactory())->create($input->getTransactionState());
-        $this->currentOrderState = (new OrderStateFactory())->create($input->getCurrentOrderState());
+        $this->transactionType = new TransactionType($input->getTransactionType());
+        $this->transactionState = new TransactionState($input->getTransactionState());
+        $this->orderState = new OrderState($input->getCurrentOrderState());
     }
 
     /**
-     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState\TransactionStateValueObject
+     * @return OrderState
+     * @since 1.0.0
      */
-    public function getTransactionState()
+    public function getOrderState()
     {
-        return $this->transactionState;
+        return $this->orderState;
     }
 
     /**
-     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType\TransactionTypeValueObject
+     * @return TransactionType
+     * @since 1.0.0
      */
     public function getTransactionType()
     {
@@ -57,10 +65,11 @@ class InputAdapterDTO
     }
 
     /**
-     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\OrderStateValueObject
+     * @return TransactionState
+     * @since 1.0.0
      */
-    public function getCurrentOrderState()
+    public function getTransactionState()
     {
-        return $this->currentOrderState;
+        return $this->transactionState;
     }
 }

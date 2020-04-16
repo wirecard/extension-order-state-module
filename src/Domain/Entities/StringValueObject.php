@@ -1,11 +1,21 @@
 <?php
-
+/**
+ * Shop System Extensions:
+ * - Terms of Use can be found at:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
+ */
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Entities;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\ValueObject;
 
-class StringValueObject implements ValueObject
+/**
+ * Class StringValueObject
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entities
+ */
+abstract class StringValueObject implements ValueObject
 {
     /**
      * @var string
@@ -14,6 +24,7 @@ class StringValueObject implements ValueObject
 
     /**
      * @return string
+     * @since 1.0.0
      */
     public function __toString()
     {
@@ -23,25 +34,10 @@ class StringValueObject implements ValueObject
     /**
      * @param ValueObject $other
      * @return bool
+     * @since 1.0.0
      */
     public function equalsTo(ValueObject $other)
     {
         return $this instanceof $other && $this->value === $other->value;
-    }
-
-    /**
-     * @param array $valueObjects
-     * @return bool
-     */
-    public function inSet(array $valueObjects)
-    {
-        $result = false;
-        foreach ($valueObjects as $valueObject) {
-            if ($this->equalsTo($valueObject)) {
-                $result = true;
-                break;
-            }
-        }
-        return $result;
     }
 }
