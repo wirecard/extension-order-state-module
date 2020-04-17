@@ -7,8 +7,8 @@ ini_set("display_errors", true);
 $pwd = dirname(__FILE__);
 require_once  dirname($pwd) . "/vendor/autoload.php";
 require_once $pwd . DIRECTORY_SEPARATOR . 'SampleMapDefinition.php';
+require_once $pwd . DIRECTORY_SEPARATOR . 'SampleInputDTO.php';
 
-use Wirecard\ExtensionOrderStateModule\Application\Input\GenericInputDTO;
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
@@ -17,7 +17,7 @@ $orderStateService = new OrderState(new GenericOrderStateMapper(new SampleMapDef
 
 try {
     // Processing
-    $inputDTO = new GenericInputDTO();
+    $inputDTO = new SampleInputDTO();
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_RETURN);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);

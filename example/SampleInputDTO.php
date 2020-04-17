@@ -1,12 +1,11 @@
 <?php
 
 
-namespace Wirecard\ExtensionOrderStateModule\Application\Input;
-
+namespace example;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
 
-class GenericInputDTO implements InputDataTransferObject
+class SampleInputDTO implements InputDataTransferObject
 {
     /**
      * @var string
