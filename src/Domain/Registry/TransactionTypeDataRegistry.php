@@ -15,11 +15,26 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
 /**
  * Class TransactionTypeDataRegistry
  * @package Wirecard\ExtensionOrderStateModule\Domain\Registry
- * @method static TransactionTypeDataRegistry getInstance()
  * @method TransactionType get(string $key)
  */
 class TransactionTypeDataRegistry extends AbstractDataRegistry
 {
+    /**
+     * @var TransactionTypeDataRegistry
+     */
+    protected static $instance;
+
+    /**
+     * @return TransactionTypeDataRegistry
+     */
+    public static function getInstance()
+    {
+        if (null === self::$instance) {
+            static::$instance = new self();
+        }
+        return static::$instance;
+    }
+
     /**
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */

@@ -11,7 +11,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Factory;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\NotificationOrderStateManager;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\ReturnOrderStateManager;
 use InvalidArgumentException;
@@ -20,21 +20,28 @@ use InvalidArgumentException;
  * Class OrderStateManagerFactory
  * @package Wirecard\ExtensionOrderStateModule\Domain\Factory
  */
-class OrderStateManagerFactory
+class ProcessHandlerFactory
 {
     /**
-     * @var InputDataTransferObject
+     * @var string
      */
-    private $input;
-    /**
-     * @var OrderStateMapper
-     */
-    private $mapper;
+    private $processType;
 
-    public function __construct(InputDataTransferObject $input, OrderStateMapper $mapper)
+    /**
+     * @var ProcessData
+     */
+    private $processData;
+
+    /**
+     * OrderStateManagerFactory constructor.
+     * @param InputDataTransferObject $input
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function __construct(InputDataTransferObject $input)
     {
-        $this->input = $input;
-        $this->mapper = $mapper;
+        $this->processType = $input->getProcessType();
+        $this->processData = (new ProcessDataFactory())->create($input);
     }
 
     /**
@@ -43,13 +50,13 @@ class OrderStateManagerFactory
      */
     public function create()
     {
-        switch ($this->input->getProcessType()) {
+        switch ($this->processType) {
             case Constant::PROCESS_TYPE_NOTIFICATION:
                 return new NotificationOrderStateManager();
             case Constant::PROCESS_TYPE_RETURN:
-                return new ReturnOrderStateManager($this->mapper, $this->input);
+                return new ReturnOrderStateManager($this->processData);
             default:
-                throw new InvalidArgumentException("Invalid process type: {$this->input->getProcessType()}");
+                throw new InvalidArgumentException("Invalid process type: {$this->processType}");
         }
     }
 }

@@ -5,23 +5,27 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InputAdapterDTO;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateManager;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 
 /**
  * Class ReturnOrderStateManager
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment
  */
-class ReturnOrderStateManager implements OrderStateManager
+class ReturnOrderStateManager
 {
     /**
-     * @var InputAdapterDTO
+     * @var ProcessData
      */
-    private $internalInput;
+    private $processData;
+
+    public function __construct(ProcessData $processData)
+    {
+        $this->processData = $processData;
+    }
 
     /**
      * @return bool
@@ -29,8 +33,8 @@ class ReturnOrderStateManager implements OrderStateManager
      */
     private function isStartedDebit()
     {
-        return $this->internalInput->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
-            $this->internalInput->getTransactionType()->equalsTo(new TransactionType(Constant::TRANSACTION_TYPE_DEBIT));
+        return $this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
+            $this->processData->getTransactionType()->equalsTo(new TransactionType(Constant::TRANSACTION_TYPE_DEBIT));
     }
 
     /**
@@ -39,8 +43,8 @@ class ReturnOrderStateManager implements OrderStateManager
      */
     private function isStartedPayment()
     {
-        return $this->internalInput->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
-            $this->internalInput->getTransactionType()->inSet([
+        return $this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
+            $this->processData->getTransactionType()->inSet([
                 Constant::TRANSACTION_TYPE_PURCHASE,
                 Constant::TRANSACTION_TYPE_AUTHORIZE,
             ]);
@@ -52,8 +56,8 @@ class ReturnOrderStateManager implements OrderStateManager
      */
     private function isPendingPurchase()
     {
-        return $this->internalInput->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_PENDING)) &&
-            $this->internalInput->getTransactionType()->equalsTo(
+        return $this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_PENDING)) &&
+            $this->processData->getTransactionType()->equalsTo(
                 new TransactionType(Constant::TRANSACTION_TYPE_PURCHASE)
             );
     }
@@ -64,20 +68,22 @@ class ReturnOrderStateManager implements OrderStateManager
      */
     private function isPendingAuthorization()
     {
-        return $this->internalInput->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_PENDING)) &&
-            $this->internalInput->getTransactionType()->equalsTo(
+        return $this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_PENDING)) &&
+            $this->processData->getTransactionType()->equalsTo(
                 new TransactionType(Constant::TRANSACTION_TYPE_AUTHORIZE)
             );
     }
 
     /**
+     * @param InputDataTransferObject $input
+     * @param OrderStateMapper $mapper
      * @return OrderState
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
-    private function calculateOrderState()
+    public function handle()
     {
-        if ($this->internalInput->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_FAILED)) ||
-            $this->internalInput->getTransactionState()->equalsTo(
+        if ($this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_FAILED)) ||
+            $this->processData->getTransactionState()->equalsTo(
                 new TransactionState(Constant::TRANSACTION_STATE_FAILURE)
             )) {
             return new OrderState(Constant::ORDER_STATE_FAILED);
@@ -98,41 +104,5 @@ class ReturnOrderStateManager implements OrderStateManager
         if ($this->isPendingAuthorization()) {
             return new OrderState(Constant::ORDER_STATE_AUTHORIZED);
         }
-    }
-
-//    /**
-//     * @param OrderStateValueObject $orderState
-//     * @param OrderStateMapper $mapper
-//     * @return string
-//     * @throws \Exception
-//     */
-//    public function toExternal(OrderStateValueObject $orderState, OrderStateMapper $mapper)
-//    {
-//        $foundType = null;
-//        foreach ($mapper->map() as $externalType => $orderStateVO) {
-//            if ($orderState->equalsTo($orderStateVO)) {
-//                $foundType = $externalType;
-//                break;
-//            }
-//        }
-//
-//        if (null === $foundType) {
-//            throw new \Exception("{$orderState} isn't defined in mapper!");
-//        }
-//
-//        return $foundType;
-//    }
-
-    /**
-     * @param InputDataTransferObject $input
-     * @param OrderStateMapper $mapper
-     * @return string
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     */
-    public function process(InputDataTransferObject $input, OrderStateMapper $mapper)
-    {
-        $this->internalInput = new InputAdapterDTO($input);
-        $orderState = $this->calculateOrderState();
-        return $orderState;
     }
 }

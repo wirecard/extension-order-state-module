@@ -16,12 +16,24 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Registry;
 trait DataRegistry
 {
     /**
-     * @param $state
+     * @param string $state
      * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @since 1.0.0
      */
     public function fromOrderStateRegistry($state)
     {
         return OrderStateDataRegistry::getInstance()->get($state);
+    }
+
+    /**
+     * @param string $type
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @since 1.0.0
+     */
+    public function fromTransactionTypeRegistry($type)
+    {
+        return TransactionTypeDataRegistry::getInstance()->get($type);
     }
 }

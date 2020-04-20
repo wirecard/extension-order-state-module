@@ -10,6 +10,7 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 
 /**
  * Interface OrderStateManager
@@ -24,5 +25,5 @@ interface OrderStateManager
      * @return OrderState
      * @since 1.0.0
      */
-    public function process(InputDataTransferObject $input, OrderStateMapper $mapper);
+    public function process(ProcessData $processData);
 }

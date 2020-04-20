@@ -9,7 +9,7 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Application\Service;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Factory\OrderStateManagerFactory;
+use Wirecard\ExtensionOrderStateModule\Domain\Factory\ProcessHandlerFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 
@@ -38,12 +38,15 @@ class OrderState
      * @param InputDataTransferObject $data
      * @return mixed
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function process(InputDataTransferObject $data)
     {
+        // Create process data from input
         //process calculates the next state
-        $manager = (new OrderStateManagerFactory($data, $this->mapper))->create();
-        $orderState = $manager->process($data, $this->mapper);
+        $processHandler = (new ProcessHandlerFactory($data))->create();
+        $orderState = $processHandler->handle();
+        // Output interface implementation
         return $this->mapper->toExternal($orderState);
     }
 }
