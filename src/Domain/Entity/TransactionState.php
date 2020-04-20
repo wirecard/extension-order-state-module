@@ -7,19 +7,20 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 
 /**
- * Class OrderState
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities
+ * Class TransactionState
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
  */
-class OrderState extends ConstantStringValueObject
+class TransactionState extends ConstantStringValueObject
 {
     /**
      * @return array
+     * @since 1.0.0
      */
     public function possibleValueSet()
     {
-        return Constant::getOrderStates();
+        return Constant::getTransactionStates();
     }
 }

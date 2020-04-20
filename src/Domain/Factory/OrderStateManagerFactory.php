@@ -7,18 +7,18 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Factories;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Factory;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment\NotificationOrderStateManager;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment\ReturnOrderStateManager;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\NotificationOrderStateManager;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\ReturnOrderStateManager;
 use InvalidArgumentException;
 
 /**
  * Class OrderStateManagerFactory
- * @package Wirecard\ExtensionOrderStateModule\Domain\Factories
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Factory
  */
 class OrderStateManagerFactory
 {

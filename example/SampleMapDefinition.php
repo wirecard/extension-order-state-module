@@ -3,8 +3,8 @@
 
 namespace example;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\MapDefinition;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\MapDefinition;
 
 class SampleMapDefinition implements MapDefinition
 {

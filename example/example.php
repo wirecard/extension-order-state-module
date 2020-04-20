@@ -11,7 +11,7 @@ require_once $pwd . DIRECTORY_SEPARATOR . 'SampleInputDTO.php';
 
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 
 $orderStateService = new OrderState(new GenericOrderStateMapper(new SampleMapDefinition()));
 

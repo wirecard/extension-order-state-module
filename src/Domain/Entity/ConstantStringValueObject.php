@@ -7,13 +7,13 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException;
 
 /**
  * Class StringValueObject
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
  */
 abstract class ConstantStringValueObject extends StringValueObject
 {

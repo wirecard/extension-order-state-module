@@ -7,12 +7,13 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
 /**
- * Class Returned
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType
+ * Class InvalidValueObjectException
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
  */
-class Returned
+class InvalidValueObjectException extends \Exception
 {
+
 }

@@ -9,8 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Registry;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
 
 /**
  * Class TransactionTypeDataRegistry
@@ -21,7 +21,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType;
 class TransactionTypeDataRegistry extends AbstractDataRegistry
 {
     /**
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     protected function init()
     {

@@ -9,7 +9,7 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Registry;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Exceptions\NotInRegistryException;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException;
 
 /**
  * Class AbstractRegistry

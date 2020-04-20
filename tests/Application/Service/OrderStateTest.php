@@ -5,14 +5,14 @@ namespace Wirecard\Test\Application\Service;
 
 use PHPUnit\Framework\TestCase;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\Authorized;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\Failed;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\Pending;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\Processing;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState\Started;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Authorized;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Failed;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Pending;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Processing;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Started;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 
 /**
  * Class ConfigFactoryTest

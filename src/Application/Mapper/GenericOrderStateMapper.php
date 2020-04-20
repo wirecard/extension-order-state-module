@@ -9,9 +9,9 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Application\Mapper;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\MapDefinition;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\MapDefinition;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\OrderStateDataRegistry;
 
 /**
@@ -33,8 +33,8 @@ class GenericOrderStateMapper implements OrderStateMapper
     /**
      * GenericOrderStateMapper constructor.
      * @param MapDefinition $definition
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @since 1.0.0
      */
     public function __construct(MapDefinition $definition)
@@ -45,8 +45,8 @@ class GenericOrderStateMapper implements OrderStateMapper
 
     /**
      * @return array
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function map()
     {
@@ -61,8 +61,8 @@ class GenericOrderStateMapper implements OrderStateMapper
     /**
      * @param OrderState $state
      * @return string
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function toEternal(OrderState $state)
     {

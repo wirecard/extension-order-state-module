@@ -7,12 +7,13 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
 /**
- * Class Notification
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities\ProcessType
+ * Class NotInRegistryException
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
  */
-class Notification
+class NotInRegistryException extends \Exception
 {
+
 }

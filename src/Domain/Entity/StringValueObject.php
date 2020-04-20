@@ -7,13 +7,13 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\ValueObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\ValueObject;
 
 /**
  * Class StringValueObject
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
  */
 abstract class StringValueObject implements ValueObject
 {

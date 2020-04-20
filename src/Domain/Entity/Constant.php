@@ -7,11 +7,11 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entities;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 
 /**
  * Class Constant
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
  */
 class Constant
 {

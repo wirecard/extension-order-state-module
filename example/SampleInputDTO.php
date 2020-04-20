@@ -3,7 +3,7 @@
 
 namespace example;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 
 class SampleInputDTO implements InputDataTransferObject
 {

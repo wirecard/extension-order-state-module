@@ -9,9 +9,9 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Application\Service;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Factories\OrderStateManagerFactory;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Factory\OrderStateManagerFactory;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 
 /**
  * Class OrderState

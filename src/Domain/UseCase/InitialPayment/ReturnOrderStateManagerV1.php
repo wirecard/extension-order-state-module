@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCases\InputAdapterDTO;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateManager;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCases\OrderStateWrapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InputAdapterDTO;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateManager;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\OrderStateWrapper;
 
 class ReturnOrderStateManagerV1 implements OrderStateManager
 {

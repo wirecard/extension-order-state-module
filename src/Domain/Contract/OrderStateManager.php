@@ -7,13 +7,13 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Interfaces;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 
 /**
  * Interface OrderStateManager
- * @package Wirecard\ExtensionOrderStateModule\Domain\Interfaces
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Contract
  */
 interface OrderStateManager
 {

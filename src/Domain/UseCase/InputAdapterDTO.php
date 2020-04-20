@@ -7,16 +7,16 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCases;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 
 /**
  * Class InputAdapterDTO
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entities\UseCases
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity\UseCase
  */
 class InputAdapterDTO
 {
@@ -36,7 +36,7 @@ class InputAdapterDTO
     /**
      * InputAdapterDTO constructor.
      * @param InputDataTransferObject $input
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @since 1.0.0
      */
     public function __construct(InputDataTransferObject $input)

@@ -1,20 +1,20 @@
 <?php
 
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\TransactionType;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCases\InputAdapterDTO;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateManager;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InputAdapterDTO;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateManager;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 
 /**
  * Class ReturnOrderStateManager
- * @package Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment
+ * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment
  */
 class ReturnOrderStateManager implements OrderStateManager
 {
@@ -25,7 +25,7 @@ class ReturnOrderStateManager implements OrderStateManager
 
     /**
      * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     private function isStartedDebit()
     {
@@ -35,7 +35,7 @@ class ReturnOrderStateManager implements OrderStateManager
 
     /**
      * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     private function isStartedPayment()
     {
@@ -48,7 +48,7 @@ class ReturnOrderStateManager implements OrderStateManager
 
     /**
      * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     private function isPendingPurchase()
     {
@@ -60,7 +60,7 @@ class ReturnOrderStateManager implements OrderStateManager
 
     /**
      * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     private function isPendingAuthorization()
     {
@@ -72,7 +72,7 @@ class ReturnOrderStateManager implements OrderStateManager
 
     /**
      * @return OrderState
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     private function calculateOrderState()
     {
@@ -127,7 +127,7 @@ class ReturnOrderStateManager implements OrderStateManager
      * @param InputDataTransferObject $input
      * @param OrderStateMapper $mapper
      * @return string
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     public function process(InputDataTransferObject $input, OrderStateMapper $mapper)
     {

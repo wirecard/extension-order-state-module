@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCases\InitialPayment;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateManager;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateManager;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 
 class NotificationOrderStateManager implements OrderStateManager
 {

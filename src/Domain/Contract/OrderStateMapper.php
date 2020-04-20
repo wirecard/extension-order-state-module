@@ -7,14 +7,17 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Interfaces;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 
-/**
- * Interface OrderStateMapDefinition
- * @package Wirecard\ExtensionOrderStateModule\Domain\Interfaces
- */
-interface MapDefinition
+interface OrderStateMapper
 {
+    /**
+     * OrderStateMapper constructor.
+     * @param MapDefinition $definition
+     * @since 1.0.0
+     */
+    public function __construct(MapDefinition $definition);
+
     /**
      * @return array
      * @since 1.0.0

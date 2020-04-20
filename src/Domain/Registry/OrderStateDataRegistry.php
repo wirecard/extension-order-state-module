@@ -9,8 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Registry;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 
 /**
  * Class OrderStateRegistry
@@ -22,7 +22,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
 class OrderStateDataRegistry extends AbstractDataRegistry
 {
     /**
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exceptions\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */
     protected function init()
     {

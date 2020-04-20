@@ -7,11 +7,11 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCases;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entities\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Interfaces\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\OrderStateDataRegistry;
 
 class OrderStateWrapper

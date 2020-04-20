@@ -7,20 +7,20 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Interfaces;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 
-interface OrderStateMapper
+/**
+ * Class TransactionType
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ */
+class TransactionType extends ConstantStringValueObject
 {
-    /**
-     * OrderStateMapper constructor.
-     * @param MapDefinition $definition
-     * @since 1.0.0
-     */
-    public function __construct(MapDefinition $definition);
-
     /**
      * @return array
      * @since 1.0.0
      */
-    public function map();
+    public function possibleValueSet()
+    {
+        return Constant::getTransactionTypes();
+    }
 }
