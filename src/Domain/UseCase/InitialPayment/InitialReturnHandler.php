@@ -1,13 +1,16 @@
 <?php
-
+/**
+ * Shop System Extensions:
+ * - Terms of Use can be found at:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
+ */
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
-
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturn\Failed;
 
 /**
  * Class ReturnOrderStateManager
@@ -16,16 +19,12 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
 class InitialReturnHandler extends AbstractProcessHandler
 {
     /**
-     * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @return AbstractProcessHandler|null
+     * @since 1.0.0
      */
-    private function isStartedPayment()
+    protected function getNextHandler()
     {
-        return $this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
-            $this->processData->getTransactionType()->inSet([
-                Constant::TRANSACTION_TYPE_PURCHASE,
-                Constant::TRANSACTION_TYPE_AUTHORIZE,
-            ]);
+        return new Failed($this->processData);
     }
 
     /**
@@ -33,24 +32,6 @@ class InitialReturnHandler extends AbstractProcessHandler
      * @since 1.0.0
      */
     protected function calculate()
-    {
-        if ($this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_FAILED)) ||
-            $this->processData->getTransactionState()->equalsTo(
-                new TransactionState(Constant::TRANSACTION_STATE_FAILURE)
-            )) {
-            return new OrderState(Constant::ORDER_STATE_FAILED);
-        }
-
-        if ($this->isStartedPayment()) {
-            return new OrderState(Constant::ORDER_STATE_PENDING);
-        }
-    }
-
-    /**
-     * @return AbstractProcessHandler|null
-     * @since 1.0.0
-     */
-    protected function getNextHandler()
     {
         return null;
     }
