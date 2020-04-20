@@ -48,13 +48,4 @@ class MappedOrderState
     {
         return $this->internalState;
     }
-
-    /**
-     * @param OrderState $state
-     * @return bool
-     */
-    public function internalStateEqualsTo(OrderState $state)
-    {
-        return $this->getInternalState()->equalsTo($state);
-    }
 }
