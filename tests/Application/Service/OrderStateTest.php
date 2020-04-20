@@ -4,15 +4,11 @@
 namespace Wirecard\Test\Application\Service;
 
 use PHPUnit\Framework\TestCase;
+use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\MapDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Authorized;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Failed;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Pending;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Processing;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState\Started;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 
 /**
  * Class ConfigFactoryTest
@@ -29,13 +25,13 @@ class OrderStateTest extends TestCase
     const EXTERNAL_ORDER_STATE_PROCESSING = "processing";
     const EXTERNAL_ORDER_STATE_FAILED = "failed";
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject | OrderStateMapper */
-    private $mapper;
+    /** @var \PHPUnit_Framework_MockObject_MockObject | MapDefinition */
+    private $mapDefinition;
 
     protected function setUp()
     {
-        $this->mapper = $this->getMockBuilder(OrderStateMapper::class)->setMethods(['map'])->getMock();
-        $this->mapper->expects($this->any())->method('map')->willReturn($this->getSampleMapper());
+        $this->mapDefinition = $this->getMockBuilder(MapDefinition::class)->setMethods(['map'])->getMock();
+        $this->mapDefinition->expects($this->any())->method('map')->willReturn($this->getSampleMapper());
     }
 
     /**
@@ -44,11 +40,11 @@ class OrderStateTest extends TestCase
     private function getSampleMapper()
     {
         return [
-            self::EXTERNAL_ORDER_STATE_STARTED => new Started(),
-            self::EXTERNAL_ORDER_STATE_PENDING => new Pending(),
-            self::EXTERNAL_ORDER_STATE_FAILED => new Failed(),
-            self::EXTERNAL_ORDER_STATE_AUTHORIZED => new Authorized(),
-            self::EXTERNAL_ORDER_STATE_PROCESSING => new Processing(),
+            self::EXTERNAL_ORDER_STATE_STARTED => Constant::ORDER_STATE_STARTED,
+            self::EXTERNAL_ORDER_STATE_PENDING => Constant::ORDER_STATE_PENDING,
+            self::EXTERNAL_ORDER_STATE_FAILED => Constant::ORDER_STATE_FAILED,
+            self::EXTERNAL_ORDER_STATE_AUTHORIZED => Constant::ORDER_STATE_AUTHORIZED,
+            self::EXTERNAL_ORDER_STATE_PROCESSING => Constant::ORDER_STATE_PROCESSING,
         ];
     }
 
@@ -60,7 +56,7 @@ class OrderStateTest extends TestCase
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_DEBIT,
             Constant::ORDER_STATE_STARTED,
-            self::EXTERNAL_ORDER_STATE_PROCESSING
+            self::EXTERNAL_ORDER_STATE_STARTED
         ];
 
         yield [
@@ -72,15 +68,15 @@ class OrderStateTest extends TestCase
         ];
 
         yield [
-            Constant::PROCESS_TYPE_RETURN,
+            Constant::PROCESS_TYPE_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::TRANSACTION_TYPE_DEBIT,
             Constant::ORDER_STATE_STARTED,
-            self::EXTERNAL_ORDER_STATE_PENDING
+            self::EXTERNAL_ORDER_STATE_PROCESSING
         ];
 
         yield [
-            Constant::PROCESS_TYPE_RETURN,
+            Constant::PROCESS_TYPE_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_PURCHASE,
             Constant::ORDER_STATE_PENDING,
@@ -88,7 +84,7 @@ class OrderStateTest extends TestCase
         ];
 
         yield [
-            Constant::PROCESS_TYPE_RETURN,
+            Constant::PROCESS_TYPE_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_AUTHORIZE,
             Constant::ORDER_STATE_PENDING,
@@ -107,11 +103,14 @@ class OrderStateTest extends TestCase
      * @param string $transactionType
      * @param string $currentOrderState
      * @param string $expectedState
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidProcessTypeException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
     {
-        $orderStateService = new OrderState($this->mapper);
+        $mapper = new GenericOrderStateMapper($this->mapDefinition);
+        $orderStateService = new OrderState($mapper);
 
         /** @var InputDataTransferObject | \PHPUnit_Framework_MockObject_MockObject $inputDTO */
         $inputDTO = $this->getMockBuilder(InputDataTransferObject::class)->setMethods([

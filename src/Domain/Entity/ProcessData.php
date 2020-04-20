@@ -39,8 +39,7 @@ class ProcessData implements ValueObject
         OrderState $orderState,
         TransactionType $transactionType,
         TransactionState $transactionState
-    )
-    {
+    ) {
         $this->orderState = $orderState;
         $this->transactionType = $transactionType;
         $this->transactionState = $transactionState;

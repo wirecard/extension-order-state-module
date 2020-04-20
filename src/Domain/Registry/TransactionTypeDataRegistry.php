@@ -44,5 +44,4 @@ class TransactionTypeDataRegistry extends AbstractDataRegistry
             $this->attach($key, new TransactionType($key));
         }
     }
-
 }
