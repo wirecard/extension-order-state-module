@@ -16,11 +16,26 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
  * Class OrderStateRegistry
  * @package Wirecard\ExtensionOrderStateModule\Domain\Registry
  *
- * @method static OrderStateDataRegistry getInstance()
  * @method OrderState get(string $key)
  */
 class OrderStateDataRegistry extends AbstractDataRegistry
 {
+    /**
+     * @var OrderStateDataRegistry
+     */
+    protected static $instance;
+
+    /**
+     * @return OrderStateDataRegistry
+     */
+    public static function getInstance()
+    {
+        if (null === self::$instance) {
+            static::$instance = new self();
+        }
+        return static::$instance;
+    }
+
     /**
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      */

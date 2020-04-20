@@ -18,11 +18,6 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException;
 abstract class AbstractDataRegistry
 {
     /**
-     * @var null|self
-     */
-    private static $instance = null;
-
-    /**
      * @var array
      */
     protected $container = [];
@@ -39,26 +34,7 @@ abstract class AbstractDataRegistry
     /**
      * @since 1.0.0
      */
-    private function __clone()
-    {
-    }
-
-    /**
-     * @since 1.0.0
-     */
     abstract protected function init();
-
-    /**
-     * @return AbstractDataRegistry
-     * @since 1.0.0
-     */
-    public static function getInstance()
-    {
-        if (null === static::$instance) {
-            static::$instance = new static();
-        }
-        return static::$instance;
-    }
 
     /**
      * @param string $key

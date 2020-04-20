@@ -133,6 +133,6 @@ class ReturnOrderStateManager implements OrderStateManager
     {
         $this->internalInput = new InputAdapterDTO($input);
         $orderState = $this->calculateOrderState();
-        return (string)$orderState;
+        return $orderState;
     }
 }

@@ -34,10 +34,16 @@ class OrderState
         $this->mapper = $mapper;
     }
 
+    /**
+     * @param InputDataTransferObject $data
+     * @return mixed
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     */
     public function process(InputDataTransferObject $data)
     {
         //process calculates the next state
         $manager = (new OrderStateManagerFactory($data, $this->mapper))->create();
-        return $manager->process($data, $this->mapper);
+        $orderState = $manager->process($data, $this->mapper);
+        return $this->mapper->toExternal($orderState);
     }
 }

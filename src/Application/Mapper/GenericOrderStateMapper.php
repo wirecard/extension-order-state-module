@@ -9,10 +9,12 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Application\Mapper;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\ValueObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\MapDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
-use Wirecard\ExtensionOrderStateModule\Domain\Registry\OrderStateDataRegistry;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\MapReferenceNotFound;
+use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 
 /**
  * Class GenericOrderStateMapper
@@ -20,13 +22,15 @@ use Wirecard\ExtensionOrderStateModule\Domain\Registry\OrderStateDataRegistry;
  */
 class GenericOrderStateMapper implements OrderStateMapper
 {
+    use DataRegistry;
+
     /**
      * @var MapDefinition
      */
     private $definition;
 
     /**
-     * @var array
+     * @var array|MappedOrderState[]
      */
     private $map = [];
 
@@ -40,45 +44,42 @@ class GenericOrderStateMapper implements OrderStateMapper
     public function __construct(MapDefinition $definition)
     {
         $this->definition = $definition;
-        $this->map();
     }
 
     /**
-     * @return array
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @return array|MappedOrderState[]
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function map()
     {
-        if (!empty($this->map)) {
+        if (empty($this->map)) {
             foreach ($this->definition->map() as $externalState => $internalState) {
-                $this->map[] = [OrderStateDataRegistry::getInstance()->get($internalState), $externalState];
+                $this->map[] = new MappedOrderState($this->fromOrderStateRegistry($internalState), $externalState);
             }
         }
         return $this->map;
     }
 
     /**
-     * @param OrderState $state
+     * @param OrderState|ValueObject $state
      * @return string
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws MapReferenceNotFound
      */
-    public function toEternal(OrderState $state)
+    public function toExternal(ValueObject $state)
     {
-        $resultExternalState = "";
-        foreach ($this->map() as $state) {
-            /** @var OrderState $internal */
-            list($internal, $external) = $state;
-            if ($state->equalsTo($internal)) {
-                $resultExternalState = $external;
+        $newExternalState = null;
+        foreach ($this->map() as $mappedState) {
+            if ($mappedState->getInternalState()->equalsTo($state)) {
+                $newExternalState = $mappedState->getExternalState();
                 break;
             }
         }
 
-        if (!strlen($resultExternalState)) {
-            throw new \Exception("There is not found mapping for {$state}");
+        if (is_null($newExternalState)) {
+            throw new MapReferenceNotFound("There is not found mapping for {$state}");
         }
-        return $resultExternalState;
+        return $newExternalState;
     }
 }

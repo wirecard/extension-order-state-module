@@ -23,4 +23,11 @@ interface OrderStateMapper
      * @since 1.0.0
      */
     public function map();
+
+    /**
+     * @param ValueObject $state
+     * @return mixed
+     * @since 1.0.0
+     */
+    public function toExternal(ValueObject $state);
 }
