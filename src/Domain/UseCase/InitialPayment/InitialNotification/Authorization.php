@@ -34,10 +34,10 @@ class Authorization extends InitialNotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->orderInState(Constant::ORDER_STATE_PENDING) &&
-            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_AUTHORIZE)) {
+        if ($this->processData->transactionInType(Constant::TRANSACTION_TYPE_AUTHORIZE)) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_AUTHORIZED);
         }
+
         return $result;
     }
 }

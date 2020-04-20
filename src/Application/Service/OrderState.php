@@ -11,6 +11,7 @@ namespace Wirecard\ExtensionOrderStateModule\Application\Service;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Factory\ProcessDataFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Service\ProcessHandlerService;
 
 /**
@@ -36,16 +37,15 @@ class OrderState
 
     /**
      * @param InputDataTransferObject $data
-     * @return mixed
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidProcessTypeException
+     * @return mixed|int|string
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException
+     * @todo: create interface for return type
      */
     public function process(InputDataTransferObject $data)
     {
-        // Create process data from input
-        //process calculates the next state
-        $orderState = (new ProcessHandlerService($data))->handle();
+        $processData = (new ProcessDataFactory())->create($data);
+        $orderState = (new ProcessHandlerService($data->getProcessType(), $processData))->handle();
         return $this->mapper->toExternal($orderState);
     }
 }

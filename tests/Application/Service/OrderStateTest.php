@@ -6,7 +6,7 @@ namespace Wirecard\Test\Application\Service;
 use PHPUnit\Framework\TestCase;
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\MapDefinition;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 
@@ -25,7 +25,7 @@ class OrderStateTest extends TestCase
     const EXTERNAL_ORDER_STATE_PROCESSING = "processing";
     const EXTERNAL_ORDER_STATE_FAILED = "failed";
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject | MapDefinition */
+    /** @var \PHPUnit_Framework_MockObject_MockObject | MappingDefinition */
     private $mapDefinition;
 
     /**
@@ -39,8 +39,8 @@ class OrderStateTest extends TestCase
      */
     protected function setUp()
     {
-        $this->mapDefinition = $this->getMockBuilder(MapDefinition::class)->setMethods(['map'])->getMock();
-        $this->mapDefinition->expects($this->any())->method('map')->willReturn($this->getSampleMapper());
+        $this->mapDefinition = $this->getMockBuilder(MappingDefinition::class)->setMethods(['definitions'])->getMock();
+        $this->mapDefinition->expects($this->any())->method('definitions')->willReturn($this->getSampleMapper());
         $this->orderState = new OrderState(new GenericOrderStateMapper($this->mapDefinition));
     }
 
@@ -66,7 +66,7 @@ class OrderStateTest extends TestCase
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_DEBIT,
             Constant::ORDER_STATE_STARTED,
-            self::EXTERNAL_ORDER_STATE_STARTED
+            self::EXTERNAL_ORDER_STATE_PENDING
         ];
 
         yield [
@@ -113,9 +113,8 @@ class OrderStateTest extends TestCase
      * @param string $transactionType
      * @param string $currentOrderState
      * @param string $expectedState
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidProcessTypeException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
      */
     public function testProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
     {

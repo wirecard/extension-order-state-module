@@ -12,6 +12,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 /**
  * Interface ValueObject
  * @package Wirecard\ExtensionOrderStateModule\Domain\Contract
+ * @since 1.0.0
  */
 interface ValueObject
 {

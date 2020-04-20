@@ -13,7 +13,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
  * Class NotInRegistryException
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
  */
-class MapReferenceNotFound extends \Exception
+class MapReferenceNotFound extends OrderStateInvalidArgumentException
 {
 
 }

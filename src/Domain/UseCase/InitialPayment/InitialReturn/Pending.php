@@ -26,10 +26,8 @@ class Pending extends InitialReturnHandler
     {
         $result = parent::calculate();
         if ($this->processData->orderInState(Constant::ORDER_STATE_STARTED) &&
-            $this->processData->transactionTypeInRange([
-                Constant::TRANSACTION_TYPE_PURCHASE,
-                Constant::TRANSACTION_TYPE_AUTHORIZE,
-            ])) {
+            $this->processData->transactionInState(Constant::TRANSACTION_STATE_SUCCESS)
+        ) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PENDING);
         }
 

@@ -12,6 +12,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 /**
  * Class Constant
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ * @since 1.0.0
  */
 class Constant
 {
@@ -31,6 +32,7 @@ class Constant
     const TRANSACTION_TYPE_AUTHORIZE = "authorization";
     const TRANSACTION_TYPE_DEBIT = "debit";
     const TRANSACTION_TYPE_PURCHASE = "purchase";
+    const TRANSACTION_TYPE_DEPOSIT = "deposit";
 
     /**
      * @return array
@@ -49,7 +51,6 @@ class Constant
 
     /**
      * @return array
-     * @since 1.0.0
      */
     public static function getTransactionTypes()
     {
@@ -62,7 +63,6 @@ class Constant
 
     /**
      * @return array
-     * @since 1.0.0
      */
     public static function getTransactionStates()
     {

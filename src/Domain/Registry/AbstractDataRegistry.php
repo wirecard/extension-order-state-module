@@ -59,7 +59,7 @@ abstract class AbstractDataRegistry
      */
     public function get($key)
     {
-        if (false === isset($this->container[$key])) {
+        if (!isset($this->container[$key])) {
             throw new NotInRegistryException("Reference [{$key}] isn't registered in scope");
         }
         return $this->container[$key];

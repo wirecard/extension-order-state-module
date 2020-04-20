@@ -1,19 +1,25 @@
 <?php
+/**
+ * Shop System Extensions:
+ * - Terms of Use can be found at:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
+ */
 
-
-namespace example;
+namespace Wirecard\ExtensionOrderStateModule\Example;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\MapDefinition;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 
-class SampleMapDefinition implements MapDefinition
+class SampleMappingDefinition implements MappingDefinition
 {
 
     /**
      * @return array
      * @since 1.0.0
      */
-    public function map()
+    public function definitions()
     {
         return [
             "started_external" => Constant::ORDER_STATE_STARTED,

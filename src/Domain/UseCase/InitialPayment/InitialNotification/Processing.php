@@ -30,24 +30,26 @@ class Processing extends InitialNotificationHandler
     /**
      * @return bool
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @since 1.0.0
      */
-    private function isStartedDebit()
+    private function isSuccessTransaction()
     {
-        return $this->processData->orderInState(Constant::ORDER_STATE_STARTED) &&
-            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_DEBIT);
+        return $this->processData->transactionInState(Constant::TRANSACTION_STATE_SUCCESS);
     }
 
     /**
      * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @since 1.0.0
      */
-    private function isPendingPurchase()
+    private function isAllowedTransactionType()
     {
-        return $this->processData->orderInState(Constant::ORDER_STATE_PENDING) &&
-            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_PURCHASE);
+        return $this->processData->transactionTypeInRange([
+            Constant::TRANSACTION_TYPE_DEBIT,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::TRANSACTION_TYPE_DEPOSIT,
+        ]);
     }
+
 
     /**
      * @inheritDoc
@@ -56,7 +58,7 @@ class Processing extends InitialNotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->isStartedDebit() || $this->isPendingPurchase()) {
+        if ($this->isSuccessTransaction() && $this->isAllowedTransactionType()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PROCESSING);
         }
 

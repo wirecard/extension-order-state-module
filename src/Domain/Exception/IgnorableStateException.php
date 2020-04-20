@@ -7,17 +7,9 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
-/**
- * Interface OrderStateMapDefinition
- * @package Wirecard\ExtensionOrderStateModule\Domain\Contract
- */
-interface MapDefinition
+class IgnorableStateException extends \Exception
 {
-    /**
-     * @return array
-     * @since 1.0.0
-     */
-    public function map();
+
 }

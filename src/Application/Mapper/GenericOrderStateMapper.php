@@ -9,9 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Application\Mapper;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\ValueObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\MapDefinition;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\MapReferenceNotFound;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
@@ -19,15 +18,16 @@ use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 /**
  * Class GenericOrderStateMapper
  * @package Wirecard\ExtensionOrderStateModule\Application\Mapper
+ * @since 1.0.0
  */
 class GenericOrderStateMapper implements OrderStateMapper
 {
     use DataRegistry;
 
     /**
-     * @var MapDefinition
+     * @var MappingDefinition
      */
-    private $definition;
+    private $mappingDefinition;
 
     /**
      * @var array|MappedOrderState[]
@@ -36,14 +36,14 @@ class GenericOrderStateMapper implements OrderStateMapper
 
     /**
      * GenericOrderStateMapper constructor.
-     * @param MapDefinition $definition
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @param MappingDefinition $definition
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @since 1.0.0
      */
-    public function __construct(MapDefinition $definition)
+    public function __construct(MappingDefinition $definition)
     {
-        $this->definition = $definition;
+        $this->mappingDefinition = $definition;
+        $this->map();
     }
 
     /**
@@ -53,7 +53,7 @@ class GenericOrderStateMapper implements OrderStateMapper
     public function map()
     {
         if (empty($this->map)) {
-            foreach ($this->definition->map() as $externalState => $internalState) {
+            foreach ($this->mappingDefinition->definitions() as $externalState => $internalState) {
                 $this->map[] = new MappedOrderState($this->fromOrderStateRegistry($internalState), $externalState);
             }
         }
@@ -61,13 +61,12 @@ class GenericOrderStateMapper implements OrderStateMapper
     }
 
     /**
-     * @param OrderState|ValueObject $state
+     * @param OrderState $state
      * @return string
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws MapReferenceNotFound
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
-    public function toExternal(ValueObject $state)
+    public function toExternal(OrderState $state)
     {
         $newExternalState = null;
         foreach ($this->map() as $mappedState) {

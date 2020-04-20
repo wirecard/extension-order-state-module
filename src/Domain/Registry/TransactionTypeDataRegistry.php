@@ -16,6 +16,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
  * Class TransactionTypeDataRegistry
  * @package Wirecard\ExtensionOrderStateModule\Domain\Registry
  * @method TransactionType get(string $key)
+ * @since 1.0.0
  */
 class TransactionTypeDataRegistry extends AbstractDataRegistry
 {

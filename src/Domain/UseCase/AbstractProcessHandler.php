@@ -15,6 +15,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 /**
  * Class AbstractProcessHandler
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase
+ * @since 1.0.0
  */
 abstract class AbstractProcessHandler
 {

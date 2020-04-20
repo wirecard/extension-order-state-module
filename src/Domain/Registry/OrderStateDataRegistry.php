@@ -17,6 +17,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
  * @package Wirecard\ExtensionOrderStateModule\Domain\Registry
  *
  * @method OrderState get(string $key)
+ * @since 1.0.0
  */
 class OrderStateDataRegistry extends AbstractDataRegistry
 {

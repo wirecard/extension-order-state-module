@@ -14,12 +14,13 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectExcept
 /**
  * Class StringValueObject
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ * @since 1.0.0
  */
 abstract class ConstantStringValueObject extends StringValueObject
 {
     /**
      * StringSetValueObject constructor.
-     * @param $value
+     * @param string $value
      * @throws InvalidValueObjectException
      */
     public function __construct($value)
@@ -31,7 +32,6 @@ abstract class ConstantStringValueObject extends StringValueObject
     /**
      * @param array $values
      * @return bool
-     * @since 1.0.0
      */
     public function inSet(array $values)
     {
@@ -51,7 +51,6 @@ abstract class ConstantStringValueObject extends StringValueObject
 
     /**
      * @return array
-     * @since 1.0.0
      */
     abstract public function possibleValueSet();
 }

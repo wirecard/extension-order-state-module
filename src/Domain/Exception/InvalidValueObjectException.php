@@ -13,7 +13,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
  * Class InvalidValueObjectException
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
  */
-class InvalidValueObjectException extends \Exception
+class InvalidValueObjectException extends OrderStateInvalidArgumentException
 {
 
 }

@@ -12,27 +12,27 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 /**
  * Interface InputDataTransferObject
  * @package Wirecard\ExtensionOrderStateModule\Domain\Contract
+ * @since 1.0.0
  */
 interface InputDataTransferObject
 {
     /**
      * @return string
-     * @since 1.0.0
      */
     public function getProcessType();
+
     /**
      * @return string
-     * @since 1.0.0
      */
     public function getTransactionState();
+
     /**
      * @return string
-     * @since 1.0.0
      */
     public function getTransactionType();
+
     /**
      * @return string
-     * @since 1.0.0
      */
     public function getCurrentOrderState();
 }

@@ -1,20 +1,22 @@
 <?php
+/**
+ * Shop System Extensions:
+ * - Terms of Use can be found at:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
+ */
 
-namespace example;
+namespace Wirecard\ExtensionOrderStateModule\Example;
 
-ini_set("display_errors", true);
-
-$pwd = dirname(__FILE__);
-require_once  dirname($pwd) . "/vendor/autoload.php";
-require_once $pwd . DIRECTORY_SEPARATOR . 'SampleMapDefinition.php';
-require_once $pwd . DIRECTORY_SEPARATOR . 'SampleInputDTO.php';
+require_once  dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 
 try {
-    $orderStateService = new OrderState(new GenericOrderStateMapper(new SampleMapDefinition()));
+    $orderStateService = new OrderState(new GenericOrderStateMapper(new SampleMappingDefinition()));
 
     // Processing
     $inputDTO = new SampleInputDTO();

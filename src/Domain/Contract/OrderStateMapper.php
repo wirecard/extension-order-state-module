@@ -9,14 +9,16 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
+
 interface OrderStateMapper
 {
     /**
      * OrderStateMapper constructor.
-     * @param MapDefinition $definition
+     * @param MappingDefinition $definition
      * @since 1.0.0
      */
-    public function __construct(MapDefinition $definition);
+    public function __construct(MappingDefinition $definition);
 
     /**
      * @return array
@@ -25,9 +27,9 @@ interface OrderStateMapper
     public function map();
 
     /**
-     * @param ValueObject $state
+     * @param OrderState $state
      * @return mixed
      * @since 1.0.0
      */
-    public function toExternal(ValueObject $state);
+    public function toExternal(OrderState $state);
 }

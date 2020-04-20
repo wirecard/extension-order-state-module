@@ -10,10 +10,10 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
 /**
- * Class InvalidProcessTypeException
+ * Class OrderStateInvalidArgumentException
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
  */
-class InvalidProcessTypeException extends OrderStateInvalidArgumentException
+class OrderStateInvalidArgumentException extends \Exception
 {
 
 }

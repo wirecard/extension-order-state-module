@@ -13,7 +13,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
  * Class NotInRegistryException
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
  */
-class NotInRegistryException extends \Exception
+class NotInRegistryException extends OrderStateInvalidArgumentException
 {
 
 }

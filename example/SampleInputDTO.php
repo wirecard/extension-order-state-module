@@ -1,10 +1,22 @@
 <?php
+/**
+ * Shop System Extensions:
+ * - Terms of Use can be found at:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/_TERMS_OF_USE
+ * - License can be found under:
+ * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
+ */
 
-
-namespace example;
+namespace Wirecard\ExtensionOrderStateModule\Example;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 
+/**
+ * Sample implementation of Input contract for handling order states
+ * Class SampleInputDTO
+ * @package Wirecard\ExtensionOrderStateModule\Example
+ * @since 1.0.0
+ */
 class SampleInputDTO implements InputDataTransferObject
 {
     /**

@@ -24,7 +24,7 @@ class Failed extends InitialReturnHandler
      */
     protected function getNextHandler()
     {
-        return new Started($this->processData);
+        return new Pending($this->processData);
     }
 
     /**
@@ -34,9 +34,7 @@ class Failed extends InitialReturnHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->orderInState(Constant::ORDER_STATE_FAILED) ||
-            $this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILURE)
-        ) {
+        if ($this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILURE)) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_FAILED);
         }
 

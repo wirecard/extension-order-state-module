@@ -14,6 +14,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 /**
  * Class MappedOrderState
  * @package Wirecard\ExtensionOrderStateModule\Application\Mapper
+ * @since 1.0.0
  */
 class MappedOrderState
 {
