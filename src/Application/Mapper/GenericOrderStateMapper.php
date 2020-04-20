@@ -71,7 +71,7 @@ class GenericOrderStateMapper implements OrderStateMapper
     {
         $newExternalState = null;
         foreach ($this->map() as $mappedState) {
-            if ($mappedState->getInternalState()->equalsTo($state)) {
+            if ($state->equalsTo($mappedState->getInternalState())) {
                 $newExternalState = $mappedState->getExternalState();
                 break;
             }
