@@ -3,9 +3,10 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 
-class AbstractProcessHandler
+abstract class AbstractProcessHandler
 {
     /**
      * @var ProcessData
@@ -26,6 +27,22 @@ class AbstractProcessHandler
      */
     public function handle()
     {
-        return null;
+        $orderState = $this->calculate();
+        if (null === $orderState && null !== $this->getNextHandler()) {
+            $orderState = $this->getNextHandler()->handle();
+        }
+
+        return $orderState;
     }
+
+    /**
+     * @return OrderState|null
+     */
+    abstract protected function calculate();
+
+    /**
+     * @return AbstractProcessHandler|null
+     * @since 1.0.0
+     */
+    abstract protected function getNextHandler();
 }

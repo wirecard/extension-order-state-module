@@ -3,8 +3,6 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
@@ -48,12 +46,9 @@ class InitialNotificationHandler extends AbstractProcessHandler
     }
 
     /**
-     * @param InputDataTransferObject $input
-     * @param OrderStateMapper $mapper
-     * @return OrderState
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @return OrderState|null
      */
-    public function handle()
+    protected function calculate()
     {
         if ($this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_FAILED)) ||
             $this->processData->getTransactionState()->equalsTo(
@@ -73,5 +68,16 @@ class InitialNotificationHandler extends AbstractProcessHandler
         if ($this->isPendingAuthorization()) {
             return new OrderState(Constant::ORDER_STATE_AUTHORIZED);
         }
+
+        return null;
+    }
+
+    /**
+     * @return AbstractProcessHandler|null
+     * @since 1.0.0
+     */
+    protected function getNextHandler()
+    {
+        return null;
     }
 }
