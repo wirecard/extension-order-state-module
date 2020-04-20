@@ -28,10 +28,20 @@ class OrderStateTest extends TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject | MapDefinition */
     private $mapDefinition;
 
+    /**
+     * @var OrderState
+     */
+    private $orderState;
+
+    /**
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
     protected function setUp()
     {
         $this->mapDefinition = $this->getMockBuilder(MapDefinition::class)->setMethods(['map'])->getMock();
         $this->mapDefinition->expects($this->any())->method('map')->willReturn($this->getSampleMapper());
+        $this->orderState = new OrderState(new GenericOrderStateMapper($this->mapDefinition));
     }
 
     /**
@@ -109,9 +119,6 @@ class OrderStateTest extends TestCase
      */
     public function testProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
     {
-        $mapper = new GenericOrderStateMapper($this->mapDefinition);
-        $orderStateService = new OrderState($mapper);
-
         /** @var InputDataTransferObject | \PHPUnit_Framework_MockObject_MockObject $inputDTO */
         $inputDTO = $this->getMockBuilder(InputDataTransferObject::class)->setMethods([
             'getProcessType',
@@ -125,6 +132,6 @@ class OrderStateTest extends TestCase
         $inputDTO->expects($this->any())->method('getTransactionType')->willReturn($transactionType);
         $inputDTO->expects($this->any())->method('getCurrentOrderState')->willReturn($currentOrderState);
 
-        $this->assertEquals($expectedState, $orderStateService->process($inputDTO));
+        $this->assertEquals($expectedState, $this->orderState->process($inputDTO));
     }
 }
