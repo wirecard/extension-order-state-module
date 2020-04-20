@@ -10,8 +10,6 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotificationHandler;
 
 /**
@@ -32,35 +30,34 @@ class Processing extends InitialNotificationHandler
     /**
      * @return bool
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     private function isStartedDebit()
     {
-        return $this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
-            $this->processData->getTransactionType()->equalsTo(new TransactionType(Constant::TRANSACTION_TYPE_DEBIT));
+        return $this->processData->orderInState(Constant::ORDER_STATE_STARTED) &&
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_DEBIT);
     }
 
     /**
      * @return bool
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     private function isPendingPurchase()
     {
-        return $this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_PENDING)) &&
-            $this->processData->getTransactionType()->equalsTo(
-                new TransactionType(Constant::TRANSACTION_TYPE_PURCHASE)
-            );
+        return $this->processData->orderInState(Constant::ORDER_STATE_PENDING) &&
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_PURCHASE);
     }
 
     /**
      * @inheritDoc
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @since 1.0.0
      */
     protected function calculate()
     {
         $result = parent::calculate();
         if ($this->isStartedDebit() || $this->isPendingPurchase()) {
-            $result = new OrderState(Constant::ORDER_STATE_PROCESSING);
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PROCESSING);
         }
 
         return $result;

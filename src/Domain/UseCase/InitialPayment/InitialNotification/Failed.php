@@ -10,8 +10,6 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotificationHandler;
 
 /**
@@ -36,11 +34,9 @@ class Failed extends InitialNotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_FAILED)) ||
-            $this->processData->getTransactionState()->equalsTo(
-                new TransactionState(Constant::TRANSACTION_STATE_FAILURE)
-            )) {
-            $result = new OrderState(Constant::ORDER_STATE_FAILED);
+        if ($this->processData->orderInState(Constant::ORDER_STATE_FAILED) ||
+            $this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILURE)) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_FAILED);
         }
 
         return $result;

@@ -10,8 +10,6 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturn;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturnHandler;
 
 /**
@@ -36,9 +34,9 @@ class Started extends InitialReturnHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
-            $this->processData->getTransactionType()->equalsTo(new TransactionType(Constant::TRANSACTION_TYPE_DEBIT))) {
-            $result = new OrderState(Constant::ORDER_STATE_STARTED);
+        if ($this->processData->orderInState(Constant::ORDER_STATE_STARTED) &&
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_DEBIT)) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_STARTED);
         }
 
         return $result;

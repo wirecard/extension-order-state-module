@@ -10,8 +10,6 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotificationHandler;
 
 /**
@@ -36,11 +34,9 @@ class Authorization extends InitialNotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_PENDING)) &&
-            $this->processData->getTransactionType()->equalsTo(
-                new TransactionType(Constant::TRANSACTION_TYPE_AUTHORIZE)
-            )) {
-            $result = new OrderState(Constant::ORDER_STATE_AUTHORIZED);
+        if ($this->processData->orderInState(Constant::ORDER_STATE_PENDING) &&
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_AUTHORIZE)) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_AUTHORIZED);
         }
         return $result;
     }

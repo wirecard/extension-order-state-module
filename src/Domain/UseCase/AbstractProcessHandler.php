@@ -9,8 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
+use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 
 /**
  * Class AbstractProcessHandler
@@ -18,6 +18,8 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
  */
 abstract class AbstractProcessHandler
 {
+    use DataRegistry;
+
     /**
      * @var ProcessData
      */
@@ -34,7 +36,9 @@ abstract class AbstractProcessHandler
     }
 
     /**
-     * @return null|\Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState|null
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @since 1.0.0
      */
     public function handle()
@@ -48,7 +52,9 @@ abstract class AbstractProcessHandler
     }
 
     /**
-     * @return OrderState|null
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState|null
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @since 1.0.0
      */
     abstract protected function calculate();

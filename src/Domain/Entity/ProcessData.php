@@ -10,9 +10,12 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\ValueObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 
 class ProcessData implements ValueObject
 {
+    use DataRegistry;
+
     /**
      * @var OrderState
      */
@@ -36,7 +39,8 @@ class ProcessData implements ValueObject
         OrderState $orderState,
         TransactionType $transactionType,
         TransactionState $transactionState
-    ) {
+    )
+    {
         $this->orderState = $orderState;
         $this->transactionType = $transactionType;
         $this->transactionState = $transactionState;
@@ -64,6 +68,46 @@ class ProcessData implements ValueObject
     public function getTransactionState()
     {
         return $this->transactionState;
+    }
+
+    /**
+     * @param string $state
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function orderInState($state)
+    {
+        return $this->orderState->equalsTo($this->fromOrderStateRegistry($state));
+    }
+
+    /**
+     * @param string $type
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function transactionInType($type)
+    {
+        return $this->transactionType->equalsTo($this->fromTransactionTypeRegistry($type));
+    }
+
+    /**
+     * @param array $typeRange
+     * @return bool
+     */
+    public function transactionTypeInRange(array $typeRange)
+    {
+        return $this->transactionType->inSet($typeRange);
+    }
+
+
+    /**
+     * @param string $state
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     */
+    public function transactionInState($state)
+    {
+        return $this->transactionState->equalsTo(new TransactionState($state));
     }
 
     /**

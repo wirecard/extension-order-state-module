@@ -10,7 +10,6 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturn;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturnHandler;
 
 /**
@@ -26,12 +25,12 @@ class Pending extends InitialReturnHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->getOrderState()->equalsTo(new OrderState(Constant::ORDER_STATE_STARTED)) &&
-            $this->processData->getTransactionType()->inSet([
+        if ($this->processData->orderInState(Constant::ORDER_STATE_STARTED) &&
+            $this->processData->transactionTypeInRange([
                 Constant::TRANSACTION_TYPE_PURCHASE,
                 Constant::TRANSACTION_TYPE_AUTHORIZE,
             ])) {
-            $result = new OrderState(Constant::ORDER_STATE_PENDING);
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PENDING);
         }
 
         return $result;
