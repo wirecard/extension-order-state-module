@@ -13,12 +13,12 @@ use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMappe
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 
-$orderStateService = new OrderState(new GenericOrderStateMapper(new SampleMapDefinition()));
-
 try {
+    $orderStateService = new OrderState(new GenericOrderStateMapper(new SampleMapDefinition()));
+
     // Processing
     $inputDTO = new SampleInputDTO();
-    $inputDTO->setProcessType(Constant::PROCESS_TYPE_RETURN);
+    $inputDTO->setProcessType(Constant::PROCESS_TYPE_NOTIFICATION);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
     $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_STARTED);
