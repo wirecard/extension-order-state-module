@@ -12,7 +12,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 /**
  * Class IgnorableStateException
  *
- * Occurs if order state is not founded or should be ignored.
+ * Occurs if no order state update needed.
  *
  * @see \Wirecard\ExtensionOrderStateModule\Domain\Service\ProcessHandlerService::handle
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
