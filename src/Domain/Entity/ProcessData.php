@@ -51,30 +51,6 @@ class ProcessData implements ValueObject
     }
 
     /**
-     * @return OrderState
-     */
-    public function getOrderState()
-    {
-        return $this->orderState;
-    }
-
-    /**
-     * @return TransactionType
-     */
-    public function getTransactionType()
-    {
-        return $this->transactionType;
-    }
-
-    /**
-     * @return TransactionState
-     */
-    public function getTransactionState()
-    {
-        return $this->transactionState;
-    }
-
-    /**
      * @param string $state
      * @return bool
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
@@ -115,11 +91,11 @@ class ProcessData implements ValueObject
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function __toString()
     {
-        return "{$this->orderState}_{$this->transactionType}_{$this->transactionState}";
+        return (string) "{$this->orderState}_{$this->transactionType}_{$this->transactionState}";
     }
 
     /**

@@ -17,6 +17,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 /**
  * Class ProcessDataFactory
  * @package Wirecard\ExtensionOrderStateModule\Domain\Factory
+ * @since 1.0.0
  */
 class ProcessDataFactory
 {
@@ -27,7 +28,6 @@ class ProcessDataFactory
      * @return ProcessData
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
-     * @since 1.0.0
      */
     public function create(InputDataTransferObject $inputData)
     {
