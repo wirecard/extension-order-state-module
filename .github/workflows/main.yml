@@ -27,7 +27,7 @@ jobs:
         uses: wirecard/setup-php@master
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: simplexml,mbstring,dom
+          extensions: simplexml,mbstring,dom,zip
 
       - name: Install Composer
         run: composer install

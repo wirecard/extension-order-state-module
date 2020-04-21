@@ -3,7 +3,8 @@
 
 namespace Wirecard\Test\Application\Service;
 
-use PHPUnit\Framework\TestCase;
+use Codeception\Stub\Expected;
+use Codeception\Test\Unit;
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
@@ -11,13 +12,12 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 
 /**
- * Class ConfigFactoryTest
- * @package CredentialsTest\Reader
+ * Class OrderStateTest
+ * @package Wirecard\Test\Application\Service
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Application\Service\OrderState
- * @SuppressWarnings(PHPMD.LongVariable)
  * @since 1.0.0
  */
-class OrderStateTest extends TestCase
+class OrderStateTest extends Unit
 {
     const EXTERNAL_ORDER_STATE_AUTHORIZED = "authorized";
     const EXTERNAL_ORDER_STATE_STARTED = "started";
@@ -25,7 +25,9 @@ class OrderStateTest extends TestCase
     const EXTERNAL_ORDER_STATE_PROCESSING = "processing";
     const EXTERNAL_ORDER_STATE_FAILED = "failed";
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject | MappingDefinition */
+    /**
+     * @var MappingDefinition
+     */
     private $mapDefinition;
 
     /**
@@ -35,11 +37,13 @@ class OrderStateTest extends TestCase
 
     /**
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Exception
      */
-    protected function setUp()
+    protected function _before()
     {
-        $this->mapDefinition = $this->getMockBuilder(MappingDefinition::class)->setMethods(['definitions'])->getMock();
-        $this->mapDefinition->expects($this->any())->method('definitions')->willReturn($this->getSampleMapper());
+        $this->mapDefinition = \Codeception\Stub::makeEmpty(MappingDefinition::class, [
+            'definitions' => Expected::once($this->getSampleMapper())
+        ]);
         $this->orderState = new OrderState(new GenericOrderStateMapper($this->mapDefinition));
     }
 
@@ -121,49 +125,52 @@ class OrderStateTest extends TestCase
     }
 
     /**
-     * @group integration
+     * @group        integration
      * @small
-     * @covers ::process
+     * @covers       ::process
      * @dataProvider inputDtoDataProvider
      *
-     * @param string $processType
-     * @param string $transactionState
-     * @param string $transactionType
-     * @param string $currentOrderState
-     * @param string $expectedState
+     * @param  string $processType
+     * @param  string $transactionState
+     * @param  string $transactionType
+     * @param  string $currentOrderState
+     * @param  string $expectedState
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
+     * @throws \Exception
      */
     public function testProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
     {
-        /** @var InputDataTransferObject | \PHPUnit_Framework_MockObject_MockObject $inputDTO */
-        $inputDTO = $this->getMockBuilder(InputDataTransferObject::class)->setMethods([
-            'getProcessType',
-            'getTransactionState',
-            'getTransactionType',
-            'getCurrentOrderState'
-        ])->getMock();
-
-        $inputDTO->expects($this->any())->method('getProcessType')->willReturn($processType);
-        $inputDTO->expects($this->any())->method('getTransactionState')->willReturn($transactionState);
-        $inputDTO->expects($this->any())->method('getTransactionType')->willReturn($transactionType);
-        $inputDTO->expects($this->any())->method('getCurrentOrderState')->willReturn($currentOrderState);
+        /**
+ * @var InputDataTransferObject $inputDTO
+*/
+        $inputDTO = \Codeception\Stub::makeEmpty(
+            InputDataTransferObject::class,
+            [
+            'getProcessType' => Expected::once($processType),
+            'getTransactionState' => Expected::once($transactionState),
+            'getTransactionType' => Expected::once($transactionType),
+            'getCurrentOrderState' => Expected::once($currentOrderState)
+            ]
+        );
 
         $this->assertEquals($expectedState, $this->orderState->process($inputDTO));
     }
 
     /**
-     * @group integration
+     * @group  integration
      * @small
      * @covers ::__construct
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
-     * @expectedException \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Exception
      */
     public function testFailingConstructor()
     {
+        $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException::class);
         $mapping = array_merge($this->getSampleMapper(), ['X' => 'INVALID_ORDER_STATE_TYPE']);
-        $this->mapDefinition = $this->getMockBuilder(MappingDefinition::class)->setMethods(['definitions'])->getMock();
-        $this->mapDefinition->expects($this->any())->method('definitions')->willReturn($mapping);
+        $this->mapDefinition = \Codeception\Stub::makeEmpty(MappingDefinition::class, [
+            'definitions' => $mapping
+        ]);
         new OrderState(new GenericOrderStateMapper($this->mapDefinition));
     }
 }
