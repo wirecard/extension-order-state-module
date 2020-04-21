@@ -22,6 +22,14 @@ class Pending extends InitialReturnHandler
     /**
      * @inheritDoc
      */
+    protected function getNextHandler()
+    {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function calculate()
     {
         $result = parent::calculate();

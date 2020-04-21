@@ -10,6 +10,8 @@ use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException;
 
 /**
  * Class OrderStateTest
@@ -126,36 +128,129 @@ class OrderStateTest extends Unit
     }
 
     /**
+     * @return \Generator
+     */
+    public function inputDTOExceptionDataProvider()
+    {
+        $returnAllNotPermittedStates = array_diff(
+            Constant::getOrderStates(),
+            [Constant::ORDER_STATE_STARTED, Constant::ORDER_STATE_PENDING, Constant::ORDER_STATE_FAILED]
+        );
+        foreach ($returnAllNotPermittedStates as $orderState) {
+            foreach (Constant::getTransactionTypes() as $transactionType) {
+                yield "{$transactionType}_{$orderState}_success_initial_return_ignorable_exception" => [
+                    Constant::PROCESS_TYPE_RETURN,
+                    Constant::TRANSACTION_STATE_SUCCESS,
+                    Constant::TRANSACTION_TYPE_AUTHORIZE,
+                    $orderState,
+                    IgnorableStateException::class
+                ];
+            }
+        }
+
+        yield "invalid_argument_exception_invalid_process" => [
+            "INVALID_PROCESS_TYPE",
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::ORDER_STATE_STARTED,
+            OrderStateInvalidArgumentException::class
+        ];
+
+        yield "invalid_argument_exception_invalid_transaction_state" => [
+            Constant::PROCESS_TYPE_RETURN,
+            "INVALID_TRANSACTION_STATE",
+            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::ORDER_STATE_STARTED,
+            OrderStateInvalidArgumentException::class
+        ];
+
+        yield "invalid_argument_exception_invalid_transaction_type" => [
+            Constant::PROCESS_TYPE_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            "INVALID TRANSACTION TYPE",
+            Constant::ORDER_STATE_STARTED,
+            OrderStateInvalidArgumentException::class
+        ];
+
+        yield "invalid_argument_exception_invalid_order_state" => [
+            Constant::PROCESS_TYPE_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            "INVALID CURRENT_ORDER_STATE",
+            OrderStateInvalidArgumentException::class
+        ];
+    }
+
+    /**
      * @group        integration
      * @small
      * @covers       ::process
      * @dataProvider inputDtoDataProvider
      *
-     * @param  string $processType
-     * @param  string $transactionState
-     * @param  string $transactionType
-     * @param  string $currentOrderState
-     * @param  string $expectedState
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
+     * @param string $processType
+     * @param string $transactionState
+     * @param string $transactionType
+     * @param string $currentOrderState
+     * @param string $expectedState
+     * @throws IgnorableStateException
+     * @throws OrderStateInvalidArgumentException
      * @throws \Exception
      */
     public function testProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
     {
         /**
- * @var InputDataTransferObject $inputDTO
-*/
+         * @var InputDataTransferObject $inputDTO
+         */
         $inputDTO = \Codeception\Stub::makeEmpty(
             InputDataTransferObject::class,
             [
-            'getProcessType' => Expected::once($processType),
-            'getTransactionState' => Expected::once($transactionState),
-            'getTransactionType' => Expected::once($transactionType),
-            'getCurrentOrderState' => Expected::once($currentOrderState)
+                'getProcessType' => Expected::once($processType),
+                'getTransactionState' => Expected::once($transactionState),
+                'getTransactionType' => Expected::once($transactionType),
+                'getCurrentOrderState' => Expected::once($currentOrderState)
             ]
         );
 
         $this->assertEquals($expectedState, $this->orderState->process($inputDTO));
+    }
+
+    /**
+     * @group        integration
+     * @small
+     * @covers       ::process
+     * @dataProvider inputDTOExceptionDataProvider
+     *
+     * @param string $processType
+     * @param string $transactionState
+     * @param string $transactionType
+     * @param string $currentOrderState
+     * @param string $exception
+     * @throws IgnorableStateException
+     * @throws OrderStateInvalidArgumentException
+     * @throws \Exception
+     */
+    public function testProcessException(
+        $processType,
+        $transactionState,
+        $transactionType,
+        $currentOrderState,
+        $exception
+    ) {
+        $this->expectException($exception);
+        /**
+         * @var InputDataTransferObject $inputDTO
+         */
+        $inputDTO = \Codeception\Stub::makeEmpty(
+            InputDataTransferObject::class,
+            [
+                'getProcessType' => Expected::once($processType),
+                'getTransactionState' => Expected::once($transactionState),
+                'getTransactionType' => Expected::once($transactionType),
+                'getCurrentOrderState' => Expected::once($currentOrderState)
+            ]
+        );
+
+        $this->orderState->process($inputDTO);
     }
 
     /**

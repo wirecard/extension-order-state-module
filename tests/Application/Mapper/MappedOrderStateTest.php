@@ -27,10 +27,12 @@ class MappedOrderStateTest extends \Codeception\Test\Unit
      */
     public function mappedStateDataProvider()
     {
-        yield [new OrderState(Constant::ORDER_STATE_FAILED), 'F'];
-        yield [new OrderState(Constant::ORDER_STATE_AUTHORIZED), '0'];
-        yield [new OrderState(Constant::ORDER_STATE_PENDING), 12];
-        yield [new OrderState(Constant::ORDER_STATE_PENDING), 0];
+        yield "On external primitive type is string" => [new OrderState(Constant::ORDER_STATE_FAILED), 'F'];
+        yield "On external value is '0'" => [
+            new OrderState(Constant::ORDER_STATE_AUTHORIZED), '0'
+        ];
+        yield "On external primitive type is integer" => [new OrderState(Constant::ORDER_STATE_PENDING), 12];
+        yield "On external value is 0" => [new OrderState(Constant::ORDER_STATE_PENDING), 0];
     }
 
     /**
@@ -49,5 +51,16 @@ class MappedOrderStateTest extends \Codeception\Test\Unit
         $this->assertEquals($internalState, $mappedState->getInternalState());
         $this->assertInstanceOf(OrderState::class, $mappedState->getInternalState());
         $this->assertEquals($externalState, $mappedState->getExternalState());
+    }
+
+    /**
+     * @group integration
+     * @small
+     * @covers ::__construct
+     */
+    public function testFailingConstructor()
+    {
+        $this->expectException(\TypeError::class);
+        new MappedOrderState("", "X");
     }
 }

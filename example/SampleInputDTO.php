@@ -102,4 +102,18 @@ class SampleInputDTO implements InputDataTransferObject
     {
         $this->transactionState = $transactionState;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf(
+            "%s_%s_%s_%s",
+            $this->transactionType,
+            $this->currentOrderState,
+            $this->transactionState,
+            $this->processType
+        );
+    }
 }

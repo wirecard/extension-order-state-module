@@ -62,7 +62,7 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
     public function toExternalDataProvider()
     {
         foreach ($this->getSampleMapDefinition() as $external => $internal) {
-            yield "{$external}_{$internal}" => [
+            yield "external:{$external} / internal:{$internal}" => [
                 $external,
                 new OrderState($internal),
                 $external
@@ -90,13 +90,13 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
      * @covers ::__construct
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
-    public function testMap()
+    public function testMapGeneration()
     {
         $this->mapper = new GenericOrderStateMapper($this->mapDefinition);
         $map = $this->mapper->map();
         $this->assertTrue(is_array($map));
         $mappedState = array_shift($map);
-        $this->assertInstanceOf(MappedOrderState::class, $mappedState);
+        $this->assertInstanceOf(MappedOrderState::class, $mappedState, "Instance of ". MappedOrderState::class);
     }
 
     /**
@@ -110,7 +110,7 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
     {
         $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException::class);
         $mapDefinition = \Codeception\Stub::makeEmpty(MappingDefinition::class, [
-            'definitions' => ['external' => 'invalid_internal_state']
+            'definitions' => ['EXTERNAL_STATE' => 'INVALID_INTERNAL_STATE']
         ]);
         $this->mapper = new GenericOrderStateMapper($mapDefinition);
         $this->mapper->map();
@@ -126,7 +126,7 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
      * @throws \Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
-    public function testToExternal($expectedState, $internal)
+    public function testInternalToExternal($expectedState, $internal)
     {
         $this->mapper = new GenericOrderStateMapper($this->mapDefinition);
         $externalState = $this->mapper->toExternal($internal);
@@ -141,7 +141,7 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
      */
-    public function testToExternalException()
+    public function testInternalToExternalException()
     {
         $mapDefinition = \Codeception\Stub::makeEmpty(MappingDefinition::class, [
             'definitions' => ['E1' => Constant::ORDER_STATE_AUTHORIZED]
