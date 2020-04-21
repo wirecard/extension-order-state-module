@@ -12,12 +12,12 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 /**
  * Class TransactionType
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ * @since 1.0.0
  */
-class TransactionType extends ConstantStringValueObject
+class TransactionType extends EnumValueObject
 {
     /**
      * @return array
-     * @since 1.0.0
      */
     public function possibleValueSet()
     {

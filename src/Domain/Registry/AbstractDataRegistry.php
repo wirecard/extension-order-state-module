@@ -14,6 +14,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException;
 /**
  * Class AbstractRegistry
  * @package Wirecard\ExtensionOrderStateModule\Domain\Registry
+ * @since 1.0.0
  */
 abstract class AbstractDataRegistry
 {

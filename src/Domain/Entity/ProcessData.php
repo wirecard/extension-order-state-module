@@ -12,6 +12,11 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\ValueObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 
+/**
+ * Class ProcessData
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ * @since 1.0.0
+ */
 class ProcessData implements ValueObject
 {
     use DataRegistry;
@@ -92,12 +97,12 @@ class ProcessData implements ValueObject
     /**
      * @param array $typeRange
      * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function transactionTypeInRange(array $typeRange)
     {
-        return $this->transactionType->inSet($typeRange);
+        return $this->isTransactionTypeInRange($this->transactionType, $typeRange);
     }
-
 
     /**
      * @param string $state

@@ -31,6 +31,7 @@ class Constant
     // Transaction Type
     const TRANSACTION_TYPE_AUTHORIZE = "authorization";
     const TRANSACTION_TYPE_DEBIT = "debit";
+    const TRANSACTION_TYPE_PENDING_DEBIT = "pending-debit";
     const TRANSACTION_TYPE_PURCHASE = "purchase";
     const TRANSACTION_TYPE_DEPOSIT = "deposit";
 
@@ -57,7 +58,9 @@ class Constant
         return [
             self::TRANSACTION_TYPE_AUTHORIZE,
             self::TRANSACTION_TYPE_DEBIT,
+            self::TRANSACTION_TYPE_PENDING_DEBIT,
             self::TRANSACTION_TYPE_PURCHASE,
+            self::TRANSACTION_TYPE_DEPOSIT,
         ];
     }
 

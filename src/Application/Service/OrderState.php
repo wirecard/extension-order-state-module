@@ -16,7 +16,25 @@ use Wirecard\ExtensionOrderStateModule\Domain\Service\ProcessHandlerService;
 
 /**
  * Class OrderState
+ *
+ * This service manages next order state calculation
+ *
+ * Example of usage:
+ *
+ * $mappingDefinition = new MappingDefinition();
+ * $mapper = new OrderStateMapper($mappingDefinition)
+ * $service = new OrderState($mapper);
+ * $nextOrderState = $service->process(InputDataTransferObject);
+ *
+ * MappingDefinition: definition of reference between internal and external order states.
+ * @see MappingDefinition
+ * OrderStateMapper:  mapper between internal and external states.
+ * @see OrderStateMapper
+ * InputDataTransferObject: -> data transfer object between client and module sides.
+ * @see InputDataTransferObject
+ *
  * @package Wirecard\ExtensionOrderStateModule\Application\Service
+ * @since 1.0.0
  */
 class OrderState
 {
@@ -36,6 +54,8 @@ class OrderState
     }
 
     /**
+     * Calculate next order state
+     *
      * @param InputDataTransferObject $data
      * @return mixed|int|string
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException

@@ -11,9 +11,13 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
 /**
  * Class OrderStateInvalidArgumentException
+ *
+ * Group of classes related to internal exceptions
+ *
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
+ * @since 1.0.0
  */
-class OrderStateInvalidArgumentException extends \Exception
+abstract class OrderStateInvalidArgumentException extends \Exception
 {
 
 }

@@ -12,12 +12,20 @@ namespace Wirecard\ExtensionOrderStateModule\Example;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 
+/**
+ * Class SampleMappingDefinition
+ *
+ * Implementation for MappingDefinition interface. Used to define
+ * mapping between internal and external order state definitions
+ *
+ * @package Wirecard\ExtensionOrderStateModule\Example
+ * @since 1.0.0
+ */
 class SampleMappingDefinition implements MappingDefinition
 {
 
     /**
      * @return array
-     * @since 1.0.0
      */
     public function definitions()
     {

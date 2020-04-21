@@ -25,9 +25,7 @@ class Pending extends InitialReturnHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->orderInState(Constant::ORDER_STATE_STARTED) &&
-            $this->processData->transactionInState(Constant::TRANSACTION_STATE_SUCCESS)
-        ) {
+        if ($this->isSuccessTransaction() && $this->processData->orderInState(Constant::ORDER_STATE_STARTED)) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PENDING);
         }
 

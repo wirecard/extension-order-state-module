@@ -9,9 +9,17 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Registry;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
+
 /**
  * Trait DataRegistry
+ *
+ * DataRegistry provides wrappers to registry classes.
+ * @see OrderStateDataRegistry
+ * @see TransactionTypeDataRegistry
+ *
  * @package Wirecard\ExtensionOrderStateModule\Domain\Registry
+ * @since 1.0.0
  */
 trait DataRegistry
 {
@@ -35,5 +43,21 @@ trait DataRegistry
     public function fromTransactionTypeRegistry($type)
     {
         return TransactionTypeDataRegistry::getInstance()->get($type);
+    }
+
+    /**
+     * @param TransactionType $needed
+     * @param array $range
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function isTransactionTypeInRange(TransactionType $needed, array $range)
+    {
+        foreach ($range as $value) {
+            if ($needed->equalsTo($this->fromTransactionTypeRegistry($value))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

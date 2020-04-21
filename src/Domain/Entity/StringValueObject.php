@@ -14,6 +14,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Contract\ValueObject;
 /**
  * Class StringValueObject
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ * @since 1.0.0
  */
 abstract class StringValueObject implements ValueObject
 {
@@ -24,17 +25,15 @@ abstract class StringValueObject implements ValueObject
 
     /**
      * @return string
-     * @since 1.0.0
      */
     public function __toString()
     {
-        return (string)$this->value;
+        return (string) $this->value;
     }
 
     /**
      * @param ValueObject $other
      * @return bool
-     * @since 1.0.0
      */
     public function equalsTo(ValueObject $other)
     {

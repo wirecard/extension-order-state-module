@@ -7,6 +7,10 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
+/**
+ * Example of how to use and implement module on client side
+ * @since 1.0.0
+ */
 namespace Wirecard\ExtensionOrderStateModule\Example;
 
 require_once  dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";

@@ -11,7 +11,12 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
 /**
  * Class InvalidProcessTypeException
+ *
+ * The exception occurs if process type is invalid or not implemented
+ *
+ * @see \Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant -> PROCESS_TYPE_*
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
+ * @since 1.0.0
  */
 class InvalidProcessTypeException extends OrderStateInvalidArgumentException
 {

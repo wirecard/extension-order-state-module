@@ -11,7 +11,12 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
 /**
  * Class NotInRegistryException
+ *
+ * Occurs by trying get some object from data registry storage that's not exists
+ *
+ * @see \Wirecard\ExtensionOrderStateModule\Domain\Registry\AbstractDataRegistry::get
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
+ * @since 1.0.0
  */
 class NotInRegistryException extends OrderStateInvalidArgumentException
 {

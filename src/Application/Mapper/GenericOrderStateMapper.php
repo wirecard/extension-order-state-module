@@ -9,10 +9,10 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Application\Mapper;
 
+use Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
-use Wirecard\ExtensionOrderStateModule\Domain\Exception\MapReferenceNotFound;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 
 /**

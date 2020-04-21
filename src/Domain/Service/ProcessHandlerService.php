@@ -61,7 +61,7 @@ class ProcessHandlerService
     /**
      * @return \Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler
      * @throws InvalidProcessTypeException
-     * @todo avoid switch | Strategy \ use polymorphism
+     * @todo avoid switch | Strategy \ use polymorphism on the next stage
      */
     private function findHandler()
     {
@@ -77,7 +77,7 @@ class ProcessHandlerService
 
     /**
      * @return InitialReturnHandler
-     *@todo encapsulate return finder e.g InitialReturn | PostProcessingReturn
+     * @todo encapsulate return finder e.g InitialReturn | PostProcessingReturn
      */
     private function findReturnHandler()
     {
@@ -86,7 +86,7 @@ class ProcessHandlerService
 
     /**
      * @todo encapsulate return finder e.g PostProcessingNotification | PostProcessingNotification
-     * @return null
+     * @return InitialNotificationHandler
      */
     private function findNotificationHandler()
     {

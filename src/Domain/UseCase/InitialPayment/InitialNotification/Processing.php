@@ -29,16 +29,7 @@ class Processing extends InitialNotificationHandler
 
     /**
      * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     * @since 1.0.0
-     */
-    private function isSuccessTransaction()
-    {
-        return $this->processData->transactionInState(Constant::TRANSACTION_STATE_SUCCESS);
-    }
-
-    /**
-     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @since 1.0.0
      */
     private function isAllowedTransactionType()

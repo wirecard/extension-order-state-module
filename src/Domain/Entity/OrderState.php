@@ -12,8 +12,9 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 /**
  * Class OrderState
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ * @since 1.0.0
  */
-class OrderState extends ConstantStringValueObject
+class OrderState extends EnumValueObject
 {
     /**
      * @return array

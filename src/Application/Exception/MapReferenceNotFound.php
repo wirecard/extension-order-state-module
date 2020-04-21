@@ -7,11 +7,16 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
+namespace Wirecard\ExtensionOrderStateModule\Application\Exception;
+
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException;
 
 /**
- * Class NotInRegistryException
+ * Class MapReferenceNotFound
+ *
+ * The exception usually occurs when referencing between internal / external states is missing
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
+ * @since 1.0.0
  */
 class MapReferenceNotFound extends OrderStateInvalidArgumentException
 {

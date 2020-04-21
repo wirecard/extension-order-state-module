@@ -11,7 +11,13 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
 
 /**
  * Class InvalidValueObjectException
+ *
+ * The exception usually occurs if value of EnumValueObject classes group is invalid or not implemented.
+ *
+ * @see \Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant
+ * @see \Wirecard\ExtensionOrderStateModule\Domain\Entity\EnumValueObject
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
+ * @since 1.0.0
  */
 class InvalidValueObjectException extends OrderStateInvalidArgumentException
 {

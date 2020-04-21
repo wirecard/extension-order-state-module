@@ -12,11 +12,11 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException;
 
 /**
- * Class StringValueObject
+ * Class EnumValueObject
  * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
  * @since 1.0.0
  */
-abstract class ConstantStringValueObject extends StringValueObject
+abstract class EnumValueObject extends StringValueObject
 {
     /**
      * StringSetValueObject constructor.
@@ -27,15 +27,6 @@ abstract class ConstantStringValueObject extends StringValueObject
     {
         $this->guard($value);
         $this->value = $value;
-    }
-
-    /**
-     * @param array $values
-     * @return bool
-     */
-    public function inSet(array $values)
-    {
-        return in_array($this->value, array_intersect($this->possibleValueSet(), $values), true);
     }
 
     /**

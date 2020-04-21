@@ -15,12 +15,12 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNoti
 /**
  * Class Failed
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification
+ * @since 1.0.0
  */
 class Failed extends InitialNotificationHandler
 {
     /**
      * @inheritDoc
-     * @since 1.0.0
      */
     protected function getNextHandler()
     {
@@ -29,7 +29,6 @@ class Failed extends InitialNotificationHandler
 
     /**
      * @inheritDoc
-     * @since 1.0.0
      */
     protected function calculate()
     {
