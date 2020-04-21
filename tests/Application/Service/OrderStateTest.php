@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Wirecard\Test\Application\Service;
+namespace Wirecard\ExtensionOrderStateModule\Test\Application\Service;
 
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;

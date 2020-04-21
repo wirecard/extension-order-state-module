@@ -23,7 +23,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Wirecard\\ExtensionOrderStateModule\\Example\\": "example/"
+      "Wirecard\\ExtensionOrderStateModule\\Example\\": "example/",
+      "Wirecard\\ExtensionOrderStateModule\\Test\\": "tests/"
     }
   }
 }
