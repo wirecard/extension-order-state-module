@@ -38,6 +38,7 @@ class OrderStateTest extends Unit
     /**
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
     protected function _before()
     {
