@@ -72,6 +72,7 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
 
     /**
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
     protected function _before()
     {
