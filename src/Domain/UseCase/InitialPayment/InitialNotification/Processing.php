@@ -15,12 +15,12 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNoti
 /**
  * Class Processing
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification
+ * @since 1.0.0
  */
 class Processing extends InitialNotificationHandler
 {
     /**
      * @inheritDoc
-     * @since 1.0.0
      */
     protected function getNextHandler()
     {
@@ -30,7 +30,6 @@ class Processing extends InitialNotificationHandler
     /**
      * @return bool
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
-     * @since 1.0.0
      */
     private function isAllowedTransactionType()
     {

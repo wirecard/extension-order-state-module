@@ -15,12 +15,12 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialRetu
 /**
  * Class ReturnOrderStateManager
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment
+ * @since 1.0.0
  */
 class InitialReturnHandler extends AbstractProcessHandler
 {
     /**
-     * @return AbstractProcessHandler|null
-     * @since 1.0.0
+     * @inheritDoc
      */
     protected function getNextHandler()
     {
@@ -29,7 +29,6 @@ class InitialReturnHandler extends AbstractProcessHandler
 
     /**
      * @inheritDoc
-     * @since 1.0.0
      */
     protected function calculate()
     {

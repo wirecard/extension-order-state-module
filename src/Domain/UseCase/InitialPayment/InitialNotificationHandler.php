@@ -15,13 +15,12 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNoti
 /**
  * Class InitialNotificationHandler
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment
+ * @since 1.0.0
  */
 class InitialNotificationHandler extends AbstractProcessHandler
 {
-
     /**
-     * @return AbstractProcessHandler|null
-     * @since 1.0.0
+     * @inheritDoc
      */
     protected function getNextHandler()
     {

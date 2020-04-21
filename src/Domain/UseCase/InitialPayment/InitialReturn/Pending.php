@@ -15,12 +15,12 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialRetu
 /**
  * Class Pending
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturn
+ * @since 1.0.0
  */
 class Pending extends InitialReturnHandler
 {
     /**
      * @inheritDoc
-     * @since 1.0.0
      */
     protected function calculate()
     {
