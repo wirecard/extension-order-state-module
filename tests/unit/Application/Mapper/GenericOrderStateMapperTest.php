@@ -7,7 +7,7 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Test\Application\Mapper;
+namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Mapper;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
@@ -18,7 +18,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 
 /**
  * Class GenericOrderStateMapperTest
- * @package Wirecard\ExtensionOrderStateModule\Test\Application\Mapper
+ * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Mapper
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper
  * @since 1.0.0
  */

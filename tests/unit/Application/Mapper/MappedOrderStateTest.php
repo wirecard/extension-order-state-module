@@ -7,7 +7,7 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Test\Application\Mapper;
+namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Mapper;
 
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\MappedOrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
@@ -15,7 +15,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 
 /**
  * Class MappedOrderStateTest
- * @package Wirecard\ExtensionOrderStateModule\Test\Application\Mapper
+ * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Mapper
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Application\Mapper\MappedOrderState
  * @since 1.0.0
  */
