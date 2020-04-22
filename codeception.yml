@@ -1,15 +1,13 @@
-suites:
-    unit:
-        path: .
-
-settings:
-    shuffle: true
-    lint: true
 paths:
     tests: tests
     output: tests/_output
+    data: tests/_data
     support: tests/_support
-    data: tests
+    envs: tests/_envs
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
 coverage:
     enabled: true
     remote: false
@@ -17,3 +15,6 @@ coverage:
     html: true
     include:
         - src/*
+    exclude:
+        - tests/_output
+        - tests/_support
