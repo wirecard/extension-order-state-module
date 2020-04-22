@@ -15,7 +15,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumen
 
 /**
  * Class OrderStateTest
- * @package Wirecard\Test\Application\Service
+ * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Service
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Application\Service\OrderState
  * @since 1.0.0
  */
