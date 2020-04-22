@@ -18,7 +18,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
 
 /**
  * Class GenericOrderStateMapperTest
- * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Service
+ * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Mapper
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper
  * @since 1.0.0
  */
