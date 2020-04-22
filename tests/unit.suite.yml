@@ -3,8 +3,9 @@
 # Suite for unit or integration tests.
 
 actor: UnitTester
+namespace: Wirecard\ExtensionOrderStateModule\Test\Support
 modules:
     enabled:
         - Asserts
-        - \Helper\Unit
+        - Wirecard\ExtensionOrderStateModule\Test\Support\Helper\Unit
     step_decorators: ~
