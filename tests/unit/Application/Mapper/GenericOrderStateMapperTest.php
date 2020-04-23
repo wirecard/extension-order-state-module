@@ -96,7 +96,7 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
         $map = $this->mapper->map();
         $this->assertTrue(is_array($map));
         $mappedState = array_shift($map);
-        $this->assertInstanceOf(MappedOrderState::class, $mappedState, "Instance of ". MappedOrderState::class);
+        $this->assertInstanceOf(MappedOrderState::class, $mappedState, "Instance of " . MappedOrderState::class);
     }
 
     /**
@@ -150,5 +150,53 @@ class GenericOrderStateMapperTest extends \Codeception\Test\Unit
 
         $this->expectException(\Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound::class);
         $this->mapper->toExternal(new OrderState(Constant::ORDER_STATE_FAILED));
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function toInternalDataProvider()
+    {
+        $mapDefinition = $this->getSampleMapDefinition();
+        foreach ($this->getSampleMapDefinition() as $externalState => $internalState) {
+            yield [$externalState, $internalState, $mapDefinition];
+        }
+    }
+
+    /**
+     * @group integration
+     * @small
+     * @covers ::toInternal
+     * @dataProvider toInternalDataProvider
+     * @param string $externalState
+     * @param string $internalState
+     * @param array $definition
+     * @throws \Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Exception
+     */
+    public function testExternalToInternal($externalState, $internalState, $definition)
+    {
+        $this->mapper = new GenericOrderStateMapper(\Codeception\Stub::makeEmpty(MappingDefinition::class, [
+            'definitions' => $definition
+        ]));
+        $this->assertEquals(new OrderState($internalState), $this->mapper->toInternal($externalState));
+    }
+
+    /**
+     * @group integration
+     * @small
+     * @covers ::toInternal
+     * @throws \Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function testToInternalException()
+    {
+        $this->mapper = new GenericOrderStateMapper($this->mapDefinition);
+        $this->expectException(
+            \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException::class
+        );
+        $this->mapper->toInternal("not_referencing_or_not_defined_order_state");
     }
 }

@@ -22,14 +22,21 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException;
 
 try {
-    $orderStateService = new OrderState(new GenericOrderStateMapper(new SampleMappingDefinition()));
+    $mappingDefinition = new SampleMappingDefinition();
+
+    print_r("Possible map overview:" . PHP_EOL);
+    print_r("***************************" . PHP_EOL);
+    print_r($mappingDefinition->definitions());
+    print_r("***************************" . PHP_EOL);
+
+    $orderStateService = new OrderState(new GenericOrderStateMapper($mappingDefinition));
 
     // Processing
     $inputDTO = new SampleInputDTO();
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_NOTIFICATION);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
-    $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_STARTED);
+    $inputDTO->setCurrentOrderState("started_external");
 
     $result = $orderStateService->process($inputDTO);
 
@@ -41,7 +48,7 @@ try {
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_RETURN);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_FAILURE);
-    $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_STARTED);
+    $inputDTO->setCurrentOrderState("pending_external");
 
     $result = $orderStateService->process($inputDTO);
 

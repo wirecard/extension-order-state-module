@@ -81,4 +81,20 @@ class GenericOrderStateMapper implements OrderStateMapper
         }
         return $newExternalState;
     }
+
+    /**
+     * @param mixed $externalState
+     * @return OrderState
+     * @throws MapReferenceNotFound
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function toInternal($externalState)
+    {
+        $mappingDefinition = $this->mappingDefinition->definitions();
+        if (!isset($mappingDefinition[$externalState])) {
+            throw new MapReferenceNotFound("There is not found mapping for {$externalState}");
+        }
+
+        return $this->fromOrderStateRegistry($mappingDefinition[$externalState]);
+    }
 }

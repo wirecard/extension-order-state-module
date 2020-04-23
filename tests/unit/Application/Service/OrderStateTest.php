@@ -27,11 +27,11 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumen
  */
 class OrderStateTest extends Unit
 {
-    const EXTERNAL_ORDER_STATE_AUTHORIZED = "authorized";
-    const EXTERNAL_ORDER_STATE_STARTED = "started";
-    const EXTERNAL_ORDER_STATE_PENDING = "pending";
-    const EXTERNAL_ORDER_STATE_PROCESSING = "processing";
-    const EXTERNAL_ORDER_STATE_FAILED = "failed";
+    const EXTERNAL_ORDER_STATE_AUTHORIZED = "external_authorized";
+    const EXTERNAL_ORDER_STATE_STARTED = "external_started";
+    const EXTERNAL_ORDER_STATE_PENDING = "external_pending";
+    const EXTERNAL_ORDER_STATE_PROCESSING = "external_processing";
+    const EXTERNAL_ORDER_STATE_FAILED = "external_failed";
 
     /**
      * @var MappingDefinition
@@ -51,7 +51,7 @@ class OrderStateTest extends Unit
     protected function _before()
     {
         $this->mapDefinition = \Codeception\Stub::makeEmpty(MappingDefinition::class, [
-            'definitions' => Expected::once($this->getSampleMapper())
+            'definitions' => Expected::atLeastOnce($this->getSampleMapper())
         ]);
         $this->orderState = new OrderState(new GenericOrderStateMapper($this->mapDefinition));
     }
@@ -96,7 +96,7 @@ class OrderStateTest extends Unit
             Constant::PROCESS_TYPE_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_DEBIT,
-            Constant::ORDER_STATE_STARTED,
+            self::EXTERNAL_ORDER_STATE_STARTED,
             self::EXTERNAL_ORDER_STATE_PENDING
         ];
 
@@ -104,7 +104,7 @@ class OrderStateTest extends Unit
             Constant::PROCESS_TYPE_RETURN,
             Constant::TRANSACTION_STATE_FAILURE,
             Constant::TRANSACTION_TYPE_DEBIT,
-            Constant::ORDER_STATE_STARTED,
+            self::EXTERNAL_ORDER_STATE_STARTED,
             self::EXTERNAL_ORDER_STATE_FAILED
         ];
 
@@ -112,7 +112,7 @@ class OrderStateTest extends Unit
             Constant::PROCESS_TYPE_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_DEBIT,
-            Constant::ORDER_STATE_STARTED,
+            self::EXTERNAL_ORDER_STATE_STARTED,
             self::EXTERNAL_ORDER_STATE_PROCESSING
         ];
 
@@ -120,7 +120,7 @@ class OrderStateTest extends Unit
             Constant::PROCESS_TYPE_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_PURCHASE,
-            Constant::ORDER_STATE_PENDING,
+            self::EXTERNAL_ORDER_STATE_PENDING,
             self::EXTERNAL_ORDER_STATE_PROCESSING
         ];
 
@@ -128,7 +128,7 @@ class OrderStateTest extends Unit
             Constant::PROCESS_TYPE_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_AUTHORIZE,
-            Constant::ORDER_STATE_PENDING,
+            self::EXTERNAL_ORDER_STATE_PENDING,
             self::EXTERNAL_ORDER_STATE_AUTHORIZED
         ];
     }
@@ -138,11 +138,15 @@ class OrderStateTest extends Unit
      */
     public function inputDTOExceptionDataProvider()
     {
-        $returnAllNotPermittedStates = array_diff(
-            Constant::getOrderStates(),
-            [Constant::ORDER_STATE_STARTED, Constant::ORDER_STATE_PENDING, Constant::ORDER_STATE_FAILED]
+        $initialReturnAllNotPermittedStates = array_diff(
+            array_keys($this->getSampleMapper()),
+            [
+                self::EXTERNAL_ORDER_STATE_STARTED,
+                self::EXTERNAL_ORDER_STATE_PENDING,
+                self::EXTERNAL_ORDER_STATE_FAILED
+            ]
         );
-        foreach ($returnAllNotPermittedStates as $orderState) {
+        foreach ($initialReturnAllNotPermittedStates as $orderState) {
             foreach (Constant::getTransactionTypes() as $transactionType) {
                 yield "{$transactionType}_{$orderState}_success_initial_return_ignorable_exception" => [
                     Constant::PROCESS_TYPE_RETURN,

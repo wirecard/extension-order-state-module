@@ -10,6 +10,7 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\Factory;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
@@ -24,6 +25,16 @@ class ProcessDataFactory
     use DataRegistry;
 
     /**
+     * @var OrderStateMapper
+     */
+    private $mapper;
+
+    public function __construct(OrderStateMapper $mapper)
+    {
+        $this->mapper = $mapper;
+    }
+
+    /**
      * @param InputDataTransferObject $inputData
      * @return ProcessData
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
@@ -32,7 +43,7 @@ class ProcessDataFactory
     public function create(InputDataTransferObject $inputData)
     {
         return new ProcessData(
-            $this->fromOrderStateRegistry($inputData->getCurrentOrderState()),
+            $this->mapper->toInternal($inputData->getCurrentOrderState()),
             $this->fromTransactionTypeRegistry($inputData->getTransactionType()),
             new TransactionState($inputData->getTransactionState())
         );

@@ -64,7 +64,7 @@ class OrderState
      */
     public function process(InputDataTransferObject $data)
     {
-        $processData = (new ProcessDataFactory())->create($data);
+        $processData = (new ProcessDataFactory($this->mapper))->create($data);
         $orderState = (new ProcessHandlerService($data->getProcessType(), $processData))->handle();
         return $this->mapper->toExternal($orderState);
     }
