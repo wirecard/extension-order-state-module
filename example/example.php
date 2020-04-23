@@ -63,7 +63,6 @@ try {
 
     print_r("Input: {$inputDTO}" . PHP_EOL);
     $orderStateService->process($inputDTO);
-
 } catch (IgnorableStateException $exception) {
     print_r("Result:" . $exception->getMessage() . PHP_EOL);
     print_r("Preform follow-up actions" . PHP_EOL);
