@@ -33,7 +33,7 @@ try {
 
     // Processing
     $inputDTO = new SampleInputDTO();
-    $inputDTO->setProcessType(Constant::PROCESS_TYPE_NOTIFICATION);
+    $inputDTO->setProcessType(Constant::PROCESS_TYPE_INITIAL_NOTIFICATION);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
     $inputDTO->setCurrentOrderState("started_external");
@@ -45,9 +45,9 @@ try {
     print_r("-----------------------" . PHP_EOL);
 
     // Failed
-    $inputDTO->setProcessType(Constant::PROCESS_TYPE_RETURN);
+    $inputDTO->setProcessType(Constant::PROCESS_TYPE_INITIAL_RETURN);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
-    $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_FAILURE);
+    $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_FAILED);
     $inputDTO->setCurrentOrderState("pending_external");
 
     $result = $orderStateService->process($inputDTO);
@@ -56,7 +56,7 @@ try {
     print_r("Result: {$result}" . PHP_EOL);
     print_r("-----------------------" . PHP_EOL);
 
-    $inputDTO->setProcessType(Constant::PROCESS_TYPE_RETURN);
+    $inputDTO->setProcessType(Constant::PROCESS_TYPE_INITIAL_RETURN);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_AUTHORIZE);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
     $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_AUTHORIZED);

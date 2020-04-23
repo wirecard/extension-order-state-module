@@ -66,9 +66,9 @@ class ProcessHandlerService
     private function findHandler()
     {
         switch ($this->processType) {
-            case Constant::PROCESS_TYPE_RETURN:
+            case Constant::PROCESS_TYPE_INITIAL_RETURN:
                 return $this->findReturnHandler();
-            case Constant::PROCESS_TYPE_NOTIFICATION:
+            case Constant::PROCESS_TYPE_INITIAL_NOTIFICATION:
                 return $this->findNotificationHandler();
             default:
                 throw new InvalidProcessTypeException("Invalid process type {$this->processType}");

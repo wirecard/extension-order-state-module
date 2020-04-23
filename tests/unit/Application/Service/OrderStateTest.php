@@ -93,7 +93,7 @@ class OrderStateTest extends Unit
     public function inputDtoDataProvider()
     {
         yield "debit_started_success_initial_return_pending" => [
-            Constant::PROCESS_TYPE_RETURN,
+            Constant::PROCESS_TYPE_INITIAL_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_DEBIT,
             self::EXTERNAL_ORDER_STATE_STARTED,
@@ -101,15 +101,15 @@ class OrderStateTest extends Unit
         ];
 
         yield "debit_started_failure_initial_return_failed" => [
-            Constant::PROCESS_TYPE_RETURN,
-            Constant::TRANSACTION_STATE_FAILURE,
+            Constant::PROCESS_TYPE_INITIAL_RETURN,
+            Constant::TRANSACTION_STATE_FAILED,
             Constant::TRANSACTION_TYPE_DEBIT,
             self::EXTERNAL_ORDER_STATE_STARTED,
             self::EXTERNAL_ORDER_STATE_FAILED
         ];
 
         yield "debit_started_success_initial_notification_processing" => [
-            Constant::PROCESS_TYPE_NOTIFICATION,
+            Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_DEBIT,
             self::EXTERNAL_ORDER_STATE_STARTED,
@@ -117,7 +117,7 @@ class OrderStateTest extends Unit
         ];
 
         yield "purchase_pending_success_initial_notification_processing" => [
-            Constant::PROCESS_TYPE_NOTIFICATION,
+            Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_PURCHASE,
             self::EXTERNAL_ORDER_STATE_PENDING,
@@ -125,7 +125,7 @@ class OrderStateTest extends Unit
         ];
 
         yield "authorization_pending_success_initial_notification_processing" => [
-            Constant::PROCESS_TYPE_NOTIFICATION,
+            Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_AUTHORIZE,
             self::EXTERNAL_ORDER_STATE_PENDING,
@@ -149,7 +149,7 @@ class OrderStateTest extends Unit
         foreach ($initialReturnAllNotPermittedStates as $orderState) {
             foreach (Constant::getTransactionTypes() as $transactionType) {
                 yield "{$transactionType}_{$orderState}_success_initial_return_ignorable_exception" => [
-                    Constant::PROCESS_TYPE_RETURN,
+                    Constant::PROCESS_TYPE_INITIAL_RETURN,
                     Constant::TRANSACTION_STATE_SUCCESS,
                     Constant::TRANSACTION_TYPE_AUTHORIZE,
                     $orderState,
@@ -167,7 +167,7 @@ class OrderStateTest extends Unit
         ];
 
         yield "invalid_argument_exception_invalid_transaction_state" => [
-            Constant::PROCESS_TYPE_RETURN,
+            Constant::PROCESS_TYPE_INITIAL_RETURN,
             "INVALID_TRANSACTION_STATE",
             Constant::TRANSACTION_TYPE_AUTHORIZE,
             Constant::ORDER_STATE_STARTED,
@@ -175,7 +175,7 @@ class OrderStateTest extends Unit
         ];
 
         yield "invalid_argument_exception_invalid_transaction_type" => [
-            Constant::PROCESS_TYPE_RETURN,
+            Constant::PROCESS_TYPE_INITIAL_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
             "INVALID TRANSACTION TYPE",
             Constant::ORDER_STATE_STARTED,
@@ -183,7 +183,7 @@ class OrderStateTest extends Unit
         ];
 
         yield "invalid_argument_exception_invalid_order_state" => [
-            Constant::PROCESS_TYPE_RETURN,
+            Constant::PROCESS_TYPE_INITIAL_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_AUTHORIZE,
             "INVALID CURRENT_ORDER_STATE",

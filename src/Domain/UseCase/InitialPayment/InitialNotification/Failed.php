@@ -35,7 +35,7 @@ class Failed extends InitialNotificationHandler
         $result = parent::calculate();
 
         if ($this->processData->orderInState(Constant::ORDER_STATE_FAILED) ||
-            $this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILURE)) {
+            $this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED)) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_FAILED);
         }
 
