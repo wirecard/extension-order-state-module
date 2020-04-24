@@ -19,14 +19,8 @@ class Constant
     // Process Type
     const PROCESS_TYPE_INITIAL_RETURN = "initial-return";
     const PROCESS_TYPE_INITIAL_NOTIFICATION = "initial-notification";
-
-
-    // Define Types for identifing transactions
-   // const PROCESS_INITIAL_RETURN = "initial_return";
-   // const PROCESS_INITIAL_NOTIFICATION = "initial_notification";
     const PROCESS_TYPE_POST_PROCESSING_RETURN = "post-processing-return";
     const PROCESS_TYPE_POST_PROCESSING_NOTIFICATION = "post-processing-notification";
-
     // Order State
     const ORDER_STATE_STARTED = "started";
     const ORDER_STATE_PENDING = "pending";
@@ -80,6 +74,19 @@ class Constant
         return [
             self::TRANSACTION_STATE_SUCCESS,
             self::TRANSACTION_STATE_FAILED,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getProcessTypes()
+    {
+        return [
+            self::PROCESS_TYPE_INITIAL_RETURN,
+            self::PROCESS_TYPE_INITIAL_NOTIFICATION,
+            self::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            self::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
         ];
     }
 }

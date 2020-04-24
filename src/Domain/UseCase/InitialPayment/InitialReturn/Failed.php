@@ -33,8 +33,7 @@ class Failed extends InitialReturnHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED) &&
-            $this->processData->orderInState(Constant::ORDER_STATE_STARTED)
+        if ($this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED)
         ) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_FAILED);
         }
