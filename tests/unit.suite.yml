@@ -1,0 +1,11 @@
+# Codeception Test Suite Configuration
+#
+# Suite for unit or integration tests.
+
+actor: UnitTester
+namespace: Wirecard\ExtensionOrderStateModule\Test\Support
+modules:
+    enabled:
+        - Asserts
+        - Wirecard\ExtensionOrderStateModule\Test\Support\Helper\Unit
+    step_decorators: ~

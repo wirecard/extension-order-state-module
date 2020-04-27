@@ -9,7 +9,10 @@
         </properties>
     </rule>
 
-    <rule ref="PSR2"/>
+    <rule ref="PSR2">
+        <exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
+        <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+    </rule>
 
     <!-- Paths to ignore -->
     <exclude-pattern>*/vendor/*</exclude-pattern>
