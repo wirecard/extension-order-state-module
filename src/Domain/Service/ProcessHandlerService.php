@@ -36,7 +36,9 @@ class ProcessHandlerService
     /**
      * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState
      * @throws IgnorableStateException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
      */
     public function handle()
     {

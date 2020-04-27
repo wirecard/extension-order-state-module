@@ -41,6 +41,7 @@ abstract class AbstractProcessHandler
      * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState|null
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
      * @since 1.0.0
      */
     public function handle()
@@ -55,6 +56,7 @@ abstract class AbstractProcessHandler
 
     /**
      * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @since 1.0.0
      */
     protected function isSuccessTransaction()
@@ -66,6 +68,7 @@ abstract class AbstractProcessHandler
      * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState|null
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
      * @since 1.0.0
      */
     abstract protected function calculate();

@@ -68,15 +68,17 @@ class PostProcessingProcessData extends InitialProcessData
     {
         if (!floatval($input->getTransactionRequestedAmount()) || !floatval($input->getOrderOpenAmount())) {
             throw new InvalidPostProcessDataException(
-                "Property transactionRequestedAmount | orderOpenAmount is invalid or not provided!"
+                "Property transactionRequestedAmount or orderOpenAmount is invalid or not provided!"
             );
         }
 
         if ($input->getTransactionRequestedAmount() > $input->getOrderOpenAmount()) {
             throw new InvalidPostProcessDataException(
                 "Transaction requested amount (" . $input->getTransactionRequestedAmount() . ")
-                couldn't be greater as order open amount (" . $input->getOrderOpenAmount() . ")"
+                can't be greater as order open amount (" . $input->getOrderOpenAmount() . ")"
             );
         }
+        $this->transactionRequestedAmount = (float) $input->getTransactionRequestedAmount();
+        $this->orderOpenAmount = (float) $input->getOrderOpenAmount();
     }
 }

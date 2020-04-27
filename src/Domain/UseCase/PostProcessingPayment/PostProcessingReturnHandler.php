@@ -10,6 +10,7 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment;
 
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturn\Failed;
 
 /**
  * Class PostProcessingReturnHandler
@@ -35,7 +36,7 @@ class PostProcessingReturnHandler extends AbstractProcessHandler
      */
     protected function getNextHandler()
     {
-        return null;
+        return new Failed($this->processData);
     }
 
     /**

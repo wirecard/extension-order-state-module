@@ -60,6 +60,7 @@ class OrderState
      * @return mixed|int|string
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
      * @todo: create interface for return type
      */
     public function process(InputDataTransferObject $data)

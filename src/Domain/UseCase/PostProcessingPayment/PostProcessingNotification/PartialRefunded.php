@@ -9,6 +9,7 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotificationHandler;
 
 /**
@@ -23,7 +24,7 @@ class PartialRefunded extends PostProcessingNotificationHandler
      */
     protected function getNextHandler()
     {
-        return null;
+        return new Refunded($this->processData);
     }
 
     /**
@@ -31,6 +32,13 @@ class PartialRefunded extends PostProcessingNotificationHandler
      */
     protected function calculate()
     {
-        return parent::calculate();
+        $result = parent::calculate();
+        if ($this->processData->transactionTypeInRange(
+            [Constant::TRANSACTION_TYPE_VOID_PURCHASE, Constant::TRANSACTION_TYPE_REFUND_PURCHASE]
+        ) && !$this->isFullyRefunded()) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_REFUNDED);
+        }
+
+        return $result;
     }
 }

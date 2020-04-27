@@ -30,4 +30,31 @@ interface ProcessData
      * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState
      */
     public function getTransactionState();
+
+    /**
+     * @param string $state
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function orderInState($state);
+
+    /**
+     * @param string $type
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function transactionInType($type);
+
+    /**
+     * @param array $typeRange
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function transactionTypeInRange(array $typeRange);
+    /**
+     * @param string $state
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     */
+    public function transactionInState($state);
 }

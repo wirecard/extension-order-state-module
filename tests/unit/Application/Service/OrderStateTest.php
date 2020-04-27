@@ -208,6 +208,7 @@ class OrderStateTest extends Unit
      * @param string $expectedState
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
      * @throws \Exception
      */
     public function testInitialPaymentProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
@@ -241,6 +242,7 @@ class OrderStateTest extends Unit
      * @param string $exception
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
      * @throws \Exception
      */
     public function testInitialProcessException(
@@ -284,16 +286,10 @@ class OrderStateTest extends Unit
         new OrderState(new GenericOrderStateMapper($this->mapDefinition));
     }
 
+    /**
+     * @return \Generator
+     */
     public function inputDtoPostProcessingDataProvider() {
-        yield "purchase_processing_failed_pp_return_processing" => [
-            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
-            Constant::TRANSACTION_STATE_FAILED,
-            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-            100,
-            100,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-        ];
 
         yield "void-purchase_processing_success_pp_return_processing" => [
             Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
@@ -314,6 +310,48 @@ class OrderStateTest extends Unit
             100,
             self::EXTERNAL_ORDER_STATE_PROCESSING,
         ];
+
+        yield "refund-purchase_processing_success_pp_notification_refunded" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            100,
+            self::EXTERNAL_ORDER_STATE_REFUNDED,
+        ];
+
+        yield "void-purchase_processing_success_pp_notification_refunded" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            100,
+            self::EXTERNAL_ORDER_STATE_REFUNDED,
+        ];
+
+        $scenario = [
+            // Open amount: 100; Requested amount: 30; State: partial refunded
+            "step1" => [100, 30,  self::EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED],
+            // Open amount: 70; Requested amount: 40; State: partial refunded
+            "step2" => [70, 40,  self::EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED],
+            // Open amount: 30; Requested amount: 30; State: refunded
+            "step3" => [30, 30,  self::EXTERNAL_ORDER_STATE_REFUNDED],
+        ];
+
+        foreach ($scenario as $step => $stepData) {
+            list($orderAmount, $requestAmount, $nextState) = $stepData;
+            yield "{$step}_refund-purchase_processing_success_pp_notification_{$nextState}" => [
+                Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+                self::EXTERNAL_ORDER_STATE_PROCESSING,
+                $orderAmount,
+                $requestAmount,
+                $nextState,
+            ];
+        }
     }
 
     /**
@@ -328,6 +366,9 @@ class OrderStateTest extends Unit
      * @param float $orderOpenAmount
      * @param float $requestedAmount
      * @param string $expectedState
+     * @throws IgnorableStateException
+     * @throws OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
      * @throws \Exception
      */
     public function testPostProcessingPaymentProcess(

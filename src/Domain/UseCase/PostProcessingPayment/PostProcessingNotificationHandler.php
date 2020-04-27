@@ -10,11 +10,14 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment;
 
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification\Failed;
 
 /**
- * Class PostProcessingNotificationHandler
+ * Class PostProcessingNotifxicationHandler
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment
  * @since 1.0.0
+ *
+ * @property \Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\PostProcessingProcessData $processData
  */
 class PostProcessingNotificationHandler extends AbstractProcessHandler
 {
@@ -23,7 +26,7 @@ class PostProcessingNotificationHandler extends AbstractProcessHandler
      */
     protected function getNextHandler()
     {
-        return null;
+        return new Failed($this->processData);
     }
 
     /**
@@ -32,5 +35,13 @@ class PostProcessingNotificationHandler extends AbstractProcessHandler
     protected function calculate()
     {
         return null;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isFullyRefunded()
+    {
+        return ($this->processData->getOrderOpenAmount() - $this->processData->getTransactionRequestedAmount()) == 0;
     }
 }

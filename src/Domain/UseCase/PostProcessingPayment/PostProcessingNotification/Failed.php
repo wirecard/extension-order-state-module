@@ -9,6 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotificationHandler;
 
 /**
@@ -23,7 +25,7 @@ class Failed extends PostProcessingNotificationHandler
      */
     protected function getNextHandler()
     {
-        return null;
+        return new PartialRefunded($this->processData);
     }
 
     /**
@@ -31,6 +33,10 @@ class Failed extends PostProcessingNotificationHandler
      */
     protected function calculate()
     {
-        return parent::calculate();
+        $result = parent::calculate();
+        if ($this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED)) {
+            throw new FallibleStateException();
+        }
+        return $result;
     }
 }
