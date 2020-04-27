@@ -31,6 +31,6 @@ class Refunded extends PostProcessingReturnHandler
      */
     protected function calculate()
     {
-       return parent::calculate();
+        return parent::calculate();
     }
 }

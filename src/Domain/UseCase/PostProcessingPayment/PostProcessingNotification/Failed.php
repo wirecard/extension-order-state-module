@@ -31,6 +31,6 @@ class Failed extends PostProcessingNotificationHandler
      */
     protected function calculate()
     {
-       return parent::calculate();
+        return parent::calculate();
     }
 }
