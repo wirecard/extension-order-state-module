@@ -54,6 +54,8 @@ class Constant
             self::ORDER_STATE_FAILED,
             self::ORDER_STATE_AUTHORIZED,
             self::ORDER_STATE_PROCESSING,
+            self::ORDER_STATE_REFUNDED,
+            self::ORDER_STATE_PARTIAL_REFUNDED,
         ];
     }
 
@@ -69,6 +71,8 @@ class Constant
             self::TRANSACTION_TYPE_PURCHASE,
             self::TRANSACTION_TYPE_DEPOSIT,
             self::TRANSACTION_TYPE_CHECK_PAYER_RESPONSE,
+            self::TRANSACTION_TYPE_VOID_PURCHASE,
+            self::TRANSACTION_TYPE_REFUND_PURCHASE,
         ];
     }
 
