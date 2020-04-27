@@ -34,8 +34,8 @@ class Refunded extends PostProcessingNotificationHandler
     {
         $result = parent::calculate();
         if ($this->processData->transactionTypeInRange(
-                [Constant::TRANSACTION_TYPE_VOID_PURCHASE, Constant::TRANSACTION_TYPE_REFUND_PURCHASE]
-            ) && $this->isFullyRefunded()) {
+            [Constant::TRANSACTION_TYPE_VOID_PURCHASE, Constant::TRANSACTION_TYPE_REFUND_PURCHASE]
+        ) && $this->isFullyRefunded()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_REFUNDED);
         }
 
