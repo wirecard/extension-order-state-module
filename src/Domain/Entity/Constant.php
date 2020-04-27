@@ -27,6 +27,8 @@ class Constant
     const ORDER_STATE_FAILED = "failed";
     const ORDER_STATE_AUTHORIZED = "authorized";
     const ORDER_STATE_PROCESSING = "processing";
+    const ORDER_STATE_REFUNDED = "refunded";
+    const ORDER_STATE_PARTIAL_REFUNDED = "refunded";
     // Transaction State
     const TRANSACTION_STATE_FAILED = "failed";
     const TRANSACTION_STATE_SUCCESS = "success";
@@ -36,6 +38,9 @@ class Constant
     const TRANSACTION_TYPE_PENDING_DEBIT = "pending-debit";
     const TRANSACTION_TYPE_PURCHASE = "purchase";
     const TRANSACTION_TYPE_DEPOSIT = "deposit";
+    const TRANSACTION_TYPE_CHECK_PAYER_RESPONSE = "check-payer-response";
+    const TRANSACTION_TYPE_VOID_PURCHASE = "void-purchase";
+    const TRANSACTION_TYPE_REFUND_PURCHASE = "refund-purchase";
 
     /**
      * @return array
@@ -63,6 +68,7 @@ class Constant
             self::TRANSACTION_TYPE_PENDING_DEBIT,
             self::TRANSACTION_TYPE_PURCHASE,
             self::TRANSACTION_TYPE_DEPOSIT,
+            self::TRANSACTION_TYPE_CHECK_PAYER_RESPONSE,
         ];
     }
 
