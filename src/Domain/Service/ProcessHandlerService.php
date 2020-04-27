@@ -15,6 +15,8 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidProcessTypeException;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturnHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotificationHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturnHandler;
 
 /**
  * Class ProcessHandlerService
@@ -52,7 +54,7 @@ class ProcessHandlerService
     public function handle()
     {
         $orderState = $this->findHandler()->handle();
-        if (null  === $orderState) {
+        if (null === $orderState) {
             throw new IgnorableStateException("State is ignored!");
         }
         return $orderState;
@@ -67,29 +69,15 @@ class ProcessHandlerService
     {
         switch ($this->processType) {
             case Constant::PROCESS_TYPE_INITIAL_RETURN:
-                return $this->findReturnHandler();
+                return new InitialReturnHandler($this->processData);
             case Constant::PROCESS_TYPE_INITIAL_NOTIFICATION:
-                return $this->findNotificationHandler();
+                return new InitialNotificationHandler($this->processData);
+            case Constant::PROCESS_TYPE_POST_PROCESSING_RETURN:
+                return new PostProcessingReturnHandler($this->processData);
+            case Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION:
+                return new PostProcessingNotificationHandler($this->processData);
             default:
                 throw new InvalidProcessTypeException("Invalid process type {$this->processType}");
         }
-    }
-
-    /**
-     * @return InitialReturnHandler
-     * @todo encapsulate return finder e.g InitialReturn | PostProcessingReturn
-     */
-    private function findReturnHandler()
-    {
-        return new InitialReturnHandler($this->processData);
-    }
-
-    /**
-     * @todo encapsulate return finder e.g PostProcessingNotification | PostProcessingNotification
-     * @return InitialNotificationHandler
-     */
-    private function findNotificationHandler()
-    {
-        return new InitialNotificationHandler($this->processData);
     }
 }
