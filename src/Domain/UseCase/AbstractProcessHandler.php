@@ -9,8 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 
 /**
@@ -55,7 +55,6 @@ abstract class AbstractProcessHandler
 
     /**
      * @return bool
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @since 1.0.0
      */
     protected function isSuccessTransaction()

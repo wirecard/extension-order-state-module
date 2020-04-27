@@ -10,39 +10,24 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 
 /**
- * Interface InputDataTransferObject
+ * Interface ProcessData
  * @package Wirecard\ExtensionOrderStateModule\Domain\Contract
  * @since 1.0.0
  */
-interface InputDataTransferObject
+interface ProcessData
 {
     /**
-     * @return string
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState
      */
-    public function getProcessType();
+    public function getOrderState();
 
     /**
-     * @return string
-     */
-    public function getTransactionState();
-
-    /**
-     * @return string
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType
      */
     public function getTransactionType();
 
     /**
-     * @return string
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState
      */
-    public function getCurrentOrderState();
-
-    /**
-     * @return float
-     */
-    public function getOrderOpenAmount();
-
-    /**
-     * @return float
-     */
-    public function getTransactionRequestedAmount();
+    public function getTransactionState();
 }

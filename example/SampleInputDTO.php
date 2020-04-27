@@ -40,6 +40,16 @@ class SampleInputDTO implements InputDataTransferObject
     private $transactionState;
 
     /**
+     * @var float
+     */
+    private $orderOpenAmount = 0;
+
+    /**
+     * @var float
+     */
+    private $transactionRequestedAmount = 0;
+
+    /**
      * @return string
      */
     public function getProcessType()
@@ -116,4 +126,37 @@ class SampleInputDTO implements InputDataTransferObject
             $this->processType
         );
     }
+
+    /**
+     * @return float
+     */
+    public function getOrderOpenAmount()
+    {
+        return $this->orderOpenAmount;
+    }
+
+    /**
+     * @param float $orderOpenAmount
+     */
+    public function setOrderOpenAmount($orderOpenAmount)
+    {
+        $this->orderOpenAmount = $orderOpenAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTransactionRequestedAmount()
+    {
+        return $this->transactionRequestedAmount;
+    }
+
+    /**
+     * @param float $transactionRequestedAmount
+     */
+    public function setTransactionRequestedAmount($transactionRequestedAmount)
+    {
+        $this->transactionRequestedAmount = $transactionRequestedAmount;
+    }
+
 }

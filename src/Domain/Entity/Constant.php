@@ -99,4 +99,15 @@ class Constant
             self::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
         ];
     }
+
+    /**
+     * @return array
+     */
+    public static function getPostProcessingProcessTypes()
+    {
+        return [
+            self::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            self::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+        ];
+    }
 }

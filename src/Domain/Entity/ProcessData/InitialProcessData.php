@@ -7,26 +7,30 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\Entity;
+namespace Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\ValueObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\ProcessData;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
+
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
 
 /**
- * Class ProcessData
- * @package Wirecard\ExtensionOrderStateModule\Domain\Entity
+ * Class InitialProcessData
+ * @package Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData
  * @since 1.0.0
  */
-class ProcessData implements ValueObject
+class InitialProcessData implements ProcessData
 {
     use DataRegistry;
 
     /**
-     * @var OrderState
+     * @var \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState
      */
     private $orderState;
     /**
-     * @var TransactionType
+     * @var \Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType
      */
     private $transactionType;
     /**
@@ -36,18 +40,40 @@ class ProcessData implements ValueObject
 
     /**
      * ProcessData constructor.
-     * @param OrderState $orderState
-     * @param TransactionType $transactionType
-     * @param TransactionState $transactionState
+     * @param InputDataTransferObject $input
+     * @param OrderStateMapper $mapper
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
-    public function __construct(
-        OrderState $orderState,
-        TransactionType $transactionType,
-        TransactionState $transactionState
-    ) {
-        $this->orderState = $orderState;
-        $this->transactionType = $transactionType;
-        $this->transactionState = $transactionState;
+    public function __construct(InputDataTransferObject $input, OrderStateMapper $mapper)
+    {
+        $this->orderState = $mapper->toInternal($input->getCurrentOrderState());
+        $this->transactionType = $this->fromTransactionTypeRegistry($input->getTransactionType());
+        $this->transactionState = new TransactionState($input->getTransactionState());
+    }
+
+    /**
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState
+     */
+    public function getOrderState()
+    {
+        return $this->orderState;
+    }
+
+    /**
+     * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+
+    /**
+     * @return TransactionState
+     */
+    public function getTransactionState()
+    {
+        return $this->transactionState;
     }
 
     /**
@@ -88,25 +114,5 @@ class ProcessData implements ValueObject
     public function transactionInState($state)
     {
         return $this->transactionState->equalsTo(new TransactionState($state));
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) "{$this->orderState}_{$this->transactionType}_{$this->transactionState}";
-    }
-
-    /**
-     * @param ValueObject|ProcessData $other
-     * @return bool
-     */
-    public function equalsTo(ValueObject $other)
-    {
-        return $this instanceof $other &&
-            $other->orderState->equalsTo($this->orderState) &&
-            $other->transactionType->equalsTo($this->transactionType) &&
-            $other->transactionState->equalsTo($this->transactionState);
     }
 }
