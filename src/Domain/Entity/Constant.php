@@ -28,7 +28,7 @@ class Constant
     const ORDER_STATE_AUTHORIZED = "authorized";
     const ORDER_STATE_PROCESSING = "processing";
     const ORDER_STATE_REFUNDED = "refunded";
-    const ORDER_STATE_PARTIAL_REFUNDED = "refunded";
+    const ORDER_STATE_PARTIAL_REFUNDED = "partial-refunded";
     // Transaction State
     const TRANSACTION_STATE_FAILED = "failed";
     const TRANSACTION_STATE_SUCCESS = "success";
