@@ -10,7 +10,7 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotificationHandler;
 
 /**
@@ -35,7 +35,7 @@ class Failed extends PostProcessingNotificationHandler
     {
         $result = parent::calculate();
         if ($this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED)) {
-            throw new FallibleStateException();
+            throw new IgnorablePostProcessingFailureException();
         }
         return $result;
     }

@@ -66,7 +66,8 @@ class PostProcessingProcessData extends InitialProcessData
      */
     protected function loadFromInput(InputDataTransferObject $input)
     {
-        if (!floatval($input->getTransactionRequestedAmount()) || !floatval($input->getOrderOpenAmount())) {
+        if (!$this->isValidFloatProperty($input->getTransactionRequestedAmount()) ||
+            !$this->isValidFloatProperty($input->getOrderOpenAmount())) {
             throw new InvalidPostProcessDataException(
                 "Property transactionRequestedAmount or orderOpenAmount is invalid or not provided!"
             );
@@ -78,7 +79,21 @@ class PostProcessingProcessData extends InitialProcessData
                 can't be greater as order open amount (" . $input->getOrderOpenAmount() . ")"
             );
         }
-        $this->transactionRequestedAmount = (float) $input->getTransactionRequestedAmount();
-        $this->orderOpenAmount = (float) $input->getOrderOpenAmount();
+        $this->transactionRequestedAmount = (float)$input->getTransactionRequestedAmount();
+        $this->orderOpenAmount = (float)$input->getOrderOpenAmount();
+    }
+
+    /**
+     * @param float $number
+     * @return bool
+     */
+    private function isValidFloatProperty($number)
+    {
+        $result = false;
+        if (!is_bool($number) && !is_string($number) && (float)($number) && $number > 0) {
+            $result = true;
+        }
+
+        return $result;
     }
 }

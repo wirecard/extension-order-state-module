@@ -34,7 +34,12 @@ class PartialRefunded extends PostProcessingNotificationHandler
     {
         $result = parent::calculate();
         if ($this->processData->transactionTypeInRange(
-            [Constant::TRANSACTION_TYPE_VOID_PURCHASE, Constant::TRANSACTION_TYPE_REFUND_PURCHASE]
+            [
+                Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+                Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+                Constant::TRANSACTION_TYPE_REFUND_DEBIT,
+                Constant::TRANSACTION_TYPE_CREDIT,
+            ]
         ) && !$this->isFullyRefunded()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_REFUNDED);
         }

@@ -208,7 +208,7 @@ class OrderStateTest extends Unit
      * @param string $expectedState
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
      * @throws \Exception
      */
     public function testInitialPaymentProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
@@ -242,7 +242,7 @@ class OrderStateTest extends Unit
      * @param string $exception
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
      * @throws \Exception
      */
     public function testInitialProcessException(
@@ -368,7 +368,7 @@ class OrderStateTest extends Unit
      * @param string $expectedState
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\FallibleStateException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
      * @throws \Exception
      */
     public function testPostProcessingPaymentProcess(

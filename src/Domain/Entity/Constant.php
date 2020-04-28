@@ -41,6 +41,8 @@ class Constant
     const TRANSACTION_TYPE_CHECK_PAYER_RESPONSE = "check-payer-response";
     const TRANSACTION_TYPE_VOID_PURCHASE = "void-purchase";
     const TRANSACTION_TYPE_REFUND_PURCHASE = "refund-purchase";
+    const TRANSACTION_TYPE_REFUND_DEBIT = "refund-debit";
+    const TRANSACTION_TYPE_CREDIT = "credit";
 
     /**
      * @return array
@@ -73,6 +75,8 @@ class Constant
             self::TRANSACTION_TYPE_CHECK_PAYER_RESPONSE,
             self::TRANSACTION_TYPE_VOID_PURCHASE,
             self::TRANSACTION_TYPE_REFUND_PURCHASE,
+            self::TRANSACTION_TYPE_REFUND_DEBIT,
+            self::TRANSACTION_TYPE_CREDIT,
         ];
     }
 

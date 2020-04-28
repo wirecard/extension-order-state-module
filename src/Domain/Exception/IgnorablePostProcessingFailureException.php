@@ -17,7 +17,7 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Exception;
  * @package Wirecard\ExtensionOrderStateModule\Domain\Exception
  * @since 1.0.0
  */
-class FallibleStateException extends \Exception
+class IgnorablePostProcessingFailureException extends \Exception
 {
 
 }
