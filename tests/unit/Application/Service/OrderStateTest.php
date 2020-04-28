@@ -347,17 +347,26 @@ class OrderStateTest extends Unit
             "step3" => [30, 30,  self::EXTERNAL_ORDER_STATE_REFUNDED],
         ];
 
-        foreach ($scenario as $step => $stepData) {
-            list($orderAmount, $requestAmount, $nextState) = $stepData;
-            yield "{$step}_refund-purchase_processing_success_pp_notification_{$nextState}" => [
-                Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
-                Constant::TRANSACTION_STATE_SUCCESS,
-                Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-                self::EXTERNAL_ORDER_STATE_PROCESSING,
-                $orderAmount,
-                $requestAmount,
-                $nextState,
-            ];
+        $refundableTransactionTypeList = [
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
+            Constant::TRANSACTION_TYPE_CREDIT,
+        ];
+
+        foreach ($refundableTransactionTypeList as $type) {
+            foreach ($scenario as $step => $stepData) {
+                list($orderAmount, $requestAmount, $nextState) = $stepData;
+                yield "{$step}_{$type}_processing_success_pp_notification_{$nextState}" => [
+                    Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+                    Constant::TRANSACTION_STATE_SUCCESS,
+                    $type,
+                    self::EXTERNAL_ORDER_STATE_PROCESSING,
+                    $orderAmount,
+                    $requestAmount,
+                    $nextState,
+                ];
+            }
         }
     }
 
