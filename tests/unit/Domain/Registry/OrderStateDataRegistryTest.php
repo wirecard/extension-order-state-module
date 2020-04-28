@@ -26,6 +26,9 @@ class OrderStateDataRegistryTest extends \Codeception\Test\Unit
      */
     protected $registry;
 
+    /**
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     */
     protected function _before()
     {
         $this->registry = new OrderStateDataRegistry();
@@ -62,6 +65,7 @@ class OrderStateDataRegistryTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::getInstance
+     * @throws \ReflectionException
      */
     public function testInstance()
     {

@@ -14,10 +14,10 @@ use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidProcessTypeException;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcess;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\Process\InitialNotification;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\Process\InitialReturn;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\Process\PostProcessingNotification;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\Process\PostProcessingReturn;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturn;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturn;
 
 /**
  * Class ProcessDataFactory

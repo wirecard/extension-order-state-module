@@ -7,17 +7,17 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotificationHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 
 /**
  * Class Refunded
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturn
  * @since 1.0.0
  */
-class Refunded extends PostProcessingNotificationHandler
+class Refunded extends NotificationHandler
 {
     /**
      * @inheritDoc
@@ -34,7 +34,7 @@ class Refunded extends PostProcessingNotificationHandler
     {
         $result = parent::calculate();
         if ($this->processData->transactionTypeInRange(
-                [
+            [
                     Constant::TRANSACTION_TYPE_VOID_PURCHASE,
                     Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
                     Constant::TRANSACTION_TYPE_REFUND_DEBIT,

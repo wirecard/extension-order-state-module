@@ -7,20 +7,20 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\Process;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\InitialProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\PostProcessingProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcess;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturnHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 
 /**
- * Class PostProcessingReturn
+ * Class PostProcessingNotification
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\Process
  * @since 1.0.0
  */
-class PostProcessingReturn extends AbstractProcess
+class PostProcessingNotification extends AbstractProcess
 {
     /**
      * @return string
@@ -49,6 +49,6 @@ class PostProcessingReturn extends AbstractProcess
      */
     public function createHandler()
     {
-        return new PostProcessingReturnHandler($this->createProcessData());
+        return new NotificationHandler($this->createProcessData());
     }
 }

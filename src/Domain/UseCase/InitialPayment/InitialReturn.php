@@ -7,12 +7,12 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\Process;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\InitialProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcess;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturnHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\Handler\ReturnHandler;
 
 /**
  * Class InitialReturn
@@ -46,6 +46,6 @@ class InitialReturn extends AbstractProcess
      */
     public function createHandler()
     {
-        return new InitialReturnHandler($this->createProcessData());
+        return new ReturnHandler($this->createProcessData());
     }
 }

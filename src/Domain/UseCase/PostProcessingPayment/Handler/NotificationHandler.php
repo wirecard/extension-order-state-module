@@ -7,10 +7,10 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler;
 
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification\Failed;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
 
 /**
  * Class PostProcessingNotifxicationHandler
@@ -19,7 +19,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Post
  *
  * @property \Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\PostProcessingProcessData $processData
  */
-class PostProcessingNotificationHandler extends AbstractProcessHandler
+class NotificationHandler extends AbstractProcessHandler
 {
     /**
      * @inheritDoc

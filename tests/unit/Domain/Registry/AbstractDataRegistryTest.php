@@ -19,6 +19,9 @@ class AbstractDataRegistryTest extends \Codeception\Test\Unit
     protected $registry;
 
 
+    /**
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     */
     protected function _before()
     {
         $this->registry = $this->getMockBuilder(AbstractDataRegistry::class)

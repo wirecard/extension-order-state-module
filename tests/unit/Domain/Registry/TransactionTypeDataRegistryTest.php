@@ -27,6 +27,9 @@ class TransactionTypeDataRegistryTest extends \Codeception\Test\Unit
      */
     protected $registry;
 
+    /**
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     */
     protected function _before()
     {
         $this->registry = new TransactionTypeDataRegistry();
@@ -63,7 +66,7 @@ class TransactionTypeDataRegistryTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::getInstance
-     * @covers ::$instance
+     * @throws \ReflectionException
      */
     public function testInstance()
     {

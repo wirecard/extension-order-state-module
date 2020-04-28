@@ -24,6 +24,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumen
  * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Service
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Application\Service\OrderState
  * @since 1.0.0
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class OrderStateTest extends Unit
 {
@@ -211,8 +212,13 @@ class OrderStateTest extends Unit
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
      * @throws \Exception
      */
-    public function testInitialPaymentProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
-    {
+    public function testInitialPaymentProcess(
+        $processType,
+        $transactionState,
+        $transactionType,
+        $currentOrderState,
+        $expectedState
+    ) {
         /**
          * @var InputDataTransferObject $inputDTO
          */
@@ -289,7 +295,8 @@ class OrderStateTest extends Unit
     /**
      * @return \Generator
      */
-    public function inputDtoPostProcessingDataProvider() {
+    public function inputDtoPostProcessingDataProvider()
+    {
 
         yield "void-purchase_processing_success_pp_return_processing" => [
             Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,

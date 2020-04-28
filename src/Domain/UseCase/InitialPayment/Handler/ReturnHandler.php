@@ -7,17 +7,17 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\Handler;
 
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification\Failed;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\Handler\InitialReturn\Failed;
 
 /**
- * Class InitialNotificationHandler
+ * Class ReturnOrderStateManager
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment
  * @since 1.0.0
  */
-class InitialNotificationHandler extends AbstractProcessHandler
+class ReturnHandler extends AbstractProcessHandler
 {
     /**
      * @inheritDoc
