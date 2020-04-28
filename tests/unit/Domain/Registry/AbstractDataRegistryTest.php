@@ -25,7 +25,7 @@ class AbstractDataRegistryTest extends \Codeception\Test\Unit
     protected function _before()
     {
         $this->registry = $this->getMockBuilder(AbstractDataRegistry::class)
-            ->onlyMethods(["init"])
+            ->setMethodsExcept(["attach", "get"])
             ->disableOriginalConstructor()->getMock();
         $this->registry->method("init")->willReturnCallback(function () {
         });
@@ -58,7 +58,7 @@ class AbstractDataRegistryTest extends \Codeception\Test\Unit
     {
         /** @var AbstractDataRegistry | MockObject $registry */
         $registry = $this->getMockBuilder(AbstractDataRegistry::class)
-            ->onlyMethods(["init"])
+            ->setMethodsExcept(["attach", "get"])
             ->disableOriginalConstructor()->getMock();
         $registry->method("init")->willReturnCallback(function () use (&$registry) {
             $registry->attach("x", 1);
