@@ -27,7 +27,7 @@ class PostProcessingReturn extends AbstractProcess
      */
     public function getType()
     {
-        return Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION;
+        return Constant::PROCESS_TYPE_POST_PROCESSING_RETURN;
     }
 
     /**

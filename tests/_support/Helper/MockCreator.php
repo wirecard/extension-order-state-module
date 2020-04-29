@@ -16,6 +16,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\InitialProcessData;
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\PostProcessingProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
 use Wirecard\ExtensionOrderStateModule\Domain\Registry\DataRegistry;
@@ -176,5 +177,38 @@ trait MockCreator
         );
 
         return new InitialProcessData($dto, $mapper);
+    }
+
+    /**
+     * @param array $definition
+     * @param $processType
+     * @param $transactionState
+     * @param $transactionType
+     * @param $orderState
+     * @param int $orderOpenAmount
+     * @param int $transactionRequestedAmount
+     * @return InitialProcessData
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Exception
+     */
+    public function createPostProcessData(
+        $orderState,
+        $transactionType,
+        $transactionState,
+        array $definition = [],
+        $orderOpenAmount = 100,
+        $transactionRequestedAmount = 100
+    ) {
+        $mapper = new GenericOrderStateMapper($this->createMappingDefinition($definition));
+        $dto = $this->createDummyInputDTO(
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            $transactionState,
+            $transactionType,
+            $mapper->toExternal($this->fromOrderStateRegistry($orderState)),
+            $orderOpenAmount,
+            $transactionRequestedAmount
+        );
+
+        return new PostProcessingProcessData($dto, $mapper);
     }
 }
