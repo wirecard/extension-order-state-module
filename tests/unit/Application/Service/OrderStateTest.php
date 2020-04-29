@@ -16,7 +16,9 @@ use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException;
 
 /**
@@ -411,5 +413,110 @@ class OrderStateTest extends Unit
             ]
         );
         $this->assertEquals($expectedState, $this->orderState->process($inputDTO));
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function inputDTOExceptionPostProcessingDataProvider()
+    {
+        foreach (array_keys($this->getSampleMapper()) as $orderState) {
+            foreach (Constant::getTransactionTypes() as $transactionType) {
+                yield "{$transactionType}_{$orderState}_success_pp_return_ignorable_exception" => [
+                    Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+                    Constant::TRANSACTION_STATE_FAILED,
+                    $transactionType,
+                    $orderState,
+                    100,
+                    100,
+                    IgnorablePostProcessingFailureException::class
+                ];
+
+                yield "{$transactionType}_{$orderState}_success_pp_notification_ignorable_exception" => [
+                    Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+                    Constant::TRANSACTION_STATE_FAILED,
+                    $transactionType,
+                    $orderState,
+                    100,
+                    100,
+                    IgnorablePostProcessingFailureException::class
+                ];
+            }
+        }
+
+       yield "pp_return_request_order_total_less_request" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            10,
+            100,
+           InvalidPostProcessDataException::class
+        ];
+
+        yield  "pp_return_request_amount_invalid" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            0,
+            InvalidPostProcessDataException::class
+        ];
+
+        yield  "pp_return_order_total_amount_invalid" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            0,
+            100,
+            InvalidPostProcessDataException::class
+        ];
+    }
+
+    /**
+     * @group        integration
+     * @small
+     * @covers       ::process
+     * @dataProvider inputDTOExceptionPostProcessingDataProvider
+     *
+     * @param string $processType
+     * @param string $transactionState
+     * @param string $transactionType
+     * @param string $currentOrderState
+     * @param $orderOpenAmount
+     * @param $requestedAmount
+     * @param string $exception
+     * @throws IgnorablePostProcessingFailureException
+     * @throws IgnorableStateException
+     * @throws OrderStateInvalidArgumentException
+     */
+    public function testPostProcessingProcessException(
+        $processType,
+        $transactionState,
+        $transactionType,
+        $currentOrderState,
+        $orderOpenAmount,
+        $requestedAmount,
+        $exception
+    ) {
+        $this->expectException($exception);
+        /**
+         * @var InputDataTransferObject $inputDTO
+         */
+        $inputDTO = \Codeception\Stub::makeEmpty(
+            InputDataTransferObject::class,
+            [
+                'getProcessType' => Expected::atLeastOnce($processType),
+                'getTransactionState' => Expected::once($transactionState),
+                'getTransactionType' => Expected::once($transactionType),
+                'getCurrentOrderState' => Expected::once($currentOrderState),
+                'getOrderOpenAmount' => Expected::atLeastOnce($orderOpenAmount),
+                'getTransactionRequestedAmount' => Expected::atLeastOnce($requestedAmount)
+            ]
+        );
+
+        $this->orderState->process($inputDTO);
     }
 }
