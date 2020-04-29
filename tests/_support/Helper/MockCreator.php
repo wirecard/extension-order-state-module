@@ -76,8 +76,7 @@ trait MockCreator
         $currentOrderState,
         $orderOpenAmount = 0,
         $transactionRequestedAmount = 0
-    )
-    {
+    ) {
         return \Codeception\Stub::makeEmpty(
             InputDataTransferObject::class,
             [
@@ -104,8 +103,7 @@ trait MockCreator
         $orderState = Constant::ORDER_STATE_STARTED,
         $transactionType = Constant::TRANSACTION_TYPE_PURCHASE,
         $transactionState = Constant::TRANSACTION_STATE_SUCCESS
-    )
-    {
+    ) {
         return \Codeception\Stub::makeEmpty(ProcessData::class, [
             'getOrderState' => $this->fromOrderStateRegistry($orderState),
             'getTransactionType' => $this->fromTransactionTypeRegistry($transactionType),
@@ -121,7 +119,6 @@ trait MockCreator
     public function createMappingDefinition(array $definition = [])
     {
         if (empty($definition)) {
-
             $definition = [
                 "external_started" => Constant::ORDER_STATE_STARTED,
                 "external_pending" => Constant::ORDER_STATE_PENDING,
@@ -167,8 +164,7 @@ trait MockCreator
         array $definition = [],
         $orderOpenAmount = 0,
         $transactionRequestedAmount = 0
-    )
-    {
+    ) {
         $mapper = new GenericOrderStateMapper($this->createMappingDefinition($definition));
         $dto = $this->createDummyInputDTO(
             Constant::PROCESS_TYPE_INITIAL_RETURN,
@@ -181,5 +177,4 @@ trait MockCreator
 
         return new InitialProcessData($dto, $mapper);
     }
-
 }
