@@ -43,7 +43,7 @@ abstract class AbstractDataRegistry
      * @return AbstractDataRegistry
      * @since 1.0.0
      */
-    public function attach($key, $object)
+    protected function attach($key, $object)
     {
         if (!empty($key)) {
             $this->container[$key] = $object;

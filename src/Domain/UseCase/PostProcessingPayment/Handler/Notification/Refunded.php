@@ -16,6 +16,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Hand
  * Class Refunded
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturn
  * @since 1.0.0
+ * @todo: create common class for this collection of constants.
  */
 class Refunded extends NotificationHandler
 {

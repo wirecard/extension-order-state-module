@@ -45,6 +45,7 @@ class ProcessFactory
     /**
      * @return AbstractProcess
      * @throws InvalidProcessTypeException
+     * TODO: use polymorphism
      */
     public function create()
     {

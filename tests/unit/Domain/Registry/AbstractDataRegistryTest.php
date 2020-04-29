@@ -24,11 +24,7 @@ class AbstractDataRegistryTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
-        $this->registry = $this->getMockBuilder(AbstractDataRegistry::class)
-            ->setMethodsExcept(["attach", "get"])
-            ->disableOriginalConstructor()->getMock();
-        $this->registry->method("init")->willReturnCallback(function () {
-        });
+        $this->registry = $this->getMockForAbstractClass(AbstractDataRegistry::class);
     }
 
     /**
@@ -56,12 +52,11 @@ class AbstractDataRegistryTest extends \Codeception\Test\Unit
      */
     public function testInit()
     {
-        /** @var AbstractDataRegistry | MockObject $registry */
-        $registry = $this->getMockBuilder(AbstractDataRegistry::class)
-            ->setMethodsExcept(["attach", "get"])
-            ->disableOriginalConstructor()->getMock();
-        $registry->method("init")->willReturnCallback(function () use (&$registry) {
-            $registry->attach("x", 1);
+        $registry = $this->registry;
+        $this->registry->method("init")->willReturnCallback(function () use (&$registry) {
+            $reflectionMethod = new \ReflectionMethod($registry, "attach");
+            $reflectionMethod->setAccessible(true);
+            $reflectionMethod->invokeArgs($registry, ["x", 1]);
         });
 
         $class = new \ReflectionClass($registry);
@@ -80,10 +75,13 @@ class AbstractDataRegistryTest extends \Codeception\Test\Unit
      * @param string $key
      * @param mixed $value
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \ReflectionException
      */
     public function testAttach($key, $value)
     {
-        $this->registry->attach($key, $value);
+        $reflectionMethod = new \ReflectionMethod($this->registry, "attach");
+        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->invokeArgs($this->registry, [$key, $value]);
         $this->assertEquals($value, $this->registry->get($key));
     }
 
@@ -92,10 +90,13 @@ class AbstractDataRegistryTest extends \Codeception\Test\Unit
      * @small
      * @covers ::get
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \ReflectionException
      */
     public function testGet()
     {
-        $this->registry->attach("test", "TEST_GET");
+        $reflectionMethod = new \ReflectionMethod($this->registry, "attach");
+        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->invokeArgs($this->registry, ["test", "TEST_GET"]);
         $this->assertEquals("TEST_GET", $this->registry->get("test"));
 
         $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException::class);
