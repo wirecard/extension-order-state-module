@@ -9,18 +9,11 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase;
 
-use Codeception\Stub\Expected;
-use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionState;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\TransactionType;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcess;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
-use Wirecard\ExtensionOrderStateModule\Test\Support\UnitTester;
 
 /**
  * Class AbstractProcessTest
@@ -31,11 +24,6 @@ use Wirecard\ExtensionOrderStateModule\Test\Support\UnitTester;
 class AbstractProcessTest extends \Codeception\Test\Unit
 {
     use MockCreator;
-
-    const TYPE_INITIAL = "initial";
-
-    /** @var UnitTester */
-    protected $tester;
 
     /**
      * @var AbstractProcess | \PHPUnit\Framework\MockObject\MockObject
@@ -50,10 +38,16 @@ class AbstractProcessTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
+        $sampleDTOInput = $this->createDummyInputDTO(
+            Constant::PROCESS_TYPE_INITIAL_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::ORDER_STATE_PENDING
+        );
         /** @var AbstractProcess | \PHPUnit\Framework\MockObject\MockObject $processHandler */
         $this->process = $this->getMockForAbstractClass(
             AbstractProcess::class,
-            [$this->getSampleDTO(), $this->getSampleMapper()],
+            [$sampleDTOInput, $this->createGenericMapper()],
             "",
             true,
             true,
@@ -63,58 +57,14 @@ class AbstractProcessTest extends \Codeception\Test\Unit
     }
 
     /**
-     * @return object
-     * @throws \Exception
-     */
-    protected function getSampleDTO()
-    {
-        return $this->createDummyInputDTO(
-            Constant::PROCESS_TYPE_INITIAL_RETURN,
-            Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_PURCHASE,
-            Constant::ORDER_STATE_PENDING
-        );
-    }
-
-    /**
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
-     * @throws \Exception
-     */
-    protected function getSampleProcessData()
-    {
-        return \Codeception\Stub::makeEmpty(ProcessData::class, [
-            'getOrderState' => new OrderState(Constant::ORDER_STATE_PENDING),
-            'getTransactionType' => new TransactionType(Constant::TRANSACTION_TYPE_PURCHASE),
-            'getTransactionState' => new TransactionState(Constant::TRANSACTION_STATE_SUCCESS),
-        ]);
-    }
-
-    /**
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
-     * @throws \Exception
-     *
-     */
-    protected function getSampleMapper()
-    {
-        /** @var MappingDefinition $mappingDefinition */
-        $mappingDefinition = \Codeception\Stub::makeEmpty(MappingDefinition::class, [
-            'definitions' => Expected::atLeastOnce([
-                "x" => Constant::ORDER_STATE_STARTED,
-                "y" => Constant::ORDER_STATE_PENDING,
-            ])
-        ]);
-        return new GenericOrderStateMapper($mappingDefinition);
-    }
-
-    /**
      * @group unit
      * @small
      * @covers ::getType
      */
     public function testType()
     {
-        $this->process->method('getType')->willReturn(self::TYPE_INITIAL);
-        $this->assertEquals(self::TYPE_INITIAL, $this->process->getType());
+        $this->process->method('getType')->willReturn("initial");
+        $this->assertEquals("initial", $this->process->getType());
         $this->assertTrue(is_string($this->process->getType()));
     }
 
@@ -125,15 +75,21 @@ class AbstractProcessTest extends \Codeception\Test\Unit
      * @covers ::__construct
      * @throws \ReflectionException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testCreateProcessData()
     {
-        $this->process->method('createProcessData')->willReturn($this->getSampleProcessData());
+        $processData = $this->createDummyProcessData(
+            Constant::ORDER_STATE_PENDING,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::TRANSACTION_STATE_SUCCESS
+        );
+        $this->process->method('createProcessData')->willReturn($processData);
         $reflection = new \ReflectionClass($this->process);
         $reflectionMethod = $reflection->getMethod('createProcessData');
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($this->process);
-        $this->assertEquals($this->getSampleProcessData(), $result);
+        $this->assertEquals($processData, $result);
         $this->assertInstanceOf(ProcessData::class, $result);
     }
 
@@ -143,21 +99,18 @@ class AbstractProcessTest extends \Codeception\Test\Unit
      * @covers ::createHandler
      * @covers ::__construct
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testCreateHandler()
     {
-        $handler = $this->getMockForAbstractClass(
-            AbstractProcessHandler::class,
-            [$this->getSampleProcessData()]
+        $processData = $this->createDummyProcessData(
+            Constant::ORDER_STATE_PENDING,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::TRANSACTION_STATE_SUCCESS
         );
+        $handler = $this->getMockForAbstractClass(AbstractProcessHandler::class, [$processData]);
         $this->process->method('createHandler')->willReturn($handler);
         $this->assertEquals($handler, $this->process->createHandler());
         $this->assertInstanceOf(AbstractProcessHandler::class, $this->process->createHandler());
-    }
-
-
-    public function testX()
-    {
-        $this->tester->assertTrue(true);
     }
 }

@@ -35,6 +35,7 @@ class PendingTest extends \Codeception\Test\Unit
 
     /**
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
     protected function _setUp()
     {

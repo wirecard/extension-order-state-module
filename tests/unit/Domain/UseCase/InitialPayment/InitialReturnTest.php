@@ -36,6 +36,7 @@ class InitialReturnTest extends \Codeception\Test\Unit
     /**
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
     protected function _setUp()
     {
