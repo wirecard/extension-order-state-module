@@ -119,4 +119,41 @@ class AbstractProcessHandlerTest extends \Codeception\Test\Unit
             $this->processHandler->handle()
         );
     }
+
+    /**
+     * @return \Generator
+     */
+    public function isSuccessTransactionDataProvider()
+    {
+        yield "is_transaction_successful_success" => [Constant::TRANSACTION_STATE_SUCCESS, true];
+        yield "is_transaction_successful_failed" =>[Constant::TRANSACTION_STATE_FAILED, false];
+    }
+
+    /**
+     * @group unit
+     * @small
+     * @dataProvider isSuccessTransactionDataProvider
+     * @covers ::isSuccessTransaction
+     * @param string $transactionState
+     * @param bool $expectedResult
+     * @throws \ReflectionException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function testIsSuccessTransaction($transactionState, $expectedResult)
+    {
+        $successProcessData = $this->createInitialProcessData(
+            Constant::ORDER_STATE_STARTED,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            $transactionState
+        );
+        $handler = $this->getMockForAbstractClass(
+            AbstractProcessHandler::class,
+            [$successProcessData]
+        );
+
+        $reflectionMethod = new \ReflectionMethod($handler, "isSuccessTransaction");
+        $reflectionMethod->setAccessible(true);
+        $result = $reflectionMethod->invoke($handler);
+        $this->assertEquals($expectedResult, $result);
+    }
 }

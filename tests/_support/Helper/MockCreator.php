@@ -195,9 +195,9 @@ trait MockCreator
         $orderState,
         $transactionType,
         $transactionState,
-        array $definition = [],
         $orderOpenAmount = 100,
-        $transactionRequestedAmount = 100
+        $transactionRequestedAmount = 100,
+        array $definition = []
     ) {
         $mapper = new GenericOrderStateMapper($this->createMappingDefinition($definition));
         $dto = $this->createDummyInputDTO(

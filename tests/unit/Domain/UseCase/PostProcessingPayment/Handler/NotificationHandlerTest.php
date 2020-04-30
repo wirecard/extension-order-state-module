@@ -9,6 +9,7 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
@@ -67,5 +68,42 @@ class NotificationHandlerTest extends \Codeception\Test\Unit
         $result = $reflectionMethod->invoke($this->handler);
         $this->assertInstanceOf(Failed::class, $result);
         $this->assertEquals(new Failed($this->createDummyProcessData()), $result);
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function isFullyRefundedDataProvider()
+    {
+        yield [100, 100, true];
+        yield [100, 99.9999, false];
+        yield [100, 30, false];
+    }
+
+    /**
+     * @group unit
+     * @small
+     * @dataProvider isFullyRefundedDataProvider
+     * @covers ::isFullyRefunded
+     * @param float $orderOpenAmount
+     * @param float $requestedAmount
+     * @param bool $expectedResult
+     * @throws \ReflectionException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    public function testIsFullyRefunded($orderOpenAmount, $requestedAmount, $expectedResult)
+    {
+        $successProcessData = $this->createPostProcessData(
+            Constant::ORDER_STATE_STARTED,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            $orderOpenAmount,
+            $requestedAmount
+        );
+        $handler = new NotificationHandler($successProcessData);
+        $reflectionMethod = new \ReflectionMethod($handler, "isFullyRefunded");
+        $reflectionMethod->setAccessible(true);
+        $result = $reflectionMethod->invoke($handler);
+        $this->assertEquals($expectedResult, $result);
     }
 }

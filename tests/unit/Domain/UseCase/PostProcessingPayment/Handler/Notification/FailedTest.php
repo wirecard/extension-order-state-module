@@ -32,7 +32,7 @@ class FailedTest extends \Codeception\Test\Unit
     protected $handler;
 
     /**
-     * @var \Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\InitialProcessData
+     * @var \Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\PostProcessingProcessData
      */
     private $postProcessData;
 
@@ -42,7 +42,7 @@ class FailedTest extends \Codeception\Test\Unit
      */
     protected function _setUp()
     {
-        $this->postProcessData = $this->createInitialProcessData(
+        $this->postProcessData = $this->createPostProcessData(
             Constant::ORDER_STATE_PROCESSING,
             Constant::TRANSACTION_TYPE_PURCHASE,
             Constant::TRANSACTION_STATE_SUCCESS
