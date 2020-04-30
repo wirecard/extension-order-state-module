@@ -299,47 +299,6 @@ class OrderStateTest extends Unit
      */
     public function inputDtoPostProcessingDataProvider()
     {
-
-        yield "void-purchase_processing_success_pp_return_processing" => [
-            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
-            Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-            100,
-            100,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-        ];
-
-        yield "refund-purchase_processing_failed_pp_return_processing" => [
-            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
-            Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-            100,
-            100,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-        ];
-
-        yield "refund-purchase_processing_success_pp_notification_refunded" => [
-            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
-            Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-            100,
-            100,
-            self::EXTERNAL_ORDER_STATE_REFUNDED,
-        ];
-
-        yield "void-purchase_processing_success_pp_notification_refunded" => [
-            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
-            Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-            self::EXTERNAL_ORDER_STATE_PROCESSING,
-            100,
-            100,
-            self::EXTERNAL_ORDER_STATE_REFUNDED,
-        ];
-
         $scenario = [
             // Open amount: 100; Requested amount: 30; State: partial refunded
             "step1" => [100, 30,  self::EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED],
@@ -420,6 +379,26 @@ class OrderStateTest extends Unit
      */
     public function inputDTOExceptionPostProcessingDataProvider()
     {
+        yield "void-purchase_processing_success_pp_return_processing" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            100,
+            IgnorableStateException::class
+        ];
+
+        yield "refund-purchase_processing_failed_pp_return_processing" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            100,
+            IgnorableStateException::class
+        ];
+
         foreach (array_keys($this->getSampleMapper()) as $orderState) {
             foreach (Constant::getTransactionTypes() as $transactionType) {
                 yield "{$transactionType}_{$orderState}_success_pp_return_ignorable_exception" => [

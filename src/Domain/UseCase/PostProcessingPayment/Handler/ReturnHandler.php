@@ -22,18 +22,6 @@ class ReturnHandler extends AbstractProcessHandler
     /**
      * @inheritDoc
      */
-    public function handle()
-    {
-        $orderState = parent::handle();
-        if (null === $orderState) {
-            $orderState = $this->processData->getOrderState();
-        }
-        return $orderState;
-    }
-
-    /**
-     * @inheritDoc
-     */
     protected function getNextHandler()
     {
         return new Failed($this->processData);
