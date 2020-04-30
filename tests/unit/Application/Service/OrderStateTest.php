@@ -444,7 +444,7 @@ class OrderStateTest extends Unit
             }
         }
 
-       yield "pp_return_request_order_total_less_request" => [
+        yield "pp_return_request_order_total_less_request" => [
             Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_PURCHASE,
@@ -491,6 +491,7 @@ class OrderStateTest extends Unit
      * @throws IgnorablePostProcessingFailureException
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
+     * @throws \Exception
      */
     public function testPostProcessingProcessException(
         $processType,
