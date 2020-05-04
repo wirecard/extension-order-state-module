@@ -13,19 +13,18 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 
 /**
- * Class Cancelled
+ * Class Processing
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification
  * @since 1.0.0
- * @todo: create common class for this collection of constants.
  */
-class Canceled extends NotificationHandler
+class Processing extends NotificationHandler
 {
     /**
      * @inheritDoc
      */
     protected function getNextHandler()
     {
-        return new Processing($this->processData);
+        return new PartialCaptured($this->processData);
     }
 
     /**
@@ -35,10 +34,31 @@ class Canceled extends NotificationHandler
     {
         $result = parent::calculate();
         if ($this->processData->orderInState(Constant::ORDER_STATE_AUTHORIZED) &&
-            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION) &&
-            $this->isFullAmountRequested()) {
-            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_CANCELED);
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
+            $this->isNeverRefunded() &&
+            $this->isFullAmountCaptured()) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PROCESSING);
         }
+        return $result;
+    }
+
+    private function isNeverRefunded()
+    {
+        return !$this->processData->getOrderRefundedAmount();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isFullAmountCaptured()
+    {
+        $result = false;
+        $capturedTotalAmount = $this->processData->getOrderCapturedAmount() +
+            $this->processData->getTransactionRequestedAmount();
+        if ($capturedTotalAmount == $this->processData->getOrderTotalAmount()) {
+            $result = true;
+        }
+
         return $result;
     }
 }

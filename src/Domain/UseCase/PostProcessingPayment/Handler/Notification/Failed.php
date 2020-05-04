@@ -15,7 +15,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Hand
 
 /**
  * Class Failed
- * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturn
+ * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification
  * @since 1.0.0
  */
 class Failed extends NotificationHandler
@@ -25,7 +25,7 @@ class Failed extends NotificationHandler
      */
     protected function getNextHandler()
     {
-        return new PartialRefunded($this->processData);
+        return new Canceled($this->processData);
     }
 
     /**
