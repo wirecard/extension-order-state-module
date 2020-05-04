@@ -20,10 +20,4 @@ interface InputDataTransferObject extends OrderInput, TransactionInput
      * @return string
      */
     public function getProcessType();
-
-    /**
-     * @return float
-     * @deprecated
-     */
-    public function getOrderTotalAmount();
 }
