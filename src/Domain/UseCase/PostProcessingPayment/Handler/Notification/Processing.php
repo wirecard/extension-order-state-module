@@ -42,6 +42,9 @@ class Processing extends NotificationHandler
         return $result;
     }
 
+    /**
+     * @return bool
+     */
     private function isNeverRefunded()
     {
         return !$this->processData->getOrderRefundedAmount();
