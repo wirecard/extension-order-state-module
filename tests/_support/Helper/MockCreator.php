@@ -216,12 +216,11 @@ trait MockCreator
      * @param $transactionType
      * @param $transactionState
      * @param float $orderTotalAmount
-     * @param int $transactionRequestedAmount
+     * @param float $transactionRequestedAmount
      * @param float $orderCapturedAmount
      * @param float $orderRefundedAmount
      * @param array $definition
      * @return InitialProcessData
-     * @throws \Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
@@ -232,7 +231,7 @@ trait MockCreator
         $transactionType,
         $transactionState,
         $orderTotalAmount = 100.0,
-        $transactionRequestedAmount = 100,
+        $transactionRequestedAmount = 100.0,
         $orderCapturedAmount = 100.0,
         $orderRefundedAmount = 100.0,
         array $definition = []

@@ -10,19 +10,19 @@
 namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler\Notification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Canceled;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialCaptured;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
 
 /**
- * Class FailedTest
+ * Class CanceledTest
  * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler\Notification
- * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed
+ * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Canceled
  * @since 1.0.0
  */
-class FailedTest extends \Codeception\Test\Unit
+class CanceledTest extends \Codeception\Test\Unit
 {
     use MockCreator;
 
@@ -37,7 +37,6 @@ class FailedTest extends \Codeception\Test\Unit
     private $postProcessData;
 
     /**
-     * @throws \Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
@@ -50,7 +49,7 @@ class FailedTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_PURCHASE,
             Constant::TRANSACTION_STATE_SUCCESS
         );
-        $this->handler = new Failed($this->postProcessData);
+        $this->handler = new Canceled($this->postProcessData);
     }
 
     /**
@@ -67,13 +66,21 @@ class FailedTest extends \Codeception\Test\Unit
      */
     public function ignorableScenariosDataProvider()
     {
+        $ignorableTransactionTypes = Constant::getTransactionTypes();
+        $ignorableTransactionTypes = array_diff(
+            $ignorableTransactionTypes,
+            [Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION]
+        );
         $ignorableOrderStates = Constant::getOrderStates();
-        $ignorableOrderStates = array_diff($ignorableOrderStates, [Constant::ORDER_STATE_FAILED]);
-        foreach (Constant::getTransactionTypes() as $transactionType) {
-            foreach ($ignorableOrderStates as $ignorableOrderState) {
-                yield "pp_notification_ignorable_{$transactionType}_{$ignorableOrderState}_on_failed_scope" => [
+        $ignorableOrderStates = array_diff(
+            $ignorableOrderStates,
+            [Constant::ORDER_STATE_AUTHORIZED]
+        );
+        foreach ($ignorableOrderStates as $ignorableOrderState) {
+            foreach ($ignorableTransactionTypes as $ignorableTransactionType) {
+                yield "pp_notification_ignorable_{$ignorableOrderState}_{$ignorableTransactionType}_on_failed_scope" => [
                     $ignorableOrderState,
-                    $transactionType,
+                    $ignorableTransactionType,
                     Constant::TRANSACTION_STATE_SUCCESS
                 ];
             }
@@ -90,16 +97,16 @@ class FailedTest extends \Codeception\Test\Unit
      * @param string $transactionType
      * @param string $transactionState
      * @throws \ReflectionException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
      */
     public function testCalculateResultIgnorable($orderState, $transactionType, $transactionState)
     {
-        $this->postProcessData = $this->createInitialProcessData(
+        $this->postProcessData = $this->createPostProcessData(
             $orderState,
             $transactionType,
             $transactionState
         );
-        $handler = new Failed($this->postProcessData);
+        $handler = new Canceled($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($handler);
@@ -111,20 +118,22 @@ class FailedTest extends \Codeception\Test\Unit
      * @small
      * @covers ::calculate
      * @throws \ReflectionException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testCalculateFoundNextOrderState()
     {
-        $this->postProcessData = $this->createInitialProcessData(
-            Constant::ORDER_STATE_PROCESSING,
-            Constant::TRANSACTION_TYPE_PURCHASE,
-            Constant::TRANSACTION_STATE_FAILED
+        $this->postProcessData = $this->createPostProcessData(
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            Constant::TRANSACTION_STATE_SUCCESS
         );
-        $handler = new Failed($this->postProcessData);
+        $handler = new Canceled($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
         $reflectionMethod->setAccessible(true);
-        $this->expectException(IgnorablePostProcessingFailureException::class);
-        $reflectionMethod->invoke($handler);
+        $result = $reflectionMethod->invoke($handler);
+        $this->assertEquals($this->createOrderState(Constant::ORDER_STATE_CANCELED), $result);
     }
 
     /**
@@ -138,6 +147,6 @@ class FailedTest extends \Codeception\Test\Unit
         $reflectionMethod = new \ReflectionMethod($this->handler, "getNextHandler");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($this->handler);
-        $this->assertEquals(new Canceled($this->postProcessData), $result);
+        $this->assertEquals(new PartialCaptured($this->postProcessData), $result);
     }
 }
