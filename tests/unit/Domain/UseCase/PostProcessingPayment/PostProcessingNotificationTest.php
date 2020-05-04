@@ -41,7 +41,7 @@ class PostProcessingNotificationTest extends \Codeception\Test\Unit
      */
     protected function _setUp()
     {
-        $inputDTO = $this->createDummyInputDTO(
+        $inputDTO = $this->createDummyInputPostProcessingDTO(
             Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_PURCHASE,

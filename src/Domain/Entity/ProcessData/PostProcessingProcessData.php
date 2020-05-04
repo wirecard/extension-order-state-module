@@ -28,7 +28,17 @@ class PostProcessingProcessData extends InitialProcessData
     /**
      * @var float
      */
-    private $orderOpenAmount;
+    private $orderTotalAmount;
+
+    /**
+     * @var float
+     */
+    private $orderCapturedAmount;
+
+    /**
+     * @var float
+     */
+    private $orderRefundedAmount;
 
     /**
      * PostProcessingProcessData constructor.
@@ -47,9 +57,9 @@ class PostProcessingProcessData extends InitialProcessData
     /**
      * @return float
      */
-    public function getOrderOpenAmount()
+    public function getOrderTotalAmount()
     {
-        return $this->orderOpenAmount;
+        return $this->orderTotalAmount;
     }
 
     /**
@@ -61,37 +71,81 @@ class PostProcessingProcessData extends InitialProcessData
     }
 
     /**
+     * @return float
+     */
+    public function getOrderCapturedAmount()
+    {
+        return $this->orderCapturedAmount;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getOrderRefundedAmount()
+    {
+        return $this->orderRefundedAmount;
+    }
+
+
+    /**
      * @param InputDataTransferObject $input
      * @throws InvalidPostProcessDataException
+     * @todo: FloatValueObject instead of raw float values
      */
     protected function loadFromInput(InputDataTransferObject $input)
     {
-        if (!$this->isValidFloatProperty($input->getTransactionRequestedAmount()) ||
-            !$this->isValidFloatProperty($input->getOrderOpenAmount())) {
+        if (!$this->isValidFloatProperty($input->getTransactionRequestedAmount())) {
             throw new InvalidPostProcessDataException(
-                "Property transactionRequestedAmount or orderOpenAmount is invalid or not provided!"
+                "Property transactionRequestedAmount is invalid or not provided!"
             );
         }
 
-        if ($input->getTransactionRequestedAmount() > $input->getOrderOpenAmount()) {
+        if (!$this->isValidFloatProperty($input->getOrderTotalAmount())) {
             throw new InvalidPostProcessDataException(
-                "Transaction requested amount (" . $input->getTransactionRequestedAmount() . ")
-                can't be greater as order open amount (" . $input->getOrderOpenAmount() . ")"
+                "Property orderTotalAmount is invalid or not provided!"
             );
         }
-        $this->transactionRequestedAmount = (float)$input->getTransactionRequestedAmount();
-        $this->orderOpenAmount = (float)$input->getOrderOpenAmount();
+
+        if (!$this->isValidFloatProperty($input->getOrderCapturedAmount(), true)) {
+            throw new InvalidPostProcessDataException(
+                "Property orderCapturedAmount is invalid or not provided!"
+            );
+        }
+
+        if (!$this->isValidFloatProperty($input->getOrderRefundedAmount(), true)) {
+            throw new InvalidPostProcessDataException(
+                "Property orderRefundedAmount is invalid or not provided!"
+            );
+        }
+
+        if ($input->getTransactionRequestedAmount() > $input->getOrderTotalAmount()) {
+            throw new InvalidPostProcessDataException(
+                "Transaction requested amount (" . $input->getTransactionRequestedAmount() . ")
+                can't be greater as order open amount (" . $input->getOrderTotalAmount() . ")"
+            );
+        }
+
+        $this->transactionRequestedAmount = (float) $input->getTransactionRequestedAmount();
+        $this->orderTotalAmount = (float) $input->getOrderTotalAmount();
+        $this->orderCapturedAmount = (float) $input->getOrderCapturedAmount();
+        $this->orderRefundedAmount = (float) $input->getOrderRefundedAmount();
     }
 
     /**
      * @param float $number
+     * @param bool $allowEmpty
      * @return bool
      */
-    private function isValidFloatProperty($number)
+    private function isValidFloatProperty($number, $allowEmpty = false)
     {
         $result = false;
-        if (!is_bool($number) && !is_string($number) && (float)($number) && $number > 0) {
+        if (!is_bool($number) && !is_string($number)) {
             $result = true;
+        }
+
+        if ($result && !$allowEmpty) {
+            $result = (float) $number > 0;
         }
 
         return $result;
