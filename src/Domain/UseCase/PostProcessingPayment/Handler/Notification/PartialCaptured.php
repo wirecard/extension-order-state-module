@@ -41,6 +41,9 @@ class PartialCaptured extends NotificationHandler
         return $result;
     }
 
+    /**
+     * @return bool
+     */
     private function isNotFullCaptureAmount()
     {
         $result = false;
