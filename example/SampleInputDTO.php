@@ -10,7 +10,6 @@
 namespace Wirecard\ExtensionOrderStateModule\Example;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
-use Wirecard\ExtensionOrderStateModule\Domain\Contract\TransactionDataTransferObject;
 
 /**
  * Sample implementation of Input contract for handling order states
@@ -43,17 +42,22 @@ class SampleInputDTO implements InputDataTransferObject
     /**
      * @var float
      */
-    private $orderOpenAmount = 0;
+    private $orderTotalAmount = 0.0;
 
     /**
      * @var float
      */
-    private $transactionRequestedAmount = 0;
+    private $transactionRequestedAmount = 0.0;
 
     /**
-     * @var array
+     * @var float
      */
-    private $transactionList;
+    private $orderRefundedAmount = 0.0;
+
+    /**
+     * @var float
+     */
+    private $orderCapturedAmount = 0.0;
 
     /**
      * @return string
@@ -120,19 +124,6 @@ class SampleInputDTO implements InputDataTransferObject
     }
 
     /**
-     * @return array
-     */
-    public function getTransactions()
-    {
-        return $this->transactionList;
-    }
-
-    public function addTransaction(TransactionDataTransferObject $transaction)
-    {
-        $this->transactionList[] = $transaction;
-    }
-
-    /**
      * @return string
      */
     public function __toString()
@@ -149,17 +140,50 @@ class SampleInputDTO implements InputDataTransferObject
     /**
      * @return float
      */
-    public function getOrderOpenAmount()
+    public function getOrderTotalAmount()
     {
-        return $this->orderOpenAmount;
+        return $this->orderTotalAmount;
     }
 
     /**
-     * @param float $orderOpenAmount
+     * @param float $orderTotalAmount
      */
-    public function setOrderOpenAmount($orderOpenAmount)
+    public function setOrderTotalAmount($orderTotalAmount)
     {
-        $this->orderOpenAmount = $orderOpenAmount;
+        $this->orderTotalAmount = $orderTotalAmount;
+    }
+
+
+    /**
+     * @return float
+     */
+    public function getOrderRefundedAmount()
+    {
+        return $this->orderRefundedAmount;
+    }
+
+    /**
+     * @param float $orderRefundedAmount
+     */
+    public function setOrderRefundedAmount($orderRefundedAmount)
+    {
+        $this->orderRefundedAmount = $orderRefundedAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOrderCapturedAmount()
+    {
+        return $this->orderCapturedAmount;
+    }
+
+    /**
+     * @param float $orderCapturedAmount
+     */
+    public function setOrderCapturedAmount($orderCapturedAmount)
+    {
+        $this->orderCapturedAmount = $orderCapturedAmount;
     }
 
     /**
@@ -177,54 +201,4 @@ class SampleInputDTO implements InputDataTransferObject
     {
         $this->transactionRequestedAmount = $transactionRequestedAmount;
     }
-
-    /**
-     * State Flow (Notification): Failed => PartialCaptured => Processing => PartialRefunded => Refunded
-     *
-     * Scenario 1:
-     * order amount:100; orderstate: authorized; tr.type:capture-authorization;req.am:100; => processing
-     * order amount:100; orderstate: processing; tr.type:refund-capture;req.am:100; => refunded
-     *
-     * Scenario 2:
-     * order amount:100; orderstate: authorized; tr.type:capture-authorization;req.am:80; => partial-captured
-     * order amount:20; orderstate: partial-captured; tr.type:capture-authorization;req.am:20; => processing
-     *
-     * Scenario 3:
-     * order amount:100; orderstate: authorized; tr.type:capture-authorization;req.am:100; => processing
-     * order amount:100; orderstate: processing; tr.type:refund-capture;req.am:30; => partial refunded
-     * order amount:70; orderstate: partial refunded; tr.type:refund-capture;req.am:40; => partial refunded
-     * order amount:30; orderstate: partial refunded; tr.type:refund-capture;req.am:30; => refunded
-     *
-     *
-     * Scenario 4:
-     * order amount:100; orderstate: authorized; tr.type:capture-authorization;req.am:30; => partial captured
-     * order amount:70; orderstate:  partial captured; tr.type:capture-authorization;req.am:40; => partial capture
-     * order amount:30; orderstate:  partial captured; tr.type:capture-authorization;req.am:30; => processing
-     *
-     * order amount:100; orderstate: processing; tr.type:refund-capture;req.am:30; => partial refunded
-     * order amount:70; orderstate: partial refunded; tr.type:refund-capture;req.am:40; => partial refunded
-     * order amount:30; orderstate: partial refunded; tr.type:refund-capture;req.am:30; => refunded
-     *
-     * Scenario 5:
-     * order amount:100; orderstate: authorized; tr.type:void-authorization;req.am:100; => cancelled
-     *
-     * Scenario 6:
-     * order amount:100; orderstate: authorized; tr.type:capture-authorization;req.am:30; => partial captured
-     * order amount:70; orderstate: partial captured; tr.type:refund-capture;req.am:20; => partial captured
-     * order amount:70; orderstate: partial captured; tr.type:refund-capture;req.am:10; => partial refunded
-     *
-     *
-     *
-     * OrderAmount: 100
-     *
-     * CAPTURING_GROUP
-     * Cap1: 30
-     * REFUNDING_GROUP
-     * Ref1:-20
-     * Ref2: -10
-     *                                           +                -
-     * REMAIN_ORDER_TOTAL = OrderTotal - (CAPTURING_GROUP + REFUNDING_GROUP)
-     *
-     */
-
 }

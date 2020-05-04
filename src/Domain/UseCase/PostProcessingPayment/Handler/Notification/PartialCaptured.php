@@ -13,18 +13,18 @@ use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 
 /**
- * Class Refunded
+ * Class PartialRefunded
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification
  * @since 1.0.0
  */
-class Refunded extends NotificationHandler
+class PartialCaptured extends NotificationHandler
 {
     /**
      * @inheritDoc
      */
     protected function getNextHandler()
     {
-        return new PartialRefunded($this->processData);
+        return null;
     }
 
     /**
@@ -33,44 +33,30 @@ class Refunded extends NotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->transactionTypeInRange(
-                [
-                    Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-                    Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-                    Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-                    Constant::TRANSACTION_TYPE_CREDIT,
-                    Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
-                    Constant::TRANSACTION_TYPE_VOID_CAPTURE,
-                ]
-            ) &&
-            $this->isNeverCaptured() &&
-            $this->isFullAmountRefunded()) {
-            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_REFUNDED);
+        if ($this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
+            $this->isNotFullCaptureAmount() &&
+            $this->isCaptureAmountOverRefundAmount()) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_CAPTURED);
         }
-
         return $result;
     }
 
-    /**
-     * @return bool
-     */
-    private function isFullAmountRefunded()
+    private function isNotFullCaptureAmount()
     {
         $result = false;
-        $refundedTotalAmount = $this->processData->getOrderRefundedAmount() +
+        $capturedTotalAmount = $this->processData->getOrderCapturedAmount() +
             $this->processData->getTransactionRequestedAmount();
-        if ($refundedTotalAmount == $this->processData->getOrderTotalAmount()) {
+        if ($capturedTotalAmount < $this->processData->getOrderTotalAmount()) {
             $result = true;
         }
-
         return $result;
     }
 
     /**
      * @return bool
      */
-    private function isNeverCaptured()
+    private function isCaptureAmountOverRefundAmount()
     {
-        return !$this->processData->getOrderCapturedAmount();
+        return $this->processData->getOrderCapturedAmount() > $this->processData->getOrderRefundedAmount();
     }
 }

@@ -23,12 +23,6 @@ interface OrderInput
 
     /**
      * @return float
-     * @deprecated
-     */
-    public function getOrderOpenAmount();
-
-    /**
-     * @return float
      */
     public function getOrderTotalAmount();
 

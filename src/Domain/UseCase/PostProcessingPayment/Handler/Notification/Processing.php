@@ -24,7 +24,7 @@ class Processing extends NotificationHandler
      */
     protected function getNextHandler()
     {
-        return new PartialCaptured($this->processData);
+        return new Refunded($this->processData);
     }
 
     /**

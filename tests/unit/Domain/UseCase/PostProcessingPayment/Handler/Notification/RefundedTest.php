@@ -10,6 +10,7 @@
 namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler\Notification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialRefunded;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Refunded;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
@@ -35,6 +36,8 @@ class RefundedTest extends \Codeception\Test\Unit
     private $postProcessData;
 
     /**
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
@@ -45,7 +48,9 @@ class RefundedTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_PURCHASE,
             Constant::TRANSACTION_STATE_SUCCESS,
             100,
-            100
+            10,
+            0,
+            90
         );
         $this->handler = new Refunded($this->postProcessData);
     }
@@ -97,6 +102,8 @@ class RefundedTest extends \Codeception\Test\Unit
      * @param float $orderOpenAmount
      * @param float $requestedAmount
      * @throws \ReflectionException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testCalculateResultIgnorable(
@@ -156,6 +163,8 @@ class RefundedTest extends \Codeception\Test\Unit
      * @param float $orderOpenAmount
      * @param float $requestedAmount
      * @throws \ReflectionException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testCalculateFoundNextOrderState(
@@ -190,6 +199,6 @@ class RefundedTest extends \Codeception\Test\Unit
         $reflectionMethod = new \ReflectionMethod($this->handler, "getNextHandler");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($this->handler);
-        $this->assertEquals(null, $result);
+        $this->assertEquals(new PartialRefunded($this->postProcessData), $result);
     }
 }

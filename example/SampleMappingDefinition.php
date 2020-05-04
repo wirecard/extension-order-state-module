@@ -38,7 +38,7 @@ class SampleMappingDefinition implements MappingDefinition
             "refunded_external" => Constant::ORDER_STATE_REFUNDED,
             "partial_refunded_external" => Constant::ORDER_STATE_PARTIAL_REFUNDED,
             "partial_captured_external" => Constant::ORDER_STATE_PARTIAL_CAPTURED,
-            "cancelled_external" => Constant::ORDER_STATE_CANCELLED,
+            "cancelled_external" => Constant::ORDER_STATE_CANCELED,
         ];
     }
 }

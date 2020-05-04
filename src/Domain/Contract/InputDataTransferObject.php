@@ -25,5 +25,5 @@ interface InputDataTransferObject extends OrderInput, TransactionInput
      * @return float
      * @deprecated
      */
-    public function getOrderOpenAmount();
+    public function getOrderTotalAmount();
 }
