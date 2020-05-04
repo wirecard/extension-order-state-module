@@ -13,17 +13,22 @@ namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
  * Interface InputDataTransferObject
  * @package Wirecard\ExtensionOrderStateModule\Domain\Contract
  * @since 1.0.0
+ * @todo: split to 2 Interfaces
  */
-interface InputDataTransferObject extends OrderInput, TransactionInput
+interface TransactionInput
 {
     /**
      * @return string
      */
-    public function getProcessType();
+    public function getTransactionState();
+
+    /**
+     * @return string
+     */
+    public function getTransactionType();
 
     /**
      * @return float
-     * @deprecated
      */
-    public function getOrderOpenAmount();
+    public function getTransactionRequestedAmount();
 }
