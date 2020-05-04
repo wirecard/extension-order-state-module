@@ -134,7 +134,7 @@ class OrderStateTest extends Unit
         yield "authorization_pending_success_initial_notification_processing" => [
             Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
             self::EXTERNAL_ORDER_STATE_PENDING,
             self::EXTERNAL_ORDER_STATE_AUTHORIZED
         ];
@@ -158,7 +158,7 @@ class OrderStateTest extends Unit
                 yield "{$transactionType}_{$orderState}_success_initial_return_ignorable_exception" => [
                     Constant::PROCESS_TYPE_INITIAL_RETURN,
                     Constant::TRANSACTION_STATE_SUCCESS,
-                    Constant::TRANSACTION_TYPE_AUTHORIZE,
+                    Constant::TRANSACTION_TYPE_AUTHORIZATION,
                     $orderState,
                     IgnorableStateException::class
                 ];
@@ -168,7 +168,7 @@ class OrderStateTest extends Unit
         yield "invalid_argument_exception_invalid_process" => [
             "INVALID_PROCESS_TYPE",
             Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
             Constant::ORDER_STATE_STARTED,
             OrderStateInvalidArgumentException::class
         ];
@@ -176,7 +176,7 @@ class OrderStateTest extends Unit
         yield "invalid_argument_exception_invalid_transaction_state" => [
             Constant::PROCESS_TYPE_INITIAL_RETURN,
             "INVALID_TRANSACTION_STATE",
-            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
             Constant::ORDER_STATE_STARTED,
             OrderStateInvalidArgumentException::class
         ];
@@ -192,7 +192,7 @@ class OrderStateTest extends Unit
         yield "invalid_argument_exception_invalid_order_state" => [
             Constant::PROCESS_TYPE_INITIAL_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
             "INVALID CURRENT_ORDER_STATE",
             OrderStateInvalidArgumentException::class
         ];

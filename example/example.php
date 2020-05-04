@@ -57,7 +57,7 @@ try {
     print_r("-----------------------" . PHP_EOL);
 
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_INITIAL_RETURN);
-    $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_AUTHORIZE);
+    $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_AUTHORIZATION);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
     $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_AUTHORIZED);
 

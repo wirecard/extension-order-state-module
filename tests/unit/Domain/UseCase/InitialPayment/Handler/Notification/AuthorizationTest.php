@@ -65,7 +65,7 @@ class AuthorizationTest extends \Codeception\Test\Unit
     public function ignorableScenariosDataProvider()
     {
         $scopeTypes = [
-            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
         ];
         foreach ($scopeTypes as $scopeType) {
             yield "initial_notification_ignorable_{$scopeType}_on_authorization_scope" =>
@@ -121,7 +121,7 @@ class AuthorizationTest extends \Codeception\Test\Unit
     public function scopeSuccessScenariosDataProvider()
     {
         $scopeSuccessTransactionTypes = [
-            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
         ];
         foreach (Constant::getOrderStates() as $orderState) {
             foreach ($scopeSuccessTransactionTypes as $scopeSuccessTransactionType) {

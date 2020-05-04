@@ -35,6 +35,10 @@ class SampleMappingDefinition implements MappingDefinition
             "failed_external" => Constant::ORDER_STATE_FAILED,
             "authorized_external" => Constant::ORDER_STATE_AUTHORIZED,
             "processing_external" => Constant::ORDER_STATE_PROCESSING,
+            "refunded_external" => Constant::ORDER_STATE_REFUNDED,
+            "partial_refunded_external" => Constant::ORDER_STATE_PARTIAL_REFUNDED,
+            "partial_captured_external" => Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            "cancelled_external" => Constant::ORDER_STATE_CANCELLED,
         ];
     }
 }

@@ -35,7 +35,6 @@ class Constant
     const TRANSACTION_STATE_FAILED = "failed";
     const TRANSACTION_STATE_SUCCESS = "success";
     // Transaction Type
-    const TRANSACTION_TYPE_AUTHORIZE = "authorization";
     const TRANSACTION_TYPE_DEBIT = "debit";
     const TRANSACTION_TYPE_PENDING_DEBIT = "pending-debit";
     const TRANSACTION_TYPE_PURCHASE = "purchase";
@@ -76,7 +75,7 @@ class Constant
     public static function getTransactionTypes()
     {
         return [
-            self::TRANSACTION_TYPE_AUTHORIZE,
+            self::TRANSACTION_TYPE_AUTHORIZATION,
             self::TRANSACTION_TYPE_DEBIT,
             self::TRANSACTION_TYPE_PENDING_DEBIT,
             self::TRANSACTION_TYPE_PURCHASE,

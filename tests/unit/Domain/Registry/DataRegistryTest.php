@@ -82,8 +82,8 @@ class DataRegistryTest extends \Codeception\Test\Unit
         ];
 
         yield [
-            new TransactionType(Constant::TRANSACTION_TYPE_AUTHORIZE),
-            [Constant::TRANSACTION_TYPE_CREDIT, Constant::TRANSACTION_TYPE_AUTHORIZE],
+            new TransactionType(Constant::TRANSACTION_TYPE_AUTHORIZATION),
+            [Constant::TRANSACTION_TYPE_CREDIT, Constant::TRANSACTION_TYPE_AUTHORIZATION],
             true
         ];
 
