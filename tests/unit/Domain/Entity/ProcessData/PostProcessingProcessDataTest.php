@@ -75,7 +75,7 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::__construct
-     * @covers ::getOrderOpenAmount
+     * @covers ::getOrderTotalAmount
      * @covers ::getTransactionRequestedAmount
      * @throws InvalidPostProcessDataException
      * @throws OrderStateInvalidArgumentException
@@ -100,7 +100,7 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
         $processData = new PostProcessingProcessData($inputDTO, $this->mapper);
         $this->assertInstanceOf(PostProcessingProcessData::class, $processData);
         $this->assertInstanceOf(ProcessData::class, $processData);
-        $this->assertEquals(100, $processData->getOrderOpenAmount());
+        $this->assertEquals(100, $processData->getOrderTotalAmount());
         $this->assertEquals(34, $processData->getTransactionRequestedAmount());
     }
 

@@ -84,7 +84,7 @@ class NotificationHandlerTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @dataProvider isFullyRefundedDataProvider
-     * @covers ::isFullyRefunded
+     * @covers ::isFullAmountRequested
      * @param float $orderOpenAmount
      * @param float $requestedAmount
      * @param bool $expectedResult
@@ -101,7 +101,7 @@ class NotificationHandlerTest extends \Codeception\Test\Unit
             $requestedAmount
         );
         $handler = new NotificationHandler($successProcessData);
-        $reflectionMethod = new \ReflectionMethod($handler, "isFullyRefunded");
+        $reflectionMethod = new \ReflectionMethod($handler, "isFullAmountRequested");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($handler);
         $this->assertEquals($expectedResult, $result);

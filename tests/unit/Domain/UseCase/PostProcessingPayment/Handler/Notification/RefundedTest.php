@@ -68,7 +68,8 @@ class RefundedTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_VOID_PURCHASE,
             Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
             Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-            Constant::TRANSACTION_TYPE_CREDIT
+            Constant::TRANSACTION_TYPE_CREDIT,
+            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
         ];
         $noneRefundableTypes = array_diff(Constant::getTransactionTypes(), $refundableTypes);
         foreach (Constant::getOrderStates() as $orderState) {
@@ -128,7 +129,8 @@ class RefundedTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_VOID_PURCHASE,
             Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
             Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-            Constant::TRANSACTION_TYPE_CREDIT
+            Constant::TRANSACTION_TYPE_CREDIT,
+            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
         ];
         foreach (Constant::getOrderStates() as $orderState) {
             foreach ($refundableTypes as $refundableType) {

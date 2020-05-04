@@ -128,6 +128,8 @@ trait MockCreator
                 "external_processing" => Constant::ORDER_STATE_PROCESSING,
                 "external_refunded" => Constant::ORDER_STATE_REFUNDED,
                 "external_partial_refunded" => Constant::ORDER_STATE_PARTIAL_REFUNDED,
+                "external_partial_captured" => Constant::ORDER_STATE_PARTIAL_CAPTURED,
+                "external_canceled" => Constant::ORDER_STATE_CANCELED,
             ];
         }
         return \Codeception\Stub::makeEmpty(MappingDefinition::class, [
