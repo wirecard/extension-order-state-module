@@ -122,7 +122,7 @@ class PostProcessingProcessData extends InitialProcessData
         if ($input->getTransactionRequestedAmount() > $input->getOrderTotalAmount()) {
             throw new InvalidPostProcessDataException(
                 "Transaction requested amount (" . $input->getTransactionRequestedAmount() . ")
-                can't be greater as order open amount (" . $input->getOrderTotalAmount() . ")"
+                can't be greater as order total amount (" . $input->getOrderTotalAmount() . ")"
             );
         }
 
