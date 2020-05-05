@@ -33,7 +33,7 @@ class Processing extends NotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->orderInState(Constant::ORDER_STATE_AUTHORIZED) &&
+        if ($this->isOrderStateAllowed() &&
             $this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
             $this->isNeverRefunded() &&
             $this->isFullAmountCaptured()) {
@@ -44,10 +44,20 @@ class Processing extends NotificationHandler
 
     /**
      * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    private function isOrderStateAllowed()
+    {
+        return $this->processData->orderInState(Constant::ORDER_STATE_AUTHORIZED) ||
+            $this->processData->orderInState(Constant::ORDER_STATE_PARTIAL_CAPTURED);
+    }
+
+    /**
+     * @return bool
      */
     private function isNeverRefunded()
     {
-        return !$this->processData->getOrderRefundedAmount();
+        return $this->processData->getOrderRefundedAmount() == 0;
     }
 
     /**
