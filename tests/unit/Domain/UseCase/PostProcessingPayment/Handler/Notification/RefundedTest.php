@@ -75,6 +75,7 @@ class RefundedTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_REFUND_DEBIT,
             Constant::TRANSACTION_TYPE_CREDIT,
             Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+            Constant::TRANSACTION_TYPE_VOID_CAPTURE,
         ];
         $noneRefundableTypes = array_diff(Constant::getTransactionTypes(), $refundableTypes);
         foreach (Constant::getOrderStates() as $orderState) {
@@ -83,6 +84,7 @@ class RefundedTest extends \Codeception\Test\Unit
                     $orderState,
                     $noneRefundableType,
                     Constant::TRANSACTION_STATE_SUCCESS,
+                    100,
                     100,
                     100
                 ];
@@ -138,6 +140,7 @@ class RefundedTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_REFUND_DEBIT,
             Constant::TRANSACTION_TYPE_CREDIT,
             Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+            Constant::TRANSACTION_TYPE_VOID_CAPTURE,
         ];
         foreach (Constant::getOrderStates() as $orderState) {
             foreach ($refundableTypes as $refundableType) {
@@ -146,7 +149,18 @@ class RefundedTest extends \Codeception\Test\Unit
                     $refundableType,
                     Constant::TRANSACTION_STATE_SUCCESS,
                     100,
-                    100
+                    20,
+                    100,
+                    80
+                ];
+                yield "full_refundable1_{$refundableType}_{$orderState}_on_refund_scope" => [
+                    $orderState,
+                    $refundableType,
+                    Constant::TRANSACTION_STATE_SUCCESS,
+                    100,
+                    100,
+                    100,
+                    0
                 ];
             }
         }
@@ -160,8 +174,10 @@ class RefundedTest extends \Codeception\Test\Unit
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
-     * @param float $orderOpenAmount
-     * @param float $requestedAmount
+     * @param float $orderTotalAmount
+     * @param float $transactionRequestedAmount
+     * @param float $orderCapturedAmount
+     * @param float $orderRefundedAmount
      * @throws \ReflectionException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
@@ -171,15 +187,19 @@ class RefundedTest extends \Codeception\Test\Unit
         $orderState,
         $transactionType,
         $transactionState,
-        $orderOpenAmount,
-        $requestedAmount
+        $orderTotalAmount,
+        $transactionRequestedAmount,
+        $orderCapturedAmount,
+        $orderRefundedAmount
     ) {
         $this->postProcessData = $this->createPostProcessData(
             $orderState,
             $transactionType,
             $transactionState,
-            $orderOpenAmount,
-            $requestedAmount
+            $orderTotalAmount,
+            $transactionRequestedAmount,
+            $orderCapturedAmount,
+            $orderRefundedAmount
         );
         $handler = new Refunded($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");

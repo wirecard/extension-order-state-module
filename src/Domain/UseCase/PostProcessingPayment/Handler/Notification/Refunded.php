@@ -42,9 +42,7 @@ class Refunded extends NotificationHandler
                     Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
                     Constant::TRANSACTION_TYPE_VOID_CAPTURE,
                 ]
-            ) &&
-            $this->isNeverCaptured() &&
-            $this->isFullAmountRefunded()) {
+            ) && $this->isFullAmountRefunded()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_REFUNDED);
         }
 
@@ -64,13 +62,5 @@ class Refunded extends NotificationHandler
         }
 
         return $result;
-    }
-
-    /**
-     * @return bool
-     */
-    private function isNeverCaptured()
-    {
-        return !$this->processData->getOrderCapturedAmount();
     }
 }
