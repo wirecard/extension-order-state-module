@@ -15,7 +15,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Hand
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
 
 /**
- * Class PartialRefundedTest
+ * Class PartialCapturedTest
  * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler\Notification
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialCaptured
  * @since 1.0.0
@@ -74,7 +74,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
         $noneRefundableTypes = array_diff(Constant::getTransactionTypes(), $capturingTypes);
         foreach (Constant::getOrderStates() as $orderState) {
             foreach ($noneRefundableTypes as $noneRefundableType) {
-                yield "none_capturing_{$noneRefundableType}_{$orderState}_on_capture_partial_scope" => [
+                yield "none_capturing_{$noneRefundableType}_{$orderState}_on_partial_capture_scope" => [
                     $orderState,
                     $noneRefundableType,
                     Constant::TRANSACTION_STATE_SUCCESS,
@@ -85,7 +85,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                 ];
             }
 
-            yield "capture_is_full_capture-authorization_{$orderState}_on_capture_partial_scope" => [
+            yield "capture_is_full_capture-authorization_{$orderState}_on_partial_capture_scope" => [
                 $orderState,
                 Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
                 Constant::TRANSACTION_STATE_SUCCESS,
@@ -95,7 +95,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                 0
             ];
 
-            yield "capture_is_full1_capture-authorization_{$orderState}_on_capture_partial_scope" => [
+            yield "capture_is_full1_capture-authorization_{$orderState}_on_partial_capture_scope" => [
                 $orderState,
                 Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
                 Constant::TRANSACTION_STATE_SUCCESS,
@@ -105,7 +105,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                 0
             ];
 
-            yield "refund_over_capture_capture-authorization_{$orderState}_on_capture_partial_scope" => [
+            yield "refund_over_capture_capture-authorization_{$orderState}_on_partial_capture_scope" => [
                 $orderState,
                 Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
                 Constant::TRANSACTION_STATE_SUCCESS,
@@ -122,6 +122,13 @@ class PartialCapturedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @dataProvider ignorableScenariosDataProvider
+     * @covers ::calculate
+     * @covers ::onCaptureTransactionRequest
+     * @covers ::onRefundTransactionRequest
+     * @covers ::isNotFullCapturedAmountWithTransactionAmount
+     * @covers ::isCaptureAmountOverRefundAmount
+     * @covers ::getCalculatedCaptureTotalAmount
+     * @covers ::isFullCapturedAmount
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
@@ -166,7 +173,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
     public function nextStateCasesDataProvider()
     {
         foreach (Constant::getOrderStates() as $orderState) {
-            yield "not_full_capture_capture-authorization_{$orderState}_on_refund_partial_scope" => [
+            yield "not_full_capture_capture-authorization_{$orderState}_on_partial_capture_scope" => [
                 $orderState,
                 Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
                 Constant::TRANSACTION_STATE_SUCCESS,
@@ -175,7 +182,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                 66.999,
                 10
             ];
-            yield "capture_over_refund_capture-authorization_{$orderState}_on_refund_partial_scope" => [
+            yield "capture_over_refund_capture-authorization_{$orderState}_on_partial_capture_scope" => [
                 $orderState,
                 Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
                 Constant::TRANSACTION_STATE_SUCCESS,
@@ -185,7 +192,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                 30
             ];
 
-            yield "refund_equals_0_capture-authorization_{$orderState}_on_refund_partial_scope" => [
+            yield "refund_equals_0_capture-authorization_{$orderState}_on_partial_capture_scope" => [
                 $orderState,
                 Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
                 Constant::TRANSACTION_STATE_SUCCESS,
@@ -194,6 +201,24 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                 20,
                 0
             ];
+
+            $refundableTransactionStates = [
+                Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+                Constant::TRANSACTION_TYPE_VOID_CAPTURE,
+            ];
+            foreach ($refundableTransactionStates as $refundableTransactionState) {
+                yield "refund_transaction_1_{$refundableTransactionState}_{$orderState}_on_partial_capture_scope" => [
+                    $orderState,
+                    $refundableTransactionState,
+                    Constant::TRANSACTION_STATE_SUCCESS,
+                    100,
+                    30,
+                    100,
+                    60
+                ];
+            }
+
+
         }
     }
 
@@ -201,10 +226,17 @@ class PartialCapturedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @dataProvider nextStateCasesDataProvider
+     * @covers ::calculate
+     * @covers ::onCaptureTransactionRequest
+     * @covers ::onRefundTransactionRequest
+     * @covers ::isNotFullCapturedAmountWithTransactionAmount
+     * @covers ::isCaptureAmountOverRefundAmount
+     * @covers ::getCalculatedCaptureTotalAmount
+     * @covers ::isFullCapturedAmount
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
-     * @param $orderTotalAmount
+     * @param float $orderTotalAmount
      * @param float $requestedAmount
      * @param float $orderCapturedAmount
      * @param float $orderRefundedAmount

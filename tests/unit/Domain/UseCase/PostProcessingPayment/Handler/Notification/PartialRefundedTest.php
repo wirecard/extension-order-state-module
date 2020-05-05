@@ -119,6 +119,12 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @dataProvider ignorableScenariosDataProvider
+     * @covers ::calculate
+     * @covers ::isNotFullRefundedAmount
+     * @covers ::isFullCapturedAmount
+     * @covers ::isRefundAmountOverCaptureAmount
+     * @covers ::isAllowedTransactionType
+     * @covers ::getCalculatedRefundTotalAmount
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
@@ -219,6 +225,12 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @dataProvider nextStateCasesDataProvider
+     * @covers ::calculate
+     * @covers ::isNotFullRefundedAmount
+     * @covers ::isFullCapturedAmount
+     * @covers ::isRefundAmountOverCaptureAmount
+     * @covers ::isAllowedTransactionType
+     * @covers ::getCalculatedRefundTotalAmount
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState

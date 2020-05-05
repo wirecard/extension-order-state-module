@@ -33,7 +33,6 @@ class PartialCaptured extends NotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        // @todo: describe why refund trans in capture scope?
         if ($this->onCaptureTransactionRequest() || $this->onRefundTransactionRequest()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_CAPTURED);
         }
@@ -49,7 +48,7 @@ class PartialCaptured extends NotificationHandler
         $result = false;
         if ($this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
             $this->isCaptureAmountOverRefundAmount() &&
-            $this->isNotFullCaptureAmount()) {
+            $this->isNotFullCapturedAmountWithTransactionAmount()) {
             $result = true;
         }
 
@@ -70,13 +69,12 @@ class PartialCaptured extends NotificationHandler
         $calculatedRefundTotalAmount = $this->processData->getOrderRefundedAmount() +
             $this->processData->getTransactionRequestedAmount();
         $isCaptureOverRefundAmount = $this->processData->getOrderCapturedAmount() > $calculatedRefundTotalAmount;
-        $isFullAmountCaptured = $this->processData->getOrderCapturedAmount() == $this->processData->getOrderTotalAmount();
 
         $result = false;
         if ($this->processData->transactionTypeInRange([
                 Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
                 Constant::TRANSACTION_TYPE_VOID_CAPTURE
-            ]) && $isCaptureOverRefundAmount && $isFullAmountCaptured && $calculatedRefundTotalAmount > 0) {
+            ]) && $this->isFullCapturedAmount() && $isCaptureOverRefundAmount) {
             $result = true;
         }
         return $result;
@@ -93,13 +91,17 @@ class PartialCaptured extends NotificationHandler
     /**
      * @return bool
      */
-    private function isNotFullCaptureAmount()
+    private function isNotFullCapturedAmountWithTransactionAmount()
     {
-        $result = false;
-        if (($this->getCalculatedCaptureTotalAmount() < $this->processData->getOrderTotalAmount())) {
-            $result = true;
-        }
-        return $result;
+        return $this->getCalculatedCaptureTotalAmount() < $this->processData->getOrderTotalAmount();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isFullCapturedAmount()
+    {
+        return $this->processData->getOrderCapturedAmount() == $this->processData->getOrderTotalAmount();
     }
 
     /**

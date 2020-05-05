@@ -97,6 +97,7 @@ class RefundedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::calculate
+     * @covers ::isFullAmountRefunded
      * @dataProvider ignorableScenariosDataProvider
      * @param string $orderState
      * @param string $transactionType
@@ -170,6 +171,7 @@ class RefundedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::calculate
+     * @covers ::isFullAmountRefunded
      * @dataProvider nextStateCasesDataProvider
      * @param string $orderState
      * @param string $transactionType

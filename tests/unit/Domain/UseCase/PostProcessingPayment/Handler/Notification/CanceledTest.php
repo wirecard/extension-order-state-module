@@ -135,6 +135,7 @@ class CanceledTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::calculate
+     * @covers ::isNeverRefundedOrCaptured
      * @dataProvider ignorableScenariosDataProvider
      * @param string $orderState
      * @param string $transactionType
@@ -177,6 +178,7 @@ class CanceledTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::calculate
+     * @covers ::isNeverRefundedOrCaptured
      * @throws \ReflectionException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
