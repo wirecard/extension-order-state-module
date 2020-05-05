@@ -11,8 +11,7 @@ namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProces
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Canceled;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialCaptured;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Processing;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
 
@@ -27,7 +26,7 @@ class CanceledTest extends \Codeception\Test\Unit
     use MockCreator;
 
     /**
-     * @var Failed
+     * @var Canceled
      */
     protected $handler;
 
@@ -45,8 +44,8 @@ class CanceledTest extends \Codeception\Test\Unit
     protected function _setUp()
     {
         $this->postProcessData = $this->createPostProcessData(
-            Constant::ORDER_STATE_PROCESSING,
-            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
             Constant::TRANSACTION_STATE_SUCCESS
         );
         $this->handler = new Canceled($this->postProcessData);
@@ -78,13 +77,57 @@ class CanceledTest extends \Codeception\Test\Unit
         );
         foreach ($ignorableOrderStates as $ignorableOrderState) {
             foreach ($ignorableTransactionTypes as $ignorableTransactionType) {
-                yield "pp_notification_ignorable_{$ignorableOrderState}_{$ignorableTransactionType}_on_failed_scope" => [
+                yield "ignorable_types_{$ignorableOrderState}_{$ignorableTransactionType}_on_canceled_scope" => [
                     $ignorableOrderState,
                     $ignorableTransactionType,
-                    Constant::TRANSACTION_STATE_SUCCESS
+                    Constant::TRANSACTION_STATE_SUCCESS,
+                    100,
+                    100,
+                    0,
+                    0
                 ];
             }
         }
+
+        yield "not_full-requested_amount_authorized_void-authorization_on_canceled_scope" => [
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            100,
+            99.999,
+            0,
+            0
+        ];
+
+        yield "once_captured_authorized_void-authorization_on_canceled_scope" => [
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            100,
+            100,
+            50,
+            0,
+        ];
+
+        yield "once_refunded_authorized_void-authorization_on_canceled_scope" => [
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            100,
+            100,
+            0,
+            50
+        ];
+
+        yield "once_refunded_and_captured_authorized_void-authorization_on_canceled_scope" => [
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            100,
+            100,
+            30,
+            30
+        ];
     }
 
 
@@ -96,15 +139,32 @@ class CanceledTest extends \Codeception\Test\Unit
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
+     * @param float $orderTotalAmount
+     * @param float $transactionRequestedAmount
+     * @param float $orderCapturedAmount
+     * @param float $orderRefundedAmount
      * @throws \ReflectionException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
-    public function testCalculateResultIgnorable($orderState, $transactionType, $transactionState)
-    {
+    public function testCalculateResultIgnorable(
+        $orderState,
+        $transactionType,
+        $transactionState,
+        $orderTotalAmount,
+        $transactionRequestedAmount,
+        $orderCapturedAmount,
+        $orderRefundedAmount
+    ) {
         $this->postProcessData = $this->createPostProcessData(
             $orderState,
             $transactionType,
-            $transactionState
+            $transactionState,
+            $orderTotalAmount,
+            $transactionRequestedAmount,
+            $orderCapturedAmount,
+            $orderRefundedAmount
         );
         $handler = new Canceled($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
@@ -127,7 +187,9 @@ class CanceledTest extends \Codeception\Test\Unit
         $this->postProcessData = $this->createPostProcessData(
             Constant::ORDER_STATE_AUTHORIZED,
             Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
-            Constant::TRANSACTION_STATE_SUCCESS
+            Constant::TRANSACTION_STATE_SUCCESS,
+            100,
+            100
         );
         $handler = new Canceled($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
@@ -147,6 +209,6 @@ class CanceledTest extends \Codeception\Test\Unit
         $reflectionMethod = new \ReflectionMethod($this->handler, "getNextHandler");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($this->handler);
-        $this->assertEquals(new PartialCaptured($this->postProcessData), $result);
+        $this->assertEquals(new Processing($this->postProcessData), $result);
     }
 }

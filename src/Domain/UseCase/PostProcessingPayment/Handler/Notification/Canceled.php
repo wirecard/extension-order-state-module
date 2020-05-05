@@ -36,9 +36,19 @@ class Canceled extends NotificationHandler
         $result = parent::calculate();
         if ($this->processData->orderInState(Constant::ORDER_STATE_AUTHORIZED) &&
             $this->processData->transactionInType(Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION) &&
-            $this->isFullAmountRequested()) {
+            $this->isFullAmountRequested() &&
+            $this->isNeverRefundedOrCaptured()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_CANCELED);
         }
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isNeverRefundedOrCaptured()
+    {
+        return $this->processData->getOrderRefundedAmount() == 0 &&
+            $this->processData->getOrderCapturedAmount() == 0;
     }
 }

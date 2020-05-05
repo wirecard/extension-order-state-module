@@ -232,8 +232,8 @@ trait MockCreator
         $transactionState,
         $orderTotalAmount = 100.0,
         $transactionRequestedAmount = 100.0,
-        $orderCapturedAmount = 100.0,
-        $orderRefundedAmount = 100.0,
+        $orderCapturedAmount = 0.0,
+        $orderRefundedAmount = 0.0,
         array $definition = []
     )
     {
