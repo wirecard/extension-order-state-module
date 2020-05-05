@@ -13,7 +13,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
 
 /**
- * Class PostProcessingNotifxicationHandler
+ * Class PostProcessingNotificationHandler
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment
  * @since 1.0.0
  *
