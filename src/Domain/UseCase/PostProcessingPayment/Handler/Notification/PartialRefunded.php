@@ -34,29 +34,46 @@ class PartialRefunded extends NotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->transactionTypeInRange(
-                [
-                    Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-                    Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-                    Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-                    Constant::TRANSACTION_TYPE_CREDIT,
-                    Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
-                    Constant::TRANSACTION_TYPE_VOID_CAPTURE
-                ]
-            ) && $this->isRefundAmountOverCaptureAmount() &&
-            $this->isNotFullRefundAmount()) {
+        if ($this->isAllowedTransactionType() && $this->isNotFullRefundedAmount() &&
+            ($this->isRefundAmountOverCaptureAmount() || $this->isFullCapturedAmount())
+        ) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_REFUNDED);
         }
 
         return $result;
     }
 
-    private function isNotFullRefundAmount()
+    /**
+     * @return float
+     */
+    private function getCalculatedRefundTotalAmount()
+    {
+        return $this->processData->getOrderRefundedAmount() + $this->processData->getTransactionRequestedAmount();
+    }
+
+    /**
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    private function isAllowedTransactionType()
+    {
+        return $this->processData->transactionTypeInRange([
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
+            Constant::TRANSACTION_TYPE_CREDIT,
+            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+            Constant::TRANSACTION_TYPE_VOID_CAPTURE
+        ]);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isNotFullRefundedAmount()
     {
         $result = false;
-        $refundedTotalAmount = $this->processData->getOrderRefundedAmount() +
-            $this->processData->getTransactionRequestedAmount();
-        if ($refundedTotalAmount < $this->processData->getOrderTotalAmount()) {
+        if ($this->getCalculatedRefundTotalAmount() < $this->processData->getOrderTotalAmount()) {
             $result = true;
         }
         return $result;
@@ -65,8 +82,16 @@ class PartialRefunded extends NotificationHandler
     /**
      * @return bool
      */
+    private function isFullCapturedAmount()
+    {
+        return $this->processData->getOrderCapturedAmount() == $this->processData->getOrderTotalAmount();
+    }
+
+    /**
+     * @return bool
+     */
     private function isRefundAmountOverCaptureAmount()
     {
-        return $this->processData->getOrderRefundedAmount() >= $this->processData->getOrderCapturedAmount();
+        return $this->getCalculatedRefundTotalAmount() >= $this->processData->getOrderCapturedAmount();
     }
 }
