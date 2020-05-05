@@ -33,12 +33,61 @@ class PartialCaptured extends NotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
-            $this->isNotFullCaptureAmount() &&
-            $this->isCaptureAmountOverRefundAmount()) {
+        // @todo: describe why refund trans in capture scope?
+        if ($this->onCaptureTransactionRequest() || $this->onRefundTransactionRequest()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_CAPTURED);
         }
         return $result;
+    }
+
+    /**
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    private function onCaptureTransactionRequest()
+    {
+        $result = false;
+        if ($this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
+            $this->isCaptureAmountOverRefundAmount() &&
+            $this->isNotFullCaptureAmount()) {
+            $result = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * TransactionRequestedAmount in this case part of refund amount.
+     * In this case during refund transaction capture amount should be over refund amount and
+     * capture amount should be full captured.
+     * Thus refund transaction should return partial captured order state in regard to order states handling schema.
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @todo : refactor this part after all possible cases in this scope covered.
+     */
+    private function onRefundTransactionRequest()
+    {
+        $calculatedRefundTotalAmount = $this->processData->getOrderRefundedAmount() +
+            $this->processData->getTransactionRequestedAmount();
+        $isCaptureOverRefundAmount = $this->processData->getOrderCapturedAmount() > $calculatedRefundTotalAmount;
+        $isFullAmountCaptured = $this->processData->getOrderCapturedAmount() == $this->processData->getOrderTotalAmount();
+
+        $result = false;
+        if ($this->processData->transactionTypeInRange([
+                Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+                Constant::TRANSACTION_TYPE_VOID_CAPTURE
+            ]) && $isCaptureOverRefundAmount && $isFullAmountCaptured && $calculatedRefundTotalAmount > 0) {
+            $result = true;
+        }
+        return $result;
+    }
+
+    /**
+     * @return float
+     */
+    private function getCalculatedCaptureTotalAmount()
+    {
+        return $this->processData->getOrderCapturedAmount() + $this->processData->getTransactionRequestedAmount();
     }
 
     /**
@@ -47,9 +96,7 @@ class PartialCaptured extends NotificationHandler
     private function isNotFullCaptureAmount()
     {
         $result = false;
-        $capturedTotalAmount = $this->processData->getOrderCapturedAmount() +
-            $this->processData->getTransactionRequestedAmount();
-        if ($capturedTotalAmount < $this->processData->getOrderTotalAmount()) {
+        if (($this->getCalculatedCaptureTotalAmount() < $this->processData->getOrderTotalAmount())) {
             $result = true;
         }
         return $result;
@@ -60,6 +107,6 @@ class PartialCaptured extends NotificationHandler
      */
     private function isCaptureAmountOverRefundAmount()
     {
-        return $this->processData->getOrderCapturedAmount() > $this->processData->getOrderRefundedAmount();
+        return $this->getCalculatedCaptureTotalAmount() > $this->processData->getOrderRefundedAmount();
     }
 }
