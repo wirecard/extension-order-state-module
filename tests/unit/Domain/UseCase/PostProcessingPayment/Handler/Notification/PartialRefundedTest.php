@@ -177,45 +177,14 @@ class PartialRefundedTest extends \Codeception\Test\Unit
         ];
         foreach (Constant::getOrderStates() as $orderState) {
             foreach ($refundableTypes as $refundableType) {
-                yield "not_full_refund_{$refundableType}_{$orderState}_on_refund_partial_scope" => [
+                yield "refund_equal_greater_capture{$refundableType}_{$orderState}_on_refund_partial_scope" => [
                     $orderState,
                     $refundableType,
                     Constant::TRANSACTION_STATE_SUCCESS,
                     100,
-                    30,
-                    100,
-                    0
-                ];
-
-                yield "refund_over_capture_{$refundableType}_{$orderState}_on_refund_partial_scope" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    30,
-                    59.99999,
-                    30
-                ];
-
-
-                yield "refund_after_full_capture_{$refundableType}_{$orderState}_on_refund_partial_scope" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    30,
-                    100,
-                    30
-                ];
-
-                yield "refund_equals_capture_{$refundableType}_{$orderState}_on_refund_partial_scope" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    30,
+                    20,
                     50,
-                    20
+                    30
                 ];
             }
         }

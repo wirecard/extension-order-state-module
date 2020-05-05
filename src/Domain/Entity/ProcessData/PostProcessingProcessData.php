@@ -101,11 +101,15 @@ class PostProcessingProcessData extends InitialProcessData
             );
         }
 
+        $this->transactionRequestedAmount = (float)$input->getTransactionRequestedAmount();
+
         if (!$this->isValidFloatProperty($input->getOrderTotalAmount())) {
             throw new InvalidPostProcessDataException(
                 "Property orderTotalAmount is invalid or not provided!"
             );
         }
+
+        $this->orderTotalAmount = (float)$input->getOrderTotalAmount();
 
         if (!$this->isValidFloatProperty($input->getOrderCapturedAmount(), true)) {
             throw new InvalidPostProcessDataException(
@@ -113,23 +117,30 @@ class PostProcessingProcessData extends InitialProcessData
             );
         }
 
+        $this->orderCapturedAmount = (float)$input->getOrderCapturedAmount();
+
         if (!$this->isValidFloatProperty($input->getOrderRefundedAmount(), true)) {
             throw new InvalidPostProcessDataException(
                 "Property orderRefundedAmount is invalid or not provided!"
             );
         }
 
-        if ($input->getTransactionRequestedAmount() > $input->getOrderTotalAmount()) {
+        $this->orderRefundedAmount = (float)$input->getOrderRefundedAmount();
+
+        if ($this->transactionRequestedAmount > $this->orderTotalAmount) {
             throw new InvalidPostProcessDataException(
-                "Transaction requested amount (" . $input->getTransactionRequestedAmount() . ")
-                can't be greater as order total amount (" . $input->getOrderTotalAmount() . ")"
+                "Transaction requested amount (" . $this->transactionRequestedAmount . ")
+                can't be greater as order total amount (" . $this->orderTotalAmount . ")"
             );
         }
 
-        $this->transactionRequestedAmount = (float) $input->getTransactionRequestedAmount();
-        $this->orderTotalAmount = (float) $input->getOrderTotalAmount();
-        $this->orderCapturedAmount = (float) $input->getOrderCapturedAmount();
-        $this->orderRefundedAmount = (float) $input->getOrderRefundedAmount();
+        if ($this->orderCapturedAmount && $this->orderRefundedAmount &&
+            $this->orderRefundedAmount > $this->orderCapturedAmount) {
+            throw new InvalidPostProcessDataException(
+                "Order Refunded amount (" . $this->orderRefundedAmount . ")
+                can't be greater as Order Captured amount (" . $this->orderCapturedAmount . ")"
+            );
+        }
     }
 
     /**
@@ -145,7 +156,7 @@ class PostProcessingProcessData extends InitialProcessData
         }
 
         if ($result && !$allowEmpty) {
-            $result = (float) $number > 0;
+            $result = (float)$number > 0;
         }
 
         return $result;
