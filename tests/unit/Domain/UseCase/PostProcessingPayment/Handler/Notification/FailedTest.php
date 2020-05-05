@@ -37,7 +37,6 @@ class FailedTest extends \Codeception\Test\Unit
     private $postProcessData;
 
     /**
-     * @throws \Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException

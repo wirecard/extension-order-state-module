@@ -89,6 +89,8 @@ class NotificationHandlerTest extends \Codeception\Test\Unit
      * @param float $requestedAmount
      * @param bool $expectedResult
      * @throws \ReflectionException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testIsFullyRefunded($orderOpenAmount, $requestedAmount, $expectedResult)

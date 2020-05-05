@@ -93,7 +93,7 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
                 'getTransactionState' => Expected::atLeastOnce(Constant::TRANSACTION_STATE_SUCCESS),
                 'getTransactionType' => Expected::atLeastOnce(Constant::TRANSACTION_TYPE_PURCHASE),
                 'getCurrentOrderState' => Expected::atLeastOnce(self::EXTERNAL_ORDER_STATE_PROCESSING),
-                'getOrderOpenAmount' => Expected::atLeastOnce(100),
+                'getOrderTotalAmount' => Expected::atLeastOnce(100),
                 'getTransactionRequestedAmount' => Expected::atLeastOnce(34)
             ]
         );
