@@ -29,9 +29,9 @@ try {
     print_r("Possible map definition:" . PHP_EOL);
     print_r("***************************" . PHP_EOL);
     print_r($mappingDefinition->definitions());
-    print_r( PHP_EOL);
+    print_r(PHP_EOL);
     print_r("************* Post Processing Bulk Examples **************" . PHP_EOL);
-    print_r( PHP_EOL);
+    print_r(PHP_EOL);
     $mapper = new GenericOrderStateMapper($mappingDefinition);
     $orderStateService = new OrderState($mapper);
     $inputDTO = new SampleInputDTO();
