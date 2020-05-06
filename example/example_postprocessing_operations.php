@@ -26,78 +26,89 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumen
 try {
     $mappingDefinition = new SampleMappingDefinition();
 
-    print_r("Possible map overview:" . PHP_EOL);
+    print_r("Possible map definition:" . PHP_EOL);
     print_r("***************************" . PHP_EOL);
     print_r($mappingDefinition->definitions());
-    print_r("***************************" . PHP_EOL);
-
+    print_r( PHP_EOL);
+    print_r("************* Post Processing Bulk Examples **************" . PHP_EOL);
+    print_r( PHP_EOL);
     $mapper = new GenericOrderStateMapper($mappingDefinition);
     $orderStateService = new OrderState($mapper);
-
-    // Cancelled authorization
     $inputDTO = new SampleInputDTO();
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION);
-    $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
-    $inputDTO->setCurrentOrderState(
-        $mapper->toExternal(new \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState(
-            Constant::ORDER_STATE_AUTHORIZED
-        ))
-    );
-    $inputDTO->setOrderTotalAmount(100);
-    $inputDTO->setTransactionRequestedAmount(100);
 
-    $result = $orderStateService->process($inputDTO);
+    $scenarios = [];
+    //transactionType|orderState|orderTotalAmount|transactionRequestedAmount|orderCapturedAmount|orderRefundedAmount
+    $scenarios["Cancelled authorization"] = [
+        Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION, Constant::ORDER_STATE_AUTHORIZED, 100, 100, 0, 0
+    ];
+    $scenarios["Fully captured authorization"] = [
+        Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION, Constant::ORDER_STATE_AUTHORIZED, 100, 100, 0, 0
+    ];
+    $scenarios["Fully refunded authorization"] = [
+        Constant::TRANSACTION_TYPE_REFUND_CAPTURE, Constant::ORDER_STATE_AUTHORIZED, 100, 100, 0, 0
+    ];
+    $scenarios["Partial refunded after fully authorization capture"] = [
+        Constant::TRANSACTION_TYPE_REFUND_CAPTURE, Constant::ORDER_STATE_AUTHORIZED, 100, 30, 100, 0
+    ];
+    $scenarios["Partial refunded after not fully authorization capture"] = [
+        Constant::TRANSACTION_TYPE_REFUND_CAPTURE, Constant::ORDER_STATE_AUTHORIZED, 100, 70, 70, 0
+    ];
+    $scenarios["Partial capture after partial refund"] = [
+        Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION, Constant::ORDER_STATE_AUTHORIZED, 100, 30, 0, 20
+    ];
+    $scenarios["Partial capture after authorization"] = [
+        Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION, Constant::ORDER_STATE_AUTHORIZED, 100, 30, 0, 0
+    ];
+    $scenarios["Partial refund after partial capture"] = [
+        Constant::TRANSACTION_TYPE_REFUND_CAPTURE, Constant::ORDER_STATE_PARTIAL_CAPTURED, 100, 20, 30, 0
+    ];
+    $scenarios["Partial refund 1 after partial capture. Checkpoint partial refund"] = [
+        Constant::TRANSACTION_TYPE_REFUND_CAPTURE, Constant::ORDER_STATE_PARTIAL_CAPTURED, 100, 10, 30, 20
+    ];
+    $scenarios["Partial capture with amount 70 results partial capture because it was already refunded"] = [
+        Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION, Constant::ORDER_STATE_PARTIAL_CAPTURED, 100, 70, 30, 30
+    ];
+    $scenarios["Next partial refund with amount 10"] = [
+        Constant::TRANSACTION_TYPE_REFUND_CAPTURE, Constant::ORDER_STATE_PARTIAL_CAPTURED, 100, 10, 100, 30
+    ];
+    $scenarios["Next partial refund with amount 60 results refunded"] = [
+        Constant::TRANSACTION_TYPE_REFUND_CAPTURE, Constant::ORDER_STATE_PARTIAL_CAPTURED, 100, 60, 100, 40
+    ];
 
-    print_r("Input: {$inputDTO}" . PHP_EOL);
-    print_r("Result: {$result}" . PHP_EOL);
-    print_r("-----------------------" . PHP_EOL);
+    foreach ($scenarios as $scenario => $input) {
+        list(
+            $transactionType,
+            $orderState,
+            $orderTotalAmount,
+            $transactionRequestedAmount,
+            $orderCapturedAmount,
+            $orderRefundedAmount
+            ) = $input;
 
-    // Fully captured authorization
-    $inputDTO = new SampleInputDTO();
-    $inputDTO->setProcessType(Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION);
-    $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION);
-    $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
-    $inputDTO->setCurrentOrderState(
-        $mapper->toExternal(new \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState(
-            Constant::ORDER_STATE_AUTHORIZED
-        ))
-    );
-    $inputDTO->setOrderTotalAmount(100);
-    $inputDTO->setTransactionRequestedAmount(100);
+        $inputDTO->setTransactionType($transactionType);
+        $inputDTO->setCurrentOrderState(
+            $mapper->toExternal(new \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState($orderState))
+        );
+        $inputDTO->setOrderTotalAmount($orderTotalAmount);
+        $inputDTO->setTransactionRequestedAmount($transactionRequestedAmount);
+        $inputDTO->setOrderCapturedAmount($orderCapturedAmount);
+        $inputDTO->setOrderRefundedAmount($orderRefundedAmount);
 
-    $result = $orderStateService->process($inputDTO);
-
-    print_r("Input: {$inputDTO}" . PHP_EOL);
-    print_r("Result: {$result}" . PHP_EOL);
-    print_r("-----------------------" . PHP_EOL);
-
-    // Partial refunded authorization
-    $inputDTO = new SampleInputDTO();
-    $inputDTO->setProcessType(Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION);
-    $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_REFUND_CAPTURE);
-    $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
-    $inputDTO->setCurrentOrderState(
-        $mapper->toExternal(new \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState(
-            Constant::ORDER_STATE_AUTHORIZED
-        ))
-    );
-    $inputDTO->setOrderTotalAmount(100);
-    $inputDTO->setTransactionRequestedAmount(100);
-
-    $result = $orderStateService->process($inputDTO);
-
-    print_r("Input: {$inputDTO}" . PHP_EOL);
-    print_r("Result: {$result}" . PHP_EOL);
-    print_r("-----------------------" . PHP_EOL);
-    // Complex scenarios
-
-
+        $result = $orderStateService->process($inputDTO);
+        print_r("------------ {$scenario} -----------" . PHP_EOL);
+        print_r($inputDTO->toArray());
+        print_r("Result: {$result}" . PHP_EOL);
+        print_r(PHP_EOL);
+    }
 } catch (IgnorableStateException $exception) {
     print_r("Result:" . $exception->getMessage() . PHP_EOL);
     print_r("Preform follow-up actions" . PHP_EOL);
 } catch (OrderStateInvalidArgumentException $exception) {
     print_r("Result:" . $exception->getMessage() . PHP_EOL);
     print_r("Internal validation" . PHP_EOL);
-} catch (IgnorablePostProcessingFailureException $e) {
+} catch (IgnorablePostProcessingFailureException $exception) {
+    print_r("Result:" . $exception->getMessage() . PHP_EOL);
+    print_r("Post processing failure. Something went wrong ..." . PHP_EOL);
 }

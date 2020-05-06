@@ -201,4 +201,21 @@ class SampleInputDTO implements InputDataTransferObject
     {
         $this->transactionRequestedAmount = $transactionRequestedAmount;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'processType' => $this->getProcessType(),
+            'currentOrderState' => $this->getCurrentOrderState(),
+            'transactionType' => $this->getTransactionType(),
+            'transactionState' => $this->getTransactionState(),
+            'transactionRequestedAmount' => $this->getTransactionRequestedAmount(),
+            'orderTotalAmount' => $this->getOrderTotalAmount(),
+            'orderCapturedAmount' => $this->getOrderCapturedAmount(),
+            'orderRefundedAmount' => $this->getOrderRefundedAmount(),
+        ];
+    }
 }

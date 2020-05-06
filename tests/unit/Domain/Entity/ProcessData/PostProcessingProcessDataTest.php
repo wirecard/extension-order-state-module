@@ -3,13 +3,13 @@
 namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\Entity\ProcessData;
 
 use Codeception\Stub\Expected;
-use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\PostProcessingProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException;
+use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
 
 /**
  * Class PostProcessingProcessDataTest
@@ -19,13 +19,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumen
  */
 class PostProcessingProcessDataTest extends \Codeception\Test\Unit
 {
-    const EXTERNAL_ORDER_STATE_AUTHORIZED = "external_authorized";
-    const EXTERNAL_ORDER_STATE_STARTED = "external_started";
-    const EXTERNAL_ORDER_STATE_PENDING = "external_pending";
-    const EXTERNAL_ORDER_STATE_PROCESSING = "external_processing";
-    const EXTERNAL_ORDER_STATE_FAILED = "external_failed";
-    const EXTERNAL_ORDER_STATE_REFUNDED = "external_refunded";
-    const EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED = "external_partial_refunded";
+    use MockCreator;
 
     /**
      * @var \Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper
@@ -37,20 +31,6 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
      */
     protected $object;
 
-    /**
-     * @return array
-     * @since 1.0.0
-     */
-    private function getSampleMapDefinition()
-    {
-        return [
-            self::EXTERNAL_ORDER_STATE_STARTED => Constant::ORDER_STATE_STARTED,
-            self::EXTERNAL_ORDER_STATE_PENDING => Constant::ORDER_STATE_PENDING,
-            self::EXTERNAL_ORDER_STATE_FAILED => Constant::ORDER_STATE_FAILED,
-            self::EXTERNAL_ORDER_STATE_AUTHORIZED => Constant::ORDER_STATE_AUTHORIZED,
-            self::EXTERNAL_ORDER_STATE_PROCESSING => Constant::ORDER_STATE_PROCESSING,
-        ];
-    }
 
     /**
      * @throws \Exception
@@ -58,17 +38,9 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
-        /** @var \Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition $mapDefinition */
-        $mapDefinition = \Codeception\Stub::makeEmpty(
-            \Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition::class,
-            [
-                'definitions' => $this->getSampleMapDefinition()
-            ]
-        );
-        $this->mapper = new GenericOrderStateMapper($mapDefinition);
-
         $this->object = $this->getMockBuilder(PostProcessingProcessData::class)
             ->disableOriginalConstructor()->getMock();
+        $this->mapper = $this->createGenericMapper();
     }
 
     /**
@@ -86,16 +58,13 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
         /**
          * @var InputDataTransferObject $inputDTO
          */
-        $inputDTO = \Codeception\Stub::makeEmpty(
-            InputDataTransferObject::class,
-            [
-                'getProcessType' => Expected::atLeastOnce(Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION),
-                'getTransactionState' => Expected::atLeastOnce(Constant::TRANSACTION_STATE_SUCCESS),
-                'getTransactionType' => Expected::atLeastOnce(Constant::TRANSACTION_TYPE_PURCHASE),
-                'getCurrentOrderState' => Expected::atLeastOnce(self::EXTERNAL_ORDER_STATE_PROCESSING),
-                'getOrderTotalAmount' => Expected::atLeastOnce(100),
-                'getTransactionRequestedAmount' => Expected::atLeastOnce(34)
-            ]
+        $inputDTO = $this->createDummyInputPostProcessingDTO(
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            $this->mapper->toExternal($this->fromOrderStateRegistry(Constant::ORDER_STATE_PROCESSING)),
+            100,
+            34
         );
         $processData = new PostProcessingProcessData($inputDTO, $this->mapper);
         $this->assertInstanceOf(PostProcessingProcessData::class, $processData);

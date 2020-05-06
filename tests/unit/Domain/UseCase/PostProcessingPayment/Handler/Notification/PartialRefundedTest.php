@@ -121,7 +121,6 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      * @dataProvider ignorableScenariosDataProvider
      * @covers ::calculate
      * @covers ::isNotFullRefundedAmount
-     * @covers ::isFullCapturedAmount
      * @covers ::isRefundAmountOverCaptureAmount
      * @covers ::isAllowedTransactionType
      * @covers ::getCalculatedRefundTotalAmount
@@ -196,7 +195,6 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      * @dataProvider nextStateCasesDataProvider
      * @covers ::calculate
      * @covers ::isNotFullRefundedAmount
-     * @covers ::isFullCapturedAmount
      * @covers ::isRefundAmountOverCaptureAmount
      * @covers ::isAllowedTransactionType
      * @covers ::getCalculatedRefundTotalAmount

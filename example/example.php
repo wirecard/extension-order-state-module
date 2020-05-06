@@ -18,6 +18,7 @@ require_once  dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "vendor" . DIRE
 use Wirecard\ExtensionOrderStateModule\Application\Mapper\GenericOrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException;
 
@@ -28,15 +29,17 @@ try {
     print_r("***************************" . PHP_EOL);
     print_r($mappingDefinition->definitions());
     print_r("***************************" . PHP_EOL);
-
-    $orderStateService = new OrderState(new GenericOrderStateMapper($mappingDefinition));
+    $mapper = new GenericOrderStateMapper($mappingDefinition);
+    $orderStateService = new OrderState($mapper);
 
     // Processing
     $inputDTO = new SampleInputDTO();
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_INITIAL_NOTIFICATION);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
-    $inputDTO->setCurrentOrderState("started_external");
+    $inputDTO->setCurrentOrderState($mapper->toExternal(
+        new \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState(Constant::ORDER_STATE_STARTED)
+    ));
 
     $result = $orderStateService->process($inputDTO);
 
@@ -48,7 +51,10 @@ try {
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_INITIAL_RETURN);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_DEBIT);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_FAILED);
-    $inputDTO->setCurrentOrderState("pending_external");
+    $inputDTO->setCurrentOrderState($mapper->toExternal(
+        new \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState(Constant::ORDER_STATE_PENDING)
+    ));
+
 
     $result = $orderStateService->process($inputDTO);
 
@@ -56,17 +62,20 @@ try {
     print_r("Result: {$result}" . PHP_EOL);
     print_r("-----------------------" . PHP_EOL);
 
+    // Internal exception
     $inputDTO->setProcessType(Constant::PROCESS_TYPE_INITIAL_RETURN);
     $inputDTO->setTransactionType(Constant::TRANSACTION_TYPE_AUTHORIZATION);
     $inputDTO->setTransactionState(Constant::TRANSACTION_STATE_SUCCESS);
-    $inputDTO->setCurrentOrderState(Constant::ORDER_STATE_AUTHORIZED);
+    $inputDTO->setCurrentOrderState("WRONG ORDER STATE");
 
     print_r("Input: {$inputDTO}" . PHP_EOL);
     $orderStateService->process($inputDTO);
 } catch (IgnorableStateException $exception) {
-    print_r("Result:" . $exception->getMessage() . PHP_EOL);
+    print_r("Exception:" . $exception->getMessage() . PHP_EOL);
     print_r("Preform follow-up actions" . PHP_EOL);
 } catch (OrderStateInvalidArgumentException $exception) {
-    print_r("Result:" . $exception->getMessage() . PHP_EOL);
+    print_r("Exception:" . $exception->getMessage() . PHP_EOL);
     print_r("Internal validation" . PHP_EOL);
+} catch (IgnorablePostProcessingFailureException $exception) {
+    print_r("Exception:" . $exception->getMessage() . PHP_EOL);
 }
