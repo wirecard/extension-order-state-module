@@ -2,7 +2,6 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\Entity\ProcessData;
 
-use Codeception\Stub\Expected;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
@@ -47,6 +46,7 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::__construct
+     * @covers ::loadFromInput
      * @covers ::getOrderTotalAmount
      * @covers ::getTransactionRequestedAmount
      * @throws InvalidPostProcessDataException
@@ -64,13 +64,17 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_PURCHASE,
             $this->mapper->toExternal($this->fromOrderStateRegistry(Constant::ORDER_STATE_PROCESSING)),
             100,
-            34
+            34,
+            50,
+            50
         );
         $processData = new PostProcessingProcessData($inputDTO, $this->mapper);
         $this->assertInstanceOf(PostProcessingProcessData::class, $processData);
         $this->assertInstanceOf(ProcessData::class, $processData);
         $this->assertEquals(100, $processData->getOrderTotalAmount());
         $this->assertEquals(34, $processData->getTransactionRequestedAmount());
+        $this->assertEquals(50, $processData->getOrderCapturedAmount());
+        $this->assertEquals(50, $processData->getOrderRefundedAmount());
     }
 
     /**
@@ -78,50 +82,55 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
      */
     public function inputDTODataProvider()
     {
-        // OrderOpenAmount | TransactionRequestedAmount
-        yield "empty_amounts" => [0, 0];
-        yield "negative_amounts" => [-1, -1];
-        yield "negative_amounts_1" => [-1, -0];
-        yield "negative_amounts_2" => [0, -1];
-        yield "negative_amounts_3" => [10, -1];
-        yield "negative_amounts_4" => [-11, 100];
-        yield "string_amounts" => ["xxx", 100];
-        yield "string_amount_1" => ["0", "0"];
-        yield "string_amounts_2" => ["10", "10"];
-        yield "string_amounts_3" => ["2222", "3333"];
-        yield "string_bool_amounts" => [true, "3333"];
-        yield "bool_amounts" => [true, false];
-        yield "bool_amounts_1" => [true, true];
-        yield "bool_amounts_2" => [23, 123];
+        // OrderTotalAmount | TransactionRequestedAmount | OrderCapturedAmount | OrderRefundedAmount
+        yield "all_inputs_invalid" => [0, 0, 0, 0];
+        yield "negative_amounts" => [-1, -1, -1, -1];
+        yield "total_is_invalid" => [0, 10, 10, 10];
+        yield "total_is_negative" => [-330, 10, 10, 10];
+        yield "requested_amount_is_invalid" => [1110, -111, 123, 123];
+        yield "requested_amount_is_invalid_1" => [1110, 0, 123, 123];
+        yield "order refunded is over capture" => [300, 100, 100, 499];
+        yield "string_amounts" => ["xxx", "xxx", "xxx", "xxx"];
+        yield "requested_amount_over_order_amount" => [100, 400, 0, 0];
     }
 
     /**
      * @group unit
      * @small
      * @dataProvider inputDTODataProvider
-     * @covers ::loadFromInput
-     * @param float $orderOpenAmount
+     * @covers ::validate
+     * @covers ::validateOrderRefundedAmount
+     * @covers ::validateOrderCapturedAmount
+     * @covers ::validateTransactionRequestedAmount
+     * @covers ::validateOrderTotalAmount
+     * @param float $orderTotalAmount
      * @param float $transactionRequestedAmount
+     * @param float $captureAmount
+     * @param float $refundAmount
+     * @throws InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
      */
-    public function testLoadFromInput($orderOpenAmount, $transactionRequestedAmount)
+    public function testValidate($orderTotalAmount, $transactionRequestedAmount, $captureAmount, $refundAmount)
     {
         /**
          * @var InputDataTransferObject $inputDTO
          */
-        $inputDTO = \Codeception\Stub::makeEmpty(
-            InputDataTransferObject::class,
-            [
-                'getOrderOpenAmount' => Expected::atLeastOnce($orderOpenAmount),
-                'getTransactionRequestedAmount' => Expected::atLeastOnce($transactionRequestedAmount)
-            ]
+        $inputDTO = $this->createDummyInputPostProcessingDTO(
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            $this->mapper->toExternal($this->fromOrderStateRegistry(Constant::ORDER_STATE_PROCESSING)),
+            $orderTotalAmount,
+            $transactionRequestedAmount,
+            $captureAmount,
+            $refundAmount
         );
 
-        $class = new \ReflectionClass($this->object);
-        $method = $class->getMethod('loadFromInput');
-        $method->setAccessible(true);
+
 
         $this->expectException(InvalidPostProcessDataException::class);
-        $method->invokeArgs($this->object, [$inputDTO]);
+        new PostProcessingProcessData($inputDTO, $this->mapper);
     }
 }

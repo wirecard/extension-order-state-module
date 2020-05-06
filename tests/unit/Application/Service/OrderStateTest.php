@@ -26,7 +26,7 @@ use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
  * @since 1.0.0
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class OrderStateNewTest extends Unit
+class OrderStateTest extends Unit
 {
     use MockCreator;
 
@@ -488,9 +488,30 @@ class OrderStateNewTest extends Unit
 
     /**
      * @return \Generator
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function realFullScenariosDataProvider()
     {
+        yield "Initial Return. Failed payment. Transaction wasn't successful" => [
+            Constant::PROCESS_TYPE_INITIAL_RETURN,
+            Constant::TRANSACTION_STATE_FAILED,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
+            Constant::ORDER_STATE_STARTED,
+            0, 0, 0, 0,
+            Constant::ORDER_STATE_FAILED,
+            null
+        ];
+
+        yield "Initial Return. Failed payment. Order is invalid created or broken ..." => [
+            Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
+            Constant::ORDER_STATE_FAILED,
+            0, 0, 0, 0,
+            Constant::ORDER_STATE_FAILED,
+            null
+        ];
+
         yield "Initial Return. Do initial payment" => [
             Constant::PROCESS_TYPE_INITIAL_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
@@ -500,6 +521,17 @@ class OrderStateNewTest extends Unit
             Constant::ORDER_STATE_PENDING,
             null
         ];
+
+        yield "Initial Notification. Failed verifying payment was successful" => [
+            Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
+            Constant::TRANSACTION_STATE_FAILED,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
+            Constant::ORDER_STATE_STARTED,
+            0, 0, 0, 0,
+            Constant::ORDER_STATE_FAILED,
+            null
+        ];
+
         yield "Initial Notification. Verify payment" => [
             Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
@@ -519,6 +551,17 @@ class OrderStateNewTest extends Unit
             Constant::ORDER_STATE_AUTHORIZED,
             IgnorableStateException::class
         ];
+
+        yield "Post Processing Return. Void capture. Failed Transaction" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_FAILED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            Constant::ORDER_STATE_AUTHORIZED,
+            100, 100, 0, 0,
+            Constant::ORDER_STATE_AUTHORIZED,
+            IgnorablePostProcessingFailureException::class
+        ];
+
         yield "Post Processing Notification. Void capture" => [
             Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
@@ -528,6 +571,17 @@ class OrderStateNewTest extends Unit
             Constant::ORDER_STATE_CANCELED,
             null
         ];
+
+        yield "Post Processing Notification. Void capture. Failed transaction" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_FAILED,
+            Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            Constant::ORDER_STATE_AUTHORIZED,
+            100, 100, 0, 0,
+            Constant::ORDER_STATE_AUTHORIZED,
+            IgnorablePostProcessingFailureException::class
+        ];
+
         // Scenario II
         yield "Post Processing Return. Full Capture. Ignore request" => [
             Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
@@ -790,6 +844,7 @@ class OrderStateNewTest extends Unit
      * @throws OrderStateInvalidArgumentException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function testRealFullScenarios(
         $processType,
