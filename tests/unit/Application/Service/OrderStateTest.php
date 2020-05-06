@@ -191,8 +191,7 @@ class OrderStateNewTest extends Unit
         $transactionType,
         $currentOrderState,
         $expectedInternalState
-    )
-    {
+    ) {
 
         $inputDTO = $this->createDummyInputDTO(
             $processType,
@@ -227,8 +226,7 @@ class OrderStateNewTest extends Unit
         $transactionType,
         $currentOrderState,
         $exception
-    )
-    {
+    ) {
         $this->expectException($exception);
 
         $inputDTO = $this->createDummyInputDTO(
@@ -323,8 +321,7 @@ class OrderStateNewTest extends Unit
         $orderCapturedAmount,
         $orderRefundedAmount,
         $expectedInternalState
-    )
-    {
+    ) {
         $inputDTO = $this->createDummyInputPostProcessingDTO(
             $processType,
             $transactionState,
@@ -473,8 +470,7 @@ class OrderStateNewTest extends Unit
         $orderCapturedAmount,
         $orderRefundedAmount,
         $exception
-    )
-    {
+    ) {
         $this->expectException($exception);
         $inputDTO = $this->createDummyInputPostProcessingDTO(
             $processType,
@@ -806,8 +802,7 @@ class OrderStateNewTest extends Unit
         $orderRefundedAmount,
         $expectedInternalOrderState,
         $exception
-    )
-    {
+    ) {
         if (null !== $exception) {
             $this->expectException($exception);
         }

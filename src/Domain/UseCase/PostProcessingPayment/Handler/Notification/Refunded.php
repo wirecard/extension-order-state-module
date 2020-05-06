@@ -34,7 +34,7 @@ class Refunded extends NotificationHandler
     {
         $result = parent::calculate();
         if ($this->processData->transactionTypeInRange(
-                [
+            [
                     Constant::TRANSACTION_TYPE_VOID_PURCHASE,
                     Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
                     Constant::TRANSACTION_TYPE_REFUND_DEBIT,
@@ -42,7 +42,7 @@ class Refunded extends NotificationHandler
                     Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
                     Constant::TRANSACTION_TYPE_VOID_CAPTURE,
                 ]
-            ) && $this->isFullAmountRefunded()) {
+        ) && $this->isFullAmountRefunded()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_REFUNDED);
         }
 

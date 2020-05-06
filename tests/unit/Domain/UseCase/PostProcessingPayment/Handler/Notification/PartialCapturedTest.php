@@ -161,8 +161,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
         $requestedAmount,
         $orderCapturedAmount,
         $orderRefundedAmount
-    )
-    {
+    ) {
         $this->postProcessData = $this->createPostProcessData(
             $orderState,
             $transactionType,
@@ -240,8 +239,6 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                     60
                 ];
             }
-
-
         }
     }
 
@@ -276,8 +273,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
         $requestedAmount,
         $orderCapturedAmount,
         $orderRefundedAmount
-    )
-    {
+    ) {
         $this->postProcessData = $this->createPostProcessData(
             $orderState,
             $transactionType,

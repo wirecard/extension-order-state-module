@@ -77,7 +77,7 @@ class ProcessingTest extends \Codeception\Test\Unit
         );
         foreach ($ignorableOrderStates as $ignorableOrderState) {
             foreach ($ignorableTransactionTypes as $ignorableTransactionType) {
-                yield "pp_notification_ignorable_{$ignorableOrderState}_{$ignorableTransactionType}_on_processing_scope" => [
+                yield "pp_notify_ignorable__{$ignorableOrderState}_{$ignorableTransactionType}_on_processing_scope" => [
                     $ignorableOrderState,
                     $ignorableTransactionType,
                     Constant::TRANSACTION_STATE_SUCCESS,

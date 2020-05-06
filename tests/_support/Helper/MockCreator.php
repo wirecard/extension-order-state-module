@@ -73,8 +73,7 @@ trait MockCreator
         $transactionState,
         $transactionType,
         $currentOrderState
-    )
-    {
+    ) {
         return \Codeception\Stub::makeEmpty(
             InputDataTransferObject::class,
             [
@@ -107,9 +106,7 @@ trait MockCreator
         $transactionRequestedAmount = 100.0,
         $orderCapturedAmount = 0.0,
         $orderRefundedAmount = 0.0
-
-    )
-    {
+    ) {
         return \Codeception\Stub::makeEmpty(
             InputDataTransferObject::class,
             [
@@ -138,8 +135,7 @@ trait MockCreator
         $orderState = Constant::ORDER_STATE_STARTED,
         $transactionType = Constant::TRANSACTION_TYPE_PURCHASE,
         $transactionState = Constant::TRANSACTION_STATE_SUCCESS
-    )
-    {
+    ) {
         return \Codeception\Stub::makeEmpty(ProcessData::class, [
             'getOrderState' => $this->fromOrderStateRegistry($orderState),
             'getTransactionType' => $this->fromTransactionTypeRegistry($transactionType),
@@ -198,8 +194,7 @@ trait MockCreator
         $transactionType,
         $transactionState,
         array $definition = []
-    )
-    {
+    ) {
         $mapper = new GenericOrderStateMapper($this->createMappingDefinition($definition));
         $dto = $this->createDummyInputDTO(
             Constant::PROCESS_TYPE_INITIAL_RETURN,
@@ -235,8 +230,7 @@ trait MockCreator
         $orderCapturedAmount = 0.0,
         $orderRefundedAmount = 0.0,
         array $definition = []
-    )
-    {
+    ) {
         $mapper = new GenericOrderStateMapper($this->createMappingDefinition($definition));
         $dto = $this->createDummyInputPostProcessingDTO(
             Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
