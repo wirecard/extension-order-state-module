@@ -57,7 +57,15 @@ class Processing extends NotificationHandler
      */
     private function isNeverRefunded()
     {
-        return $this->processData->getOrderRefundedAmount() == 0;
+        return $this->processData->getOrderRefundedAmount() === 0.0;
+    }
+
+    /**
+     * @return float
+     */
+    private function getCalculatedCaptureTotalAmount()
+    {
+        return $this->processData->getOrderCapturedAmount() + $this->processData->getTransactionRequestedAmount();
     }
 
     /**
@@ -65,13 +73,6 @@ class Processing extends NotificationHandler
      */
     private function isFullAmountCaptured()
     {
-        $result = false;
-        $capturedTotalAmount = $this->processData->getOrderCapturedAmount() +
-            $this->processData->getTransactionRequestedAmount();
-        if ($capturedTotalAmount == $this->processData->getOrderTotalAmount()) {
-            $result = true;
-        }
-
-        return $result;
+        return $this->getCalculatedCaptureTotalAmount() === $this->processData->getOrderTotalAmount();
     }
 }

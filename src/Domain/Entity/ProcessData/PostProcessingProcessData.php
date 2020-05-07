@@ -81,7 +81,7 @@ class PostProcessingProcessData extends InitialProcessData
 
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getOrderRefundedAmount()
     {

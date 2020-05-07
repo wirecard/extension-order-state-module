@@ -45,14 +45,9 @@ class PartialCaptured extends NotificationHandler
      */
     private function onCaptureTransactionRequest()
     {
-        $result = false;
-        if ($this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
+        return $this->processData->transactionInType(Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION) &&
             $this->isCaptureAmountOverRefundAmount() &&
-            ($this->isNotFullCapturedAmount() || $this->isFullCapturedAndPartialRefunded())) {
-            $result = true;
-        }
-
-        return $result;
+            ($this->isNotFullCapturedAmount() || $this->isFullCapturedAndPartialRefunded());
     }
 
     /**
@@ -66,18 +61,19 @@ class PartialCaptured extends NotificationHandler
      */
     private function onRefundTransactionRequest()
     {
-        $result = false;
-        $processData = $this->processData;
-        $isCaptureOverRefundAmount = $processData->getOrderCapturedAmount() > $processData->getOrderRefundedAmount() +
-            $processData->getTransactionRequestedAmount();
-
-        if ($this->processData->transactionTypeInRange([
+        return $this->processData->transactionTypeInRange([
                 Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
                 Constant::TRANSACTION_TYPE_VOID_CAPTURE
-            ]) && $isCaptureOverRefundAmount) {
-            $result = true;
-        }
-        return $result;
+            ]) && $this->isCaptureAmountOverRefundAmountOnRefundContext();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isCaptureAmountOverRefundAmountOnRefundContext()
+    {
+        return $this->processData->getOrderCapturedAmount() >
+            $this->processData->getOrderRefundedAmount() + $this->processData->getTransactionRequestedAmount();
     }
 
     /**
@@ -101,7 +97,7 @@ class PartialCaptured extends NotificationHandler
      */
     private function isFullCapturedAndPartialRefunded()
     {
-        return $this->getCalculatedCaptureTotalAmount() == $this->processData->getOrderTotalAmount() &&
+        return $this->getCalculatedCaptureTotalAmount() === $this->processData->getOrderTotalAmount() &&
             $this->processData->getOrderRefundedAmount() > 0;
     }
 

@@ -50,17 +50,18 @@ class Refunded extends NotificationHandler
     }
 
     /**
+     * @return float
+     */
+    private function getCalculatedRefundTotalAmount()
+    {
+        return $this->processData->getOrderRefundedAmount() + $this->processData->getTransactionRequestedAmount();
+    }
+
+    /**
      * @return bool
      */
     private function isFullAmountRefunded()
     {
-        $result = false;
-        $refundedTotalAmount = $this->processData->getOrderRefundedAmount() +
-            $this->processData->getTransactionRequestedAmount();
-        if ($refundedTotalAmount == $this->processData->getOrderTotalAmount()) {
-            $result = true;
-        }
-
-        return $result;
+        return $this->getCalculatedRefundTotalAmount() === $this->processData->getOrderTotalAmount();
     }
 }

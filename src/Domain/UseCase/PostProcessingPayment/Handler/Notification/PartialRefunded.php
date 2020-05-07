@@ -71,11 +71,7 @@ class PartialRefunded extends NotificationHandler
      */
     private function isNotFullRefundedAmount()
     {
-        $result = false;
-        if ($this->getCalculatedRefundTotalAmount() < $this->processData->getOrderTotalAmount()) {
-            $result = true;
-        }
-        return $result;
+        return $this->getCalculatedRefundTotalAmount() < $this->processData->getOrderTotalAmount();
     }
 
     /**

@@ -48,7 +48,7 @@ class Canceled extends NotificationHandler
      */
     private function isNeverRefundedOrCaptured()
     {
-        return $this->processData->getOrderRefundedAmount() == 0 &&
-            $this->processData->getOrderCapturedAmount() == 0;
+        return $this->processData->getOrderRefundedAmount() === 0.0 &&
+            $this->processData->getOrderCapturedAmount() === 0.0;
     }
 }

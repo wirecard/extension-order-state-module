@@ -42,6 +42,6 @@ class NotificationHandler extends AbstractProcessHandler
      */
     protected function isFullAmountRequested()
     {
-        return $this->processData->getTransactionRequestedAmount() == $this->processData->getOrderTotalAmount();
+        return $this->processData->getTransactionRequestedAmount() === $this->processData->getOrderTotalAmount();
     }
 }
