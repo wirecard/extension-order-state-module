@@ -118,6 +118,7 @@ class ProcessingTest extends \Codeception\Test\Unit
      * @covers ::isOrderStateAllowed
      * @covers ::isNeverRefunded
      * @covers ::isFullAmountCaptured
+     * @covers ::getCalculatedCaptureTotalAmount
      * @dataProvider ignorableScenariosDataProvider
      * @param string $orderState
      * @param string $transactionType
@@ -191,6 +192,7 @@ class ProcessingTest extends \Codeception\Test\Unit
      * @covers ::isOrderStateAllowed
      * @covers ::isNeverRefunded
      * @covers ::isFullAmountCaptured
+     * @covers ::getCalculatedCaptureTotalAmount
      * @dataProvider nextStateCasesDataProvider
      * @param string $orderState
      * @param string $transactionType
