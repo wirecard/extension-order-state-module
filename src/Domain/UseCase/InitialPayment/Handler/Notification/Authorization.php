@@ -7,24 +7,24 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\Handler\Notification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotificationHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\Handler\NotificationHandler;
 
 /**
- * Class Failed
+ * Class Authorization
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotification
  * @since 1.0.0
  */
-class Failed extends InitialNotificationHandler
+class Authorization extends NotificationHandler
 {
     /**
      * @inheritDoc
      */
     protected function getNextHandler()
     {
-        return new Processing($this->processData);
+        return null;
     }
 
     /**
@@ -33,10 +33,9 @@ class Failed extends InitialNotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-
-        if ($this->processData->orderInState(Constant::ORDER_STATE_FAILED) ||
-            $this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED)) {
-            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_FAILED);
+        if ($this->isSuccessTransaction() &&
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_AUTHORIZE)) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_AUTHORIZED);
         }
 
         return $result;

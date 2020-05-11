@@ -16,7 +16,9 @@ use Wirecard\ExtensionOrderStateModule\Application\Service\OrderState;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\MappingDefinition;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException;
 
 /**
@@ -24,6 +26,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumen
  * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Application\Service
  * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Application\Service\OrderState
  * @since 1.0.0
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class OrderStateTest extends Unit
 {
@@ -32,6 +35,8 @@ class OrderStateTest extends Unit
     const EXTERNAL_ORDER_STATE_PENDING = "external_pending";
     const EXTERNAL_ORDER_STATE_PROCESSING = "external_processing";
     const EXTERNAL_ORDER_STATE_FAILED = "external_failed";
+    const EXTERNAL_ORDER_STATE_REFUNDED = "external_refunded";
+    const EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED = "external_partial_refunded";
 
     /**
      * @var MappingDefinition
@@ -67,6 +72,8 @@ class OrderStateTest extends Unit
             self::EXTERNAL_ORDER_STATE_FAILED => Constant::ORDER_STATE_FAILED,
             self::EXTERNAL_ORDER_STATE_AUTHORIZED => Constant::ORDER_STATE_AUTHORIZED,
             self::EXTERNAL_ORDER_STATE_PROCESSING => Constant::ORDER_STATE_PROCESSING,
+            self::EXTERNAL_ORDER_STATE_REFUNDED => Constant::ORDER_STATE_REFUNDED,
+            self::EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED => Constant::ORDER_STATE_PARTIAL_REFUNDED,
         ];
     }
 
@@ -90,14 +97,14 @@ class OrderStateTest extends Unit
      *
      * @return \Generator
      */
-    public function inputDtoDataProvider()
+    public function inputDtoInitialDataProvider()
     {
         yield "debit_started_success_initial_return_pending" => [
             Constant::PROCESS_TYPE_INITIAL_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_DEBIT,
             self::EXTERNAL_ORDER_STATE_STARTED,
-            self::EXTERNAL_ORDER_STATE_PENDING
+            self::EXTERNAL_ORDER_STATE_PENDING,
         ];
 
         yield "debit_started_failure_initial_return_failed" => [
@@ -136,7 +143,7 @@ class OrderStateTest extends Unit
     /**
      * @return \Generator
      */
-    public function inputDTOExceptionDataProvider()
+    public function inputDTOExceptionInitialDataProvider()
     {
         $initialReturnAllNotPermittedStates = array_diff(
             array_keys($this->getSampleMapper()),
@@ -195,7 +202,7 @@ class OrderStateTest extends Unit
      * @group        integration
      * @small
      * @covers       ::process
-     * @dataProvider inputDtoDataProvider
+     * @dataProvider inputDtoInitialDataProvider
      *
      * @param string $processType
      * @param string $transactionState
@@ -204,17 +211,23 @@ class OrderStateTest extends Unit
      * @param string $expectedState
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
      * @throws \Exception
      */
-    public function testProcess($processType, $transactionState, $transactionType, $currentOrderState, $expectedState)
-    {
+    public function testInitialPaymentProcess(
+        $processType,
+        $transactionState,
+        $transactionType,
+        $currentOrderState,
+        $expectedState
+    ) {
         /**
          * @var InputDataTransferObject $inputDTO
          */
         $inputDTO = \Codeception\Stub::makeEmpty(
             InputDataTransferObject::class,
             [
-                'getProcessType' => Expected::once($processType),
+                'getProcessType' => Expected::atLeastOnce($processType),
                 'getTransactionState' => Expected::once($transactionState),
                 'getTransactionType' => Expected::once($transactionType),
                 'getCurrentOrderState' => Expected::once($currentOrderState)
@@ -228,7 +241,7 @@ class OrderStateTest extends Unit
      * @group        integration
      * @small
      * @covers       ::process
-     * @dataProvider inputDTOExceptionDataProvider
+     * @dataProvider inputDTOExceptionInitialDataProvider
      *
      * @param string $processType
      * @param string $transactionState
@@ -237,9 +250,10 @@ class OrderStateTest extends Unit
      * @param string $exception
      * @throws IgnorableStateException
      * @throws OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
      * @throws \Exception
      */
-    public function testProcessException(
+    public function testInitialProcessException(
         $processType,
         $transactionState,
         $transactionType,
@@ -253,7 +267,7 @@ class OrderStateTest extends Unit
         $inputDTO = \Codeception\Stub::makeEmpty(
             InputDataTransferObject::class,
             [
-                'getProcessType' => Expected::once($processType),
+                'getProcessType' => Expected::atLeastOnce($processType),
                 'getTransactionState' => Expected::once($transactionState),
                 'getTransactionType' => Expected::once($transactionType),
                 'getCurrentOrderState' => Expected::once($currentOrderState)
@@ -278,5 +292,211 @@ class OrderStateTest extends Unit
             'definitions' => $mapping
         ]);
         new OrderState(new GenericOrderStateMapper($this->mapDefinition));
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function inputDtoPostProcessingDataProvider()
+    {
+        $scenario = [
+            // Open amount: 100; Requested amount: 30; State: partial refunded
+            "step1" => [100, 30,  self::EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED],
+            // Open amount: 70; Requested amount: 40; State: partial refunded
+            "step2" => [70, 40,  self::EXTERNAL_ORDER_STATE_PARTIAL_REFUNDED],
+            // Open amount: 30; Requested amount: 30; State: refunded
+            "step3" => [30, 30,  self::EXTERNAL_ORDER_STATE_REFUNDED],
+        ];
+
+        $refundableTransactionTypeList = [
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
+            Constant::TRANSACTION_TYPE_CREDIT,
+        ];
+
+        foreach ($refundableTransactionTypeList as $type) {
+            foreach ($scenario as $step => $stepData) {
+                list($orderAmount, $requestAmount, $nextState) = $stepData;
+                yield "{$step}_{$type}_processing_success_pp_notification_{$nextState}" => [
+                    Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+                    Constant::TRANSACTION_STATE_SUCCESS,
+                    $type,
+                    self::EXTERNAL_ORDER_STATE_PROCESSING,
+                    $orderAmount,
+                    $requestAmount,
+                    $nextState,
+                ];
+            }
+        }
+    }
+
+    /**
+     * @group integration
+     * @small
+     * @dataProvider inputDtoPostProcessingDataProvider
+     * @covers ::process
+     * @param string $processType
+     * @param string $transactionState
+     * @param string $transactionType
+     * @param mixed|int $currentOrderState
+     * @param float $orderOpenAmount
+     * @param float $requestedAmount
+     * @param string $expectedState
+     * @throws IgnorableStateException
+     * @throws OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
+     * @throws \Exception
+     */
+    public function testPostProcessingPaymentProcess(
+        $processType,
+        $transactionState,
+        $transactionType,
+        $currentOrderState,
+        $orderOpenAmount,
+        $requestedAmount,
+        $expectedState
+    ) {
+        /**
+         * @var InputDataTransferObject $inputDTO
+         */
+        $inputDTO = \Codeception\Stub::makeEmpty(
+            InputDataTransferObject::class,
+            [
+                'getProcessType' => Expected::atLeastOnce($processType),
+                'getTransactionState' => Expected::once($transactionState),
+                'getTransactionType' => Expected::once($transactionType),
+                'getCurrentOrderState' => Expected::once($currentOrderState),
+                'getOrderOpenAmount' => Expected::atLeastOnce($orderOpenAmount),
+                'getTransactionRequestedAmount' => Expected::atLeastOnce($requestedAmount)
+            ]
+        );
+        $this->assertEquals($expectedState, $this->orderState->process($inputDTO));
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function inputDTOExceptionPostProcessingDataProvider()
+    {
+        yield "void-purchase_processing_success_pp_return_processing" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            100,
+            IgnorableStateException::class
+        ];
+
+        yield "refund-purchase_processing_failed_pp_return_processing" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            100,
+            IgnorableStateException::class
+        ];
+
+        foreach (array_keys($this->getSampleMapper()) as $orderState) {
+            foreach (Constant::getTransactionTypes() as $transactionType) {
+                yield "{$transactionType}_{$orderState}_success_pp_return_ignorable_exception" => [
+                    Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+                    Constant::TRANSACTION_STATE_FAILED,
+                    $transactionType,
+                    $orderState,
+                    100,
+                    100,
+                    IgnorablePostProcessingFailureException::class
+                ];
+
+                yield "{$transactionType}_{$orderState}_success_pp_notification_ignorable_exception" => [
+                    Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+                    Constant::TRANSACTION_STATE_FAILED,
+                    $transactionType,
+                    $orderState,
+                    100,
+                    100,
+                    IgnorablePostProcessingFailureException::class
+                ];
+            }
+        }
+
+        yield "pp_return_request_order_total_less_request" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            10,
+            100,
+           InvalidPostProcessDataException::class
+        ];
+
+        yield  "pp_return_request_amount_invalid" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            100,
+            0,
+            InvalidPostProcessDataException::class
+        ];
+
+        yield  "pp_return_order_total_amount_invalid" => [
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            Constant::TRANSACTION_TYPE_PURCHASE,
+            self::EXTERNAL_ORDER_STATE_PROCESSING,
+            0,
+            100,
+            InvalidPostProcessDataException::class
+        ];
+    }
+
+    /**
+     * @group        integration
+     * @small
+     * @covers       ::process
+     * @dataProvider inputDTOExceptionPostProcessingDataProvider
+     *
+     * @param string $processType
+     * @param string $transactionState
+     * @param string $transactionType
+     * @param string $currentOrderState
+     * @param $orderOpenAmount
+     * @param $requestedAmount
+     * @param string $exception
+     * @throws IgnorablePostProcessingFailureException
+     * @throws IgnorableStateException
+     * @throws OrderStateInvalidArgumentException
+     * @throws \Exception
+     */
+    public function testPostProcessingProcessException(
+        $processType,
+        $transactionState,
+        $transactionType,
+        $currentOrderState,
+        $orderOpenAmount,
+        $requestedAmount,
+        $exception
+    ) {
+        $this->expectException($exception);
+        /**
+         * @var InputDataTransferObject $inputDTO
+         */
+        $inputDTO = \Codeception\Stub::makeEmpty(
+            InputDataTransferObject::class,
+            [
+                'getProcessType' => Expected::atLeastOnce($processType),
+                'getTransactionState' => Expected::once($transactionState),
+                'getTransactionType' => Expected::once($transactionType),
+                'getCurrentOrderState' => Expected::once($currentOrderState),
+                'getOrderOpenAmount' => Expected::atLeastOnce($orderOpenAmount),
+                'getTransactionRequestedAmount' => Expected::atLeastOnce($requestedAmount)
+            ]
+        );
+
+        $this->orderState->process($inputDTO);
     }
 }

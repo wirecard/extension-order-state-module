@@ -9,12 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\Service;
 
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorableStateException;
-use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidProcessTypeException;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialNotificationHandler;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturnHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcess;
 
 /**
  * Class ProcessHandlerService
@@ -24,72 +20,33 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialRetu
 class ProcessHandlerService
 {
     /**
-     * @var string
+     * @var AbstractProcess
      */
-    private $processType;
-
-    /**
-     * @var ProcessData
-     */
-    private $processData;
+    private $process;
 
     /**
      * ProcessHandlerService constructor.
-     * @param string $processType
-     * @param ProcessData $processData
+     * @param AbstractProcess $process
      */
-    public function __construct($processType, ProcessData $processData)
+    public function __construct(AbstractProcess $process)
     {
-        $this->processType = $processType;
-        $this->processData = $processData;
+        $this->process = $process;
     }
 
     /**
      * @return \Wirecard\ExtensionOrderStateModule\Domain\Entity\OrderState
      * @throws IgnorableStateException
-     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException
      */
     public function handle()
     {
-        $orderState = $this->findHandler()->handle();
-        if (null  === $orderState) {
+        $handler = $this->process->createHandler();
+        $orderState = $handler->handle();
+        if (null === $orderState) {
             throw new IgnorableStateException("State is ignored!");
         }
         return $orderState;
-    }
-
-    /**
-     * @return \Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler
-     * @throws InvalidProcessTypeException
-     * @todo avoid switch | Strategy \ use polymorphism on the next stage
-     */
-    private function findHandler()
-    {
-        switch ($this->processType) {
-            case Constant::PROCESS_TYPE_INITIAL_RETURN:
-                return $this->findReturnHandler();
-            case Constant::PROCESS_TYPE_INITIAL_NOTIFICATION:
-                return $this->findNotificationHandler();
-            default:
-                throw new InvalidProcessTypeException("Invalid process type {$this->processType}");
-        }
-    }
-
-    /**
-     * @return InitialReturnHandler
-     * @todo encapsulate return finder e.g InitialReturn | PostProcessingReturn
-     */
-    private function findReturnHandler()
-    {
-        return new InitialReturnHandler($this->processData);
-    }
-
-    /**
-     * @todo encapsulate return finder e.g PostProcessingNotification | PostProcessingNotification
-     * @return InitialNotificationHandler
-     */
-    private function findNotificationHandler()
-    {
-        return new InitialNotificationHandler($this->processData);
     }
 }

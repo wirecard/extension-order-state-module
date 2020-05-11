@@ -35,4 +35,14 @@ interface InputDataTransferObject
      * @return string
      */
     public function getCurrentOrderState();
+
+    /**
+     * @return float
+     */
+    public function getOrderOpenAmount();
+
+    /**
+     * @return float
+     */
+    public function getTransactionRequestedAmount();
 }

@@ -7,17 +7,18 @@
  * https://github.com/wirecard/extension-order-state-module/blob/master/LICENSE
  */
 
-namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturn;
+namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\PostProcessingReturn;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturnHandler;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\ReturnHandler;
 
 /**
- * Class Pending
- * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\InitialPayment\InitialReturn
+ * Class Failed
+ * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturn
  * @since 1.0.0
  */
-class Pending extends InitialReturnHandler
+class Failed extends ReturnHandler
 {
     /**
      * @inheritDoc
@@ -33,10 +34,9 @@ class Pending extends InitialReturnHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->isSuccessTransaction() && $this->processData->orderInState(Constant::ORDER_STATE_STARTED)) {
-            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PENDING);
+        if ($this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED)) {
+            throw new IgnorablePostProcessingFailureException();
         }
-
         return $result;
     }
 }

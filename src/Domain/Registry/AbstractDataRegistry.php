@@ -39,7 +39,7 @@ abstract class AbstractDataRegistry
 
     /**
      * @param string $key
-     * @param object $object
+     * @param object|mixed $object
      * @return AbstractDataRegistry
      * @since 1.0.0
      */
