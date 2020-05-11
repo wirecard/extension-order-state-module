@@ -35,7 +35,7 @@ class PartialRefunded extends NotificationHandler
     {
         $result = parent::calculate();
         if ($this->isAllowedTransactionType() && $this->isNotFullRefundedAmount() &&
-            $this->isRefundAmountOverCaptureAmount()) {
+            ($this->isRefundAmountOverCaptureAmount() || $this->isFullAmountCaptured())) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_REFUNDED);
         }
 
@@ -80,5 +80,13 @@ class PartialRefunded extends NotificationHandler
     private function isRefundAmountOverCaptureAmount()
     {
         return $this->getCalculatedRefundTotalAmount() >= $this->processData->getOrderCapturedAmount();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isFullAmountCaptured()
+    {
+        return $this->processData->getOrderTotalAmount() === $this->processData->getOrderCapturedAmount();
     }
 }

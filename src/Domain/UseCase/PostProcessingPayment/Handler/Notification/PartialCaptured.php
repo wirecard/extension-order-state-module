@@ -64,7 +64,8 @@ class PartialCaptured extends NotificationHandler
         return $this->processData->transactionTypeInRange([
                 Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
                 Constant::TRANSACTION_TYPE_VOID_CAPTURE
-            ]) && $this->isCaptureAmountOverRefundAmountOnRefundContext();
+            ]) && $this->isNotFullCapturedAmountOnRefundContext() &&
+            $this->isCaptureAmountOverRefundAmountOnRefundContext();
     }
 
     /**
@@ -90,6 +91,14 @@ class PartialCaptured extends NotificationHandler
     private function isNotFullCapturedAmount()
     {
         return $this->getCalculatedCaptureTotalAmount() < $this->processData->getOrderTotalAmount();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isNotFullCapturedAmountOnRefundContext()
+    {
+        return $this->processData->getOrderCapturedAmount() < $this->processData->getOrderTotalAmount();
     }
 
     /**

@@ -142,6 +142,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
      * @covers ::isNotFullCapturedAmount
      * @covers ::isFullCapturedAndPartialRefunded
      * @covers ::isCaptureAmountOverRefundAmountOnRefundContext
+     * @covers ::isNotFullCapturedAmountOnRefundContext
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
@@ -236,7 +237,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
                     Constant::TRANSACTION_STATE_SUCCESS,
                     100,
                     30,
-                    100,
+                    91,
                     60
                 ];
             }
@@ -255,6 +256,7 @@ class PartialCapturedTest extends \Codeception\Test\Unit
      * @covers ::isNotFullCapturedAmount
      * @covers ::isFullCapturedAndPartialRefunded
      * @covers ::isCaptureAmountOverRefundAmountOnRefundContext
+     * @covers ::isNotFullCapturedAmountOnRefundContext
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState

@@ -800,23 +800,23 @@ class OrderStateTest extends Unit
             Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
             Constant::ORDER_STATE_PARTIAL_CAPTURED,
             100, 10, 100, 30,
-            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            Constant::ORDER_STATE_PARTIAL_REFUNDED,
             null
         ];
         yield "1.5) Post Processing Return. Partial refund. Ignore request" => [
             Constant::PROCESS_TYPE_POST_PROCESSING_RETURN,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
-            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            Constant::ORDER_STATE_PARTIAL_REFUNDED,
             100, 60, 100, 40,
-            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            Constant::ORDER_STATE_PARTIAL_REFUNDED,
             IgnorableStateException::class
         ];
         yield "1.5) Post Processing Notification. Partial refund." => [
             Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
-            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            Constant::ORDER_STATE_PARTIAL_REFUNDED,
             100, 60, 100, 40,
             Constant::ORDER_STATE_REFUNDED,
             null
