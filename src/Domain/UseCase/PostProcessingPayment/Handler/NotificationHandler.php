@@ -13,7 +13,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
 
 /**
- * Class PostProcessingNotifxicationHandler
+ * Class PostProcessingNotificationHandler
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment
  * @since 1.0.0
  *
@@ -40,8 +40,8 @@ class NotificationHandler extends AbstractProcessHandler
     /**
      * @return bool
      */
-    protected function isFullyRefunded()
+    protected function isFullAmountRequested()
     {
-        return ($this->processData->getOrderOpenAmount() - $this->processData->getTransactionRequestedAmount()) == 0;
+        return $this->processData->getTransactionRequestedAmount() === $this->processData->getOrderTotalAmount();
     }
 }

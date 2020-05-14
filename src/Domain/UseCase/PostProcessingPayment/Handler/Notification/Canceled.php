@@ -10,22 +10,22 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 
 /**
- * Class Failed
+ * Class Cancelled
  * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification
  * @since 1.0.0
+ * @todo: create common class for this collection of constants.
  */
-class Failed extends NotificationHandler
+class Canceled extends NotificationHandler
 {
     /**
      * @inheritDoc
      */
     protected function getNextHandler()
     {
-        return new Canceled($this->processData);
+        return new Processing($this->processData);
     }
 
     /**
@@ -34,9 +34,21 @@ class Failed extends NotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->transactionInState(Constant::TRANSACTION_STATE_FAILED)) {
-            throw new IgnorablePostProcessingFailureException();
+        if ($this->processData->orderInState(Constant::ORDER_STATE_AUTHORIZED) &&
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION) &&
+            $this->isFullAmountRequested() &&
+            $this->isNeverRefundedOrCaptured()) {
+            $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_CANCELED);
         }
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isNeverRefundedOrCaptured()
+    {
+        return $this->processData->getOrderRefundedAmount() === 0.0 &&
+            $this->processData->getOrderCapturedAmount() === 0.0;
     }
 }

@@ -42,12 +42,22 @@ class SampleInputDTO implements InputDataTransferObject
     /**
      * @var float
      */
-    private $orderOpenAmount = 0;
+    private $orderTotalAmount = 0.0;
 
     /**
      * @var float
      */
-    private $transactionRequestedAmount = 0;
+    private $transactionRequestedAmount = 0.0;
+
+    /**
+     * @var float
+     */
+    private $orderRefundedAmount = 0.0;
+
+    /**
+     * @var float
+     */
+    private $orderCapturedAmount = 0.0;
 
     /**
      * @return string
@@ -130,17 +140,50 @@ class SampleInputDTO implements InputDataTransferObject
     /**
      * @return float
      */
-    public function getOrderOpenAmount()
+    public function getOrderTotalAmount()
     {
-        return $this->orderOpenAmount;
+        return $this->orderTotalAmount;
     }
 
     /**
-     * @param float $orderOpenAmount
+     * @param float $orderTotalAmount
      */
-    public function setOrderOpenAmount($orderOpenAmount)
+    public function setOrderTotalAmount($orderTotalAmount)
     {
-        $this->orderOpenAmount = $orderOpenAmount;
+        $this->orderTotalAmount = $orderTotalAmount;
+    }
+
+
+    /**
+     * @return float
+     */
+    public function getOrderRefundedAmount()
+    {
+        return $this->orderRefundedAmount;
+    }
+
+    /**
+     * @param float $orderRefundedAmount
+     */
+    public function setOrderRefundedAmount($orderRefundedAmount)
+    {
+        $this->orderRefundedAmount = $orderRefundedAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOrderCapturedAmount()
+    {
+        return $this->orderCapturedAmount;
+    }
+
+    /**
+     * @param float $orderCapturedAmount
+     */
+    public function setOrderCapturedAmount($orderCapturedAmount)
+    {
+        $this->orderCapturedAmount = $orderCapturedAmount;
     }
 
     /**
@@ -159,4 +202,20 @@ class SampleInputDTO implements InputDataTransferObject
         $this->transactionRequestedAmount = $transactionRequestedAmount;
     }
 
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'processType' => $this->getProcessType(),
+            'currentOrderState' => $this->getCurrentOrderState(),
+            'transactionType' => $this->getTransactionType(),
+            'transactionState' => $this->getTransactionState(),
+            'transactionRequestedAmount' => $this->getTransactionRequestedAmount(),
+            'orderTotalAmount' => $this->getOrderTotalAmount(),
+            'orderCapturedAmount' => $this->getOrderCapturedAmount(),
+            'orderRefundedAmount' => $this->getOrderRefundedAmount(),
+        ];
+    }
 }

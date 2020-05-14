@@ -14,7 +14,7 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Hand
 
 /**
  * Class PartialRefunded
- * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingNotification
+ * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification
  * @since 1.0.0
  * @todo: create common class for this collection of constants.
  */
@@ -25,7 +25,7 @@ class PartialRefunded extends NotificationHandler
      */
     protected function getNextHandler()
     {
-        return new Refunded($this->processData);
+        return new PartialCaptured($this->processData);
     }
 
     /**
@@ -34,17 +34,59 @@ class PartialRefunded extends NotificationHandler
     protected function calculate()
     {
         $result = parent::calculate();
-        if ($this->processData->transactionTypeInRange(
-            [
-                Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-                Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-                Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-                Constant::TRANSACTION_TYPE_CREDIT,
-            ]
-        ) && !$this->isFullyRefunded()) {
+        if ($this->isAllowedTransactionType() && $this->isNotFullRefundedAmount() &&
+            ($this->isRefundAmountOverCaptureAmount() || $this->isFullAmountCaptured())) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_PARTIAL_REFUNDED);
         }
 
         return $result;
+    }
+
+    /**
+     * @return float
+     */
+    private function getCalculatedRefundTotalAmount()
+    {
+        return $this->processData->getOrderRefundedAmount() + $this->processData->getTransactionRequestedAmount();
+    }
+
+    /**
+     * @return bool
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     */
+    private function isAllowedTransactionType()
+    {
+        return $this->processData->transactionTypeInRange([
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
+            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
+            Constant::TRANSACTION_TYPE_CREDIT,
+            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+            Constant::TRANSACTION_TYPE_VOID_CAPTURE
+        ]);
+    }
+
+    /**
+     * @return bool
+     */
+    private function isNotFullRefundedAmount()
+    {
+        return $this->getCalculatedRefundTotalAmount() < $this->processData->getOrderTotalAmount();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isRefundAmountOverCaptureAmount()
+    {
+        return $this->getCalculatedRefundTotalAmount() >= $this->processData->getOrderCapturedAmount();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isFullAmountCaptured()
+    {
+        return $this->processData->getOrderTotalAmount() === $this->processData->getOrderCapturedAmount();
     }
 }

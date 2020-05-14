@@ -10,23 +10,23 @@
 namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler\Notification;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialRefunded;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Processing;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Refunded;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
 
 /**
- * Class RefundedTest
+ * Class ProcessingTest
  * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler\Notification
- * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Refunded
+ * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Processing
  * @since 1.0.0
  */
-class RefundedTest extends \Codeception\Test\Unit
+class ProcessingTest extends \Codeception\Test\Unit
 {
     use MockCreator;
 
     /**
-     * @var Refunded
+     * @var Processing
      */
     protected $handler;
 
@@ -46,13 +46,9 @@ class RefundedTest extends \Codeception\Test\Unit
         $this->postProcessData = $this->createPostProcessData(
             Constant::ORDER_STATE_PROCESSING,
             Constant::TRANSACTION_TYPE_PURCHASE,
-            Constant::TRANSACTION_STATE_SUCCESS,
-            100,
-            10,
-            0,
-            90
+            Constant::TRANSACTION_STATE_SUCCESS
         );
-        $this->handler = new Refunded($this->postProcessData);
+        $this->handler = new Processing($this->postProcessData);
     }
 
     /**
@@ -69,27 +65,49 @@ class RefundedTest extends \Codeception\Test\Unit
      */
     public function ignorableScenariosDataProvider()
     {
-        $refundableTypes = [
-            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-            Constant::TRANSACTION_TYPE_CREDIT,
-            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
-            Constant::TRANSACTION_TYPE_VOID_CAPTURE,
-        ];
-        $noneRefundableTypes = array_diff(Constant::getTransactionTypes(), $refundableTypes);
-        foreach (Constant::getOrderStates() as $orderState) {
-            foreach ($noneRefundableTypes as $noneRefundableType) {
-                yield "none_refundable_{$noneRefundableType}_{$orderState}_on_refund_scope" => [
-                    $orderState,
-                    $noneRefundableType,
+        $ignorableTransactionTypes = Constant::getTransactionTypes();
+        $ignorableTransactionTypes = array_diff(
+            $ignorableTransactionTypes,
+            [Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION]
+        );
+        $ignorableOrderStates = Constant::getOrderStates();
+        $ignorableOrderStates = array_diff(
+            $ignorableOrderStates,
+            [Constant::ORDER_STATE_AUTHORIZED, Constant::ORDER_STATE_PARTIAL_CAPTURED]
+        );
+        foreach ($ignorableOrderStates as $ignorableOrderState) {
+            foreach ($ignorableTransactionTypes as $ignorableTransactionType) {
+                yield "pp_notify_ignorable__{$ignorableOrderState}_{$ignorableTransactionType}_on_processing_scope" => [
+                    $ignorableOrderState,
+                    $ignorableTransactionType,
                     Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    100,
-                    100
+                    100, // orderTotal
+                    100, // requestedAmount
+                    0, // totalCapturedAmount
+                    0 // totalRefundedAmount
                 ];
             }
         }
+
+        yield "ignorable_not_full_capture_authorized_capture-authorization_on_processing_scope" => [
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            100,
+            30,
+            69.99999,
+            0
+        ];
+
+        yield "ignorable_once_refunded_authorized_capture-authorization_on_processing_scope" => [
+            Constant::ORDER_STATE_AUTHORIZED,
+            Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
+            100,
+            30,
+            50,
+            20
+        ];
     }
 
 
@@ -97,14 +115,18 @@ class RefundedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::calculate
-     * @covers ::isFullAmountRefunded
-     * @covers ::getCalculatedRefundTotalAmount
+     * @covers ::isOrderStateAllowed
+     * @covers ::isNeverRefunded
+     * @covers ::isFullAmountCaptured
+     * @covers ::getCalculatedCaptureTotalAmount
      * @dataProvider ignorableScenariosDataProvider
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
-     * @param float $orderOpenAmount
-     * @param float $requestedAmount
+     * @param float $orderTotalAmount
+     * @param float $transactionRequestedAmount
+     * @param float $orderCapturedAmount
+     * @param float $orderRefundedAmount
      * @throws \ReflectionException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
@@ -114,17 +136,21 @@ class RefundedTest extends \Codeception\Test\Unit
         $orderState,
         $transactionType,
         $transactionState,
-        $orderOpenAmount,
-        $requestedAmount
+        $orderTotalAmount,
+        $transactionRequestedAmount,
+        $orderCapturedAmount,
+        $orderRefundedAmount
     ) {
         $this->postProcessData = $this->createPostProcessData(
             $orderState,
             $transactionType,
             $transactionState,
-            $orderOpenAmount,
-            $requestedAmount
+            $orderTotalAmount,
+            $transactionRequestedAmount,
+            $orderCapturedAmount,
+            $orderRefundedAmount
         );
-        $handler = new Refunded($this->postProcessData);
+        $handler = new Processing($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($handler);
@@ -136,35 +162,26 @@ class RefundedTest extends \Codeception\Test\Unit
      */
     public function nextStateCasesDataProvider()
     {
-        $refundableTypes = [
-            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-            Constant::TRANSACTION_TYPE_CREDIT,
-            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
-            Constant::TRANSACTION_TYPE_VOID_CAPTURE,
-        ];
-        foreach (Constant::getOrderStates() as $orderState) {
-            foreach ($refundableTypes as $refundableType) {
-                yield "full_refundable_{$refundableType}_{$orderState}_on_refund_scope" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    20,
-                    100,
-                    80
-                ];
-                yield "full_refundable1_{$refundableType}_{$orderState}_on_refund_scope" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    100,
-                    100,
-                    0
-                ];
-            }
+
+        foreach ([Constant::ORDER_STATE_AUTHORIZED, Constant::ORDER_STATE_PARTIAL_CAPTURED] as $orderState) {
+            yield "never_refunded_full_capture_reached_capture-authorization_{$orderState}_on_processing_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                30,
+                70,
+                0
+            ];
+            yield "full_capture_capture-authorization_{$orderState}_on_processing_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                100,
+                0,
+                0
+            ];
         }
     }
 
@@ -172,8 +189,10 @@ class RefundedTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @covers ::calculate
-     * @covers ::isFullAmountRefunded
-     * @covers ::getCalculatedRefundTotalAmount
+     * @covers ::isOrderStateAllowed
+     * @covers ::isNeverRefunded
+     * @covers ::isFullAmountCaptured
+     * @covers ::getCalculatedCaptureTotalAmount
      * @dataProvider nextStateCasesDataProvider
      * @param string $orderState
      * @param string $transactionType
@@ -205,11 +224,11 @@ class RefundedTest extends \Codeception\Test\Unit
             $orderCapturedAmount,
             $orderRefundedAmount
         );
-        $handler = new Refunded($this->postProcessData);
+        $handler = new Processing($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($handler);
-        $this->assertEquals($this->createOrderState(Constant::ORDER_STATE_REFUNDED), $result);
+        $this->assertEquals($this->createOrderState(Constant::ORDER_STATE_PROCESSING), $result);
     }
 
     /**
@@ -223,6 +242,6 @@ class RefundedTest extends \Codeception\Test\Unit
         $reflectionMethod = new \ReflectionMethod($this->handler, "getNextHandler");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($this->handler);
-        $this->assertEquals(new PartialRefunded($this->postProcessData), $result);
+        $this->assertEquals(new Refunded($this->postProcessData), $result);
     }
 }

@@ -65,8 +65,6 @@ trait MockCreator
      * @param $transactionState
      * @param $transactionType
      * @param $currentOrderState
-     * @param $orderOpenAmount
-     * @param $transactionRequestedAmount
      * @return object|InputDataTransferObject
      * @throws \Exception
      */
@@ -74,9 +72,40 @@ trait MockCreator
         $processType,
         $transactionState,
         $transactionType,
+        $currentOrderState
+    ) {
+        return \Codeception\Stub::makeEmpty(
+            InputDataTransferObject::class,
+            [
+                'getProcessType' => Expected::atLeastOnce($processType),
+                'getTransactionState' => Expected::atLeastOnce($transactionState),
+                'getTransactionType' => Expected::atLeastOnce($transactionType),
+                'getCurrentOrderState' => Expected::atLeastOnce($currentOrderState)
+            ]
+        );
+    }
+
+    /**
+     * @param $processType
+     * @param $transactionState
+     * @param $transactionType
+     * @param $currentOrderState
+     * @param float $orderTotalAmount
+     * @param float $orderCapturedAmount
+     * @param float $orderRefundedAmount
+     * @param float $transactionRequestedAmount
+     * @return object|InputDataTransferObject
+     * @throws \Exception
+     */
+    public function createDummyInputPostProcessingDTO(
+        $processType,
+        $transactionState,
+        $transactionType,
         $currentOrderState,
-        $orderOpenAmount = 0,
-        $transactionRequestedAmount = 0
+        $orderTotalAmount = 100.0,
+        $transactionRequestedAmount = 100.0,
+        $orderCapturedAmount = 0.0,
+        $orderRefundedAmount = 0.0
     ) {
         return \Codeception\Stub::makeEmpty(
             InputDataTransferObject::class,
@@ -85,8 +114,10 @@ trait MockCreator
                 'getTransactionState' => Expected::atLeastOnce($transactionState),
                 'getTransactionType' => Expected::atLeastOnce($transactionType),
                 'getCurrentOrderState' => Expected::atLeastOnce($currentOrderState),
-                'getOrderOpenAmount' => $orderOpenAmount,
-                'getTransactionRequestedAmount' => $transactionRequestedAmount,
+                'getOrderTotalAmount' => Expected::atLeastOnce($orderTotalAmount),
+                'getOrderCapturedAmount' => Expected::atLeastOnce($orderCapturedAmount),
+                'getOrderRefundedAmount' => Expected::atLeastOnce($orderRefundedAmount),
+                'getTransactionRequestedAmount' => Expected::atLeastOnce($transactionRequestedAmount),
             ]
         );
     }
@@ -128,6 +159,8 @@ trait MockCreator
                 "external_processing" => Constant::ORDER_STATE_PROCESSING,
                 "external_refunded" => Constant::ORDER_STATE_REFUNDED,
                 "external_partial_refunded" => Constant::ORDER_STATE_PARTIAL_REFUNDED,
+                "external_partial_captured" => Constant::ORDER_STATE_PARTIAL_CAPTURED,
+                "external_canceled" => Constant::ORDER_STATE_CANCELED,
             ];
         }
         return \Codeception\Stub::makeEmpty(MappingDefinition::class, [
@@ -152,8 +185,6 @@ trait MockCreator
      * @param $transactionState
      * @param $transactionType
      * @param $orderState
-     * @param int $orderOpenAmount
-     * @param int $transactionRequestedAmount
      * @return InitialProcessData
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
@@ -162,32 +193,31 @@ trait MockCreator
         $orderState,
         $transactionType,
         $transactionState,
-        array $definition = [],
-        $orderOpenAmount = 0,
-        $transactionRequestedAmount = 0
+        array $definition = []
     ) {
         $mapper = new GenericOrderStateMapper($this->createMappingDefinition($definition));
         $dto = $this->createDummyInputDTO(
             Constant::PROCESS_TYPE_INITIAL_RETURN,
             $transactionState,
             $transactionType,
-            $mapper->toExternal($this->fromOrderStateRegistry($orderState)),
-            $orderOpenAmount,
-            $transactionRequestedAmount
+            $mapper->toExternal($this->fromOrderStateRegistry($orderState))
         );
 
         return new InitialProcessData($dto, $mapper);
     }
 
     /**
-     * @param array $definition
-     * @param $processType
-     * @param $transactionState
-     * @param $transactionType
      * @param $orderState
-     * @param int $orderOpenAmount
-     * @param int $transactionRequestedAmount
+     * @param $transactionType
+     * @param $transactionState
+     * @param float $orderTotalAmount
+     * @param float $transactionRequestedAmount
+     * @param float $orderCapturedAmount
+     * @param float $orderRefundedAmount
+     * @param array $definition
      * @return InitialProcessData
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
      */
@@ -195,18 +225,22 @@ trait MockCreator
         $orderState,
         $transactionType,
         $transactionState,
-        $orderOpenAmount = 100,
-        $transactionRequestedAmount = 100,
+        $orderTotalAmount = 100.0,
+        $transactionRequestedAmount = 100.0,
+        $orderCapturedAmount = 0.0,
+        $orderRefundedAmount = 0.0,
         array $definition = []
     ) {
         $mapper = new GenericOrderStateMapper($this->createMappingDefinition($definition));
-        $dto = $this->createDummyInputDTO(
+        $dto = $this->createDummyInputPostProcessingDTO(
             Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
             $transactionState,
             $transactionType,
             $mapper->toExternal($this->fromOrderStateRegistry($orderState)),
-            $orderOpenAmount,
-            $transactionRequestedAmount
+            $orderTotalAmount,
+            $transactionRequestedAmount,
+            $orderCapturedAmount,
+            $orderRefundedAmount
         );
 
         return new PostProcessingProcessData($dto, $mapper);

@@ -11,22 +11,21 @@ namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProces
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialCaptured;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialRefunded;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
 
 /**
- * Class PartialRefundedTest
+ * Class PartialCapturedTest
  * @package Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProcessingPayment\Handler\Notification
- * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialRefunded
+ * @coversDefaultClass \Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialCaptured
  * @since 1.0.0
  */
-class PartialRefundedTest extends \Codeception\Test\Unit
+class PartialCapturedTest extends \Codeception\Test\Unit
 {
     use MockCreator;
 
     /**
-     * @var PartialRefunded
+     * @var PartialCaptured
      */
     protected $handler;
 
@@ -45,12 +44,14 @@ class PartialRefundedTest extends \Codeception\Test\Unit
     {
         $this->postProcessData = $this->createPostProcessData(
             Constant::ORDER_STATE_PROCESSING,
-            Constant::TRANSACTION_TYPE_PURCHASE,
+            Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             100,
-            40
+            40,
+            0,
+            0
         );
-        $this->handler = new PartialRefunded($this->postProcessData);
+        $this->handler = new PartialCaptured($this->postProcessData);
     }
 
     /**
@@ -67,50 +68,64 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      */
     public function ignorableScenariosDataProvider()
     {
-        $refundableTypes = [
-            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-            Constant::TRANSACTION_TYPE_CREDIT,
+        $capturingTypes = [
+            Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
             Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
             Constant::TRANSACTION_TYPE_VOID_CAPTURE,
         ];
-        $noneRefundableTypes = array_diff(Constant::getTransactionTypes(), $refundableTypes);
+        $noneRefundableTypes = array_diff(Constant::getTransactionTypes(), $capturingTypes);
         foreach (Constant::getOrderStates() as $orderState) {
             foreach ($noneRefundableTypes as $noneRefundableType) {
-                yield "none_refundable_{$noneRefundableType}_{$orderState}_on_refund_partial_scope" => [
+                yield "none_capturing_{$noneRefundableType}_{$orderState}_on_partial_capture_scope" => [
                     $orderState,
                     $noneRefundableType,
                     Constant::TRANSACTION_STATE_SUCCESS,
                     100,
                     30,
-                    50,
+                    0,
                     0
                 ];
             }
 
+            yield "capture_is_full_on_entry_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                100,
+                0,
+                0
+            ];
 
-            foreach ($refundableTypes as $refundableType) {
-                yield "refundable_{$refundableType}_{$orderState}_refund_amount_full_on_refund_partial_scope" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    100,
-                    100,
-                    0
-                ];
+            yield "full_captured_never_refunded_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                70,
+                30,
+                0
+            ];
 
-                yield "refundable_{$refundableType}_{$orderState}_capture_amount_over_refund" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    40,
-                    40.001,
-                    0
-                ];
-            }
+            yield "capture_is_already_full_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                100,
+                100,
+                0
+            ];
+
+            yield "refund_not_greater_as_capture_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                20,
+                30,
+                10
+            ];
         }
     }
 
@@ -120,10 +135,14 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      * @small
      * @dataProvider ignorableScenariosDataProvider
      * @covers ::calculate
-     * @covers ::isNotFullRefundedAmount
-     * @covers ::isRefundAmountOverCaptureAmount
-     * @covers ::isAllowedTransactionType
-     * @covers ::getCalculatedRefundTotalAmount
+     * @covers ::onCaptureTransactionRequest
+     * @covers ::onRefundTransactionRequest
+     * @covers ::isCaptureAmountOverRefundAmount
+     * @covers ::getCalculatedCaptureTotalAmount
+     * @covers ::isNotFullCapturedAmount
+     * @covers ::isFullCapturedAndPartialRefunded
+     * @covers ::isCaptureAmountOverRefundAmountOnRefundContext
+     * @covers ::isNotFullCapturedAmountOnRefundContext
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
@@ -154,7 +173,7 @@ class PartialRefundedTest extends \Codeception\Test\Unit
             $orderCapturedAmount,
             $orderRefundedAmount
         );
-        $handler = new PartialRefunded($this->postProcessData);
+        $handler = new PartialCaptured($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($handler);
@@ -166,34 +185,60 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      */
     public function nextStateCasesDataProvider()
     {
-        $refundableTypes = [
-            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
-            Constant::TRANSACTION_TYPE_REFUND_DEBIT,
-            Constant::TRANSACTION_TYPE_CREDIT,
-            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
-            Constant::TRANSACTION_TYPE_VOID_CAPTURE,
-        ];
         foreach (Constant::getOrderStates() as $orderState) {
-            foreach ($refundableTypes as $refundableType) {
-                yield "refund_equal_greater_capture_{$refundableType}_{$orderState}_on_refund_partial_scope" => [
-                    $orderState,
-                    $refundableType,
-                    Constant::TRANSACTION_STATE_SUCCESS,
-                    100,
-                    20,
-                    50,
-                    30
-                ];
+            yield "not_full_capture_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                30,
+                66.999,
+                0
+            ];
 
-                yield "partial_refund_after_full_capture_{$refundableType}_{$orderState}_on_refund_partial_scope" => [
+            yield "full_capture_partial_refunded_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                30,
+                70,
+                10
+            ];
+
+            yield "capture_over_refund_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                30,
+                30,
+                30
+            ];
+
+            yield "refund_equals_0_capture-authorization_{$orderState}_on_partial_capture_scope" => [
+                $orderState,
+                Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+                Constant::TRANSACTION_STATE_SUCCESS,
+                100,
+                30,
+                20,
+                0
+            ];
+
+            $refundableTransactionStates = [
+                Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+                Constant::TRANSACTION_TYPE_VOID_CAPTURE,
+            ];
+            foreach ($refundableTransactionStates as $refundableTransactionState) {
+                yield "capture_over_refund_{$refundableTransactionState}_{$orderState}_on_partial_capture_scope" => [
                     $orderState,
-                    $refundableType,
+                    $refundableTransactionState,
                     Constant::TRANSACTION_STATE_SUCCESS,
                     100,
-                    20,
-                    100,
-                    30
+                    30,
+                    91,
+                    60
                 ];
             }
         }
@@ -204,14 +249,18 @@ class PartialRefundedTest extends \Codeception\Test\Unit
      * @small
      * @dataProvider nextStateCasesDataProvider
      * @covers ::calculate
-     * @covers ::isNotFullRefundedAmount
-     * @covers ::isRefundAmountOverCaptureAmount
-     * @covers ::isAllowedTransactionType
-     * @covers ::getCalculatedRefundTotalAmount
+     * @covers ::onCaptureTransactionRequest
+     * @covers ::onRefundTransactionRequest
+     * @covers ::isCaptureAmountOverRefundAmount
+     * @covers ::getCalculatedCaptureTotalAmount
+     * @covers ::isNotFullCapturedAmount
+     * @covers ::isFullCapturedAndPartialRefunded
+     * @covers ::isCaptureAmountOverRefundAmountOnRefundContext
+     * @covers ::isNotFullCapturedAmountOnRefundContext
      * @param string $orderState
      * @param string $transactionType
      * @param string $transactionState
-     * @param $orderTotalAmount
+     * @param float $orderTotalAmount
      * @param float $requestedAmount
      * @param float $orderCapturedAmount
      * @param float $orderRefundedAmount
@@ -238,11 +287,11 @@ class PartialRefundedTest extends \Codeception\Test\Unit
             $orderCapturedAmount,
             $orderRefundedAmount
         );
-        $handler = new PartialRefunded($this->postProcessData);
+        $handler = new PartialCaptured($this->postProcessData);
         $reflectionMethod = new \ReflectionMethod($handler, "calculate");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($handler);
-        $this->assertEquals($this->createOrderState(Constant::ORDER_STATE_PARTIAL_REFUNDED), $result);
+        $this->assertEquals($this->createOrderState(Constant::ORDER_STATE_PARTIAL_CAPTURED), $result);
     }
 
     /**
@@ -256,6 +305,6 @@ class PartialRefundedTest extends \Codeception\Test\Unit
         $reflectionMethod = new \ReflectionMethod($this->handler, "getNextHandler");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($this->handler);
-        $this->assertEquals(new PartialCaptured($this->postProcessData), $result);
+        $this->assertEquals(null, $result);
     }
 }

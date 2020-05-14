@@ -34,7 +34,7 @@ class Authorization extends NotificationHandler
     {
         $result = parent::calculate();
         if ($this->isSuccessTransaction() &&
-            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_AUTHORIZE)) {
+            $this->processData->transactionInType(Constant::TRANSACTION_TYPE_AUTHORIZATION)) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_AUTHORIZED);
         }
 

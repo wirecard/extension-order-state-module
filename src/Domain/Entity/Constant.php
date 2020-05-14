@@ -29,11 +29,12 @@ class Constant
     const ORDER_STATE_PROCESSING = "processing";
     const ORDER_STATE_REFUNDED = "refunded";
     const ORDER_STATE_PARTIAL_REFUNDED = "partial-refunded";
+    const ORDER_STATE_PARTIAL_CAPTURED = "partial-captured";
+    const ORDER_STATE_CANCELED = "canceled";
     // Transaction State
     const TRANSACTION_STATE_FAILED = "failed";
     const TRANSACTION_STATE_SUCCESS = "success";
     // Transaction Type
-    const TRANSACTION_TYPE_AUTHORIZE = "authorization";
     const TRANSACTION_TYPE_DEBIT = "debit";
     const TRANSACTION_TYPE_PENDING_DEBIT = "pending-debit";
     const TRANSACTION_TYPE_PURCHASE = "purchase";
@@ -43,6 +44,11 @@ class Constant
     const TRANSACTION_TYPE_REFUND_PURCHASE = "refund-purchase";
     const TRANSACTION_TYPE_REFUND_DEBIT = "refund-debit";
     const TRANSACTION_TYPE_CREDIT = "credit";
+    const TRANSACTION_TYPE_AUTHORIZATION = "authorization";
+    const TRANSACTION_TYPE_CAPTURE_AUTHORIZATION = "capture-authorization";
+    const TRANSACTION_TYPE_VOID_AUTHORIZATION = "void-authorization";
+    const TRANSACTION_TYPE_VOID_CAPTURE = "void-capture";
+    const TRANSACTION_TYPE_REFUND_CAPTURE = "refund-capture";
 
     /**
      * @return array
@@ -58,6 +64,8 @@ class Constant
             self::ORDER_STATE_PROCESSING,
             self::ORDER_STATE_REFUNDED,
             self::ORDER_STATE_PARTIAL_REFUNDED,
+            self::ORDER_STATE_PARTIAL_CAPTURED,
+            self::ORDER_STATE_CANCELED,
         ];
     }
 
@@ -67,7 +75,7 @@ class Constant
     public static function getTransactionTypes()
     {
         return [
-            self::TRANSACTION_TYPE_AUTHORIZE,
+            self::TRANSACTION_TYPE_AUTHORIZATION,
             self::TRANSACTION_TYPE_DEBIT,
             self::TRANSACTION_TYPE_PENDING_DEBIT,
             self::TRANSACTION_TYPE_PURCHASE,
@@ -77,6 +85,10 @@ class Constant
             self::TRANSACTION_TYPE_REFUND_PURCHASE,
             self::TRANSACTION_TYPE_REFUND_DEBIT,
             self::TRANSACTION_TYPE_CREDIT,
+            self::TRANSACTION_TYPE_REFUND_CAPTURE,
+            self::TRANSACTION_TYPE_VOID_AUTHORIZATION,
+            self::TRANSACTION_TYPE_VOID_CAPTURE,
+            self::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
         ];
     }
 
@@ -99,17 +111,6 @@ class Constant
         return [
             self::PROCESS_TYPE_INITIAL_RETURN,
             self::PROCESS_TYPE_INITIAL_NOTIFICATION,
-            self::PROCESS_TYPE_POST_PROCESSING_RETURN,
-            self::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public static function getPostProcessingProcessTypes()
-    {
-        return [
             self::PROCESS_TYPE_POST_PROCESSING_RETURN,
             self::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
         ];

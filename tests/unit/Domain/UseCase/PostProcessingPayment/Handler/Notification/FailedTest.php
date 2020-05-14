@@ -11,8 +11,8 @@ namespace Wirecard\ExtensionOrderStateModule\Test\Unit\Domain\UseCase\PostProces
 
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Exception\IgnorablePostProcessingFailureException;
+use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Canceled;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
-use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\PartialRefunded;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\NotificationHandler;
 use Wirecard\ExtensionOrderStateModule\Test\Support\Helper\MockCreator;
 
@@ -37,6 +37,8 @@ class FailedTest extends \Codeception\Test\Unit
     private $postProcessData;
 
     /**
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
@@ -135,6 +137,6 @@ class FailedTest extends \Codeception\Test\Unit
         $reflectionMethod = new \ReflectionMethod($this->handler, "getNextHandler");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($this->handler);
-        $this->assertEquals(new PartialRefunded($this->postProcessData), $result);
+        $this->assertEquals(new Canceled($this->postProcessData), $result);
     }
 }

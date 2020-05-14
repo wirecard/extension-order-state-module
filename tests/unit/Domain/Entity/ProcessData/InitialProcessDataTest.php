@@ -107,7 +107,7 @@ class InitialProcessDataTest extends \Codeception\Test\Unit
         yield "authorization_pending_success_initial_notification" => [
             Constant::PROCESS_TYPE_INITIAL_NOTIFICATION,
             Constant::TRANSACTION_STATE_SUCCESS,
-            Constant::TRANSACTION_TYPE_AUTHORIZE,
+            Constant::TRANSACTION_TYPE_AUTHORIZATION,
             self::EXTERNAL_ORDER_STATE_PENDING,
         ];
     }

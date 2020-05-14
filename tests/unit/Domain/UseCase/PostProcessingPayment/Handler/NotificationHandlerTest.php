@@ -84,11 +84,13 @@ class NotificationHandlerTest extends \Codeception\Test\Unit
      * @group unit
      * @small
      * @dataProvider isFullyRefundedDataProvider
-     * @covers ::isFullyRefunded
+     * @covers ::isFullAmountRequested
      * @param float $orderOpenAmount
      * @param float $requestedAmount
      * @param bool $expectedResult
      * @throws \ReflectionException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidPostProcessDataException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
     public function testIsFullyRefunded($orderOpenAmount, $requestedAmount, $expectedResult)
@@ -101,7 +103,7 @@ class NotificationHandlerTest extends \Codeception\Test\Unit
             $requestedAmount
         );
         $handler = new NotificationHandler($successProcessData);
-        $reflectionMethod = new \ReflectionMethod($handler, "isFullyRefunded");
+        $reflectionMethod = new \ReflectionMethod($handler, "isFullAmountRequested");
         $reflectionMethod->setAccessible(true);
         $result = $reflectionMethod->invoke($handler);
         $this->assertEquals($expectedResult, $result);

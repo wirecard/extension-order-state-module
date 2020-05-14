@@ -10,14 +10,29 @@
 namespace Wirecard\ExtensionOrderStateModule\Domain\Contract;
 
 /**
- * Interface InputDataTransferObject
+ * Interface OrderInput
  * @package Wirecard\ExtensionOrderStateModule\Domain\Contract
  * @since 1.0.0
  */
-interface InputDataTransferObject extends OrderInput, TransactionInput
+interface OrderInput
 {
     /**
      * @return string
      */
-    public function getProcessType();
+    public function getCurrentOrderState();
+
+    /**
+     * @return float
+     */
+    public function getOrderTotalAmount();
+
+    /**
+     * @return float
+     */
+    public function getOrderRefundedAmount();
+
+    /**
+     * @return float
+     */
+    public function getOrderCapturedAmount();
 }

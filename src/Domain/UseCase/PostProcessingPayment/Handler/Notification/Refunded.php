@@ -14,9 +14,8 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Hand
 
 /**
  * Class Refunded
- * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\PostProcessingReturn
+ * @package Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification
  * @since 1.0.0
- * @todo: create common class for this collection of constants.
  */
 class Refunded extends NotificationHandler
 {
@@ -25,7 +24,7 @@ class Refunded extends NotificationHandler
      */
     protected function getNextHandler()
     {
-        return null;
+        return new PartialRefunded($this->processData);
     }
 
     /**
@@ -40,11 +39,29 @@ class Refunded extends NotificationHandler
                     Constant::TRANSACTION_TYPE_REFUND_PURCHASE,
                     Constant::TRANSACTION_TYPE_REFUND_DEBIT,
                     Constant::TRANSACTION_TYPE_CREDIT,
+                    Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+                    Constant::TRANSACTION_TYPE_VOID_CAPTURE,
                 ]
-        ) && $this->isFullyRefunded()) {
+        ) && $this->isFullAmountRefunded()) {
             $result = $this->fromOrderStateRegistry(Constant::ORDER_STATE_REFUNDED);
         }
 
         return $result;
+    }
+
+    /**
+     * @return float
+     */
+    private function getCalculatedRefundTotalAmount()
+    {
+        return $this->processData->getOrderRefundedAmount() + $this->processData->getTransactionRequestedAmount();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isFullAmountRefunded()
+    {
+        return $this->getCalculatedRefundTotalAmount() === $this->processData->getOrderTotalAmount();
     }
 }

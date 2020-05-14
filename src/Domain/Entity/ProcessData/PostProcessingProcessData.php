@@ -23,12 +23,22 @@ class PostProcessingProcessData extends InitialProcessData
     /**
      * @var float
      */
-    private $transactionRequestedAmount;
+    private $transactionRequestedAmount = 0.0;
 
     /**
      * @var float
      */
-    private $orderOpenAmount;
+    private $orderTotalAmount = 0.0;
+
+    /**
+     * @var float
+     */
+    private $orderCapturedAmount = 0.0;
+
+    /**
+     * @var float
+     */
+    private $orderRefundedAmount = 0.0;
 
     /**
      * PostProcessingProcessData constructor.
@@ -42,14 +52,15 @@ class PostProcessingProcessData extends InitialProcessData
     {
         parent::__construct($input, $mapper);
         $this->loadFromInput($input);
+        $this->validate();
     }
 
     /**
      * @return float
      */
-    public function getOrderOpenAmount()
+    public function getOrderTotalAmount()
     {
-        return $this->orderOpenAmount;
+        return $this->orderTotalAmount;
     }
 
     /**
@@ -61,26 +72,108 @@ class PostProcessingProcessData extends InitialProcessData
     }
 
     /**
+     * @return float
+     */
+    public function getOrderCapturedAmount()
+    {
+        return $this->orderCapturedAmount;
+    }
+
+
+    /**
+     * @return float
+     */
+    public function getOrderRefundedAmount()
+    {
+        return $this->orderRefundedAmount;
+    }
+
+
+    /**
      * @param InputDataTransferObject $input
-     * @throws InvalidPostProcessDataException
+     * @todo: FloatValueObject instead of raw float values
      */
     protected function loadFromInput(InputDataTransferObject $input)
     {
-        if (!$this->isValidFloatProperty($input->getTransactionRequestedAmount()) ||
-            !$this->isValidFloatProperty($input->getOrderOpenAmount())) {
+        $this->transactionRequestedAmount = (float)$input->getTransactionRequestedAmount();
+        $this->orderTotalAmount = (float)$input->getOrderTotalAmount();
+        $this->orderCapturedAmount = (float)$input->getOrderCapturedAmount();
+        $this->orderRefundedAmount = (float)$input->getOrderRefundedAmount();
+    }
+
+    /**
+     * @throws InvalidPostProcessDataException
+     */
+    protected function validate()
+    {
+        $this->validateOrderTotalAmount();
+        $this->validateTransactionRequestedAmount();
+        $this->validateOrderCapturedAmount();
+        $this->validateOrderRefundedAmount();
+
+        if ($this->transactionRequestedAmount > $this->orderTotalAmount) {
             throw new InvalidPostProcessDataException(
-                "Property transactionRequestedAmount or orderOpenAmount is invalid or not provided!"
+                "Transaction requested amount (" . $this->transactionRequestedAmount . ")
+                can't be greater as order total amount (" . $this->orderTotalAmount . ")"
             );
         }
 
-        if ($input->getTransactionRequestedAmount() > $input->getOrderOpenAmount()) {
+        if ($this->orderCapturedAmount && $this->orderRefundedAmount &&
+            $this->orderRefundedAmount > $this->orderCapturedAmount) {
             throw new InvalidPostProcessDataException(
-                "Transaction requested amount (" . $input->getTransactionRequestedAmount() . ")
-                can't be greater as order open amount (" . $input->getOrderOpenAmount() . ")"
+                "Order Refunded amount (" . $this->orderRefundedAmount . ")
+                can't be greater as Order Captured amount (" . $this->orderCapturedAmount . ")"
             );
         }
-        $this->transactionRequestedAmount = (float)$input->getTransactionRequestedAmount();
-        $this->orderOpenAmount = (float)$input->getOrderOpenAmount();
+    }
+
+    /**
+     * @throws InvalidPostProcessDataException
+     */
+    private function validateOrderTotalAmount()
+    {
+        if (!$this->isValidFloatProperty($this->getOrderTotalAmount()) || $this->getOrderTotalAmount() <= 0) {
+            throw new InvalidPostProcessDataException(
+                "Property orderTotalAmount is invalid or not provided!"
+            );
+        }
+    }
+
+    /**
+     * @throws InvalidPostProcessDataException
+     */
+    private function validateTransactionRequestedAmount()
+    {
+        if (!$this->isValidFloatProperty($this->getTransactionRequestedAmount()) ||
+            $this->getTransactionRequestedAmount() <= 0) {
+            throw new InvalidPostProcessDataException(
+                "Property transactionRequestedAmount is invalid or not provided!"
+            );
+        }
+    }
+
+    /**
+     * @throws InvalidPostProcessDataException
+     */
+    private function validateOrderCapturedAmount()
+    {
+        if (!$this->isValidFloatProperty($this->getOrderCapturedAmount())) {
+            throw new InvalidPostProcessDataException(
+                "Property orderCapturedAmount is invalid or not provided!"
+            );
+        }
+    }
+
+    /**
+     * @throws InvalidPostProcessDataException
+     */
+    private function validateOrderRefundedAmount()
+    {
+        if (!$this->isValidFloatProperty($this->getOrderRefundedAmount())) {
+            throw new InvalidPostProcessDataException(
+                "Property orderRefundedAmount is invalid or not provided!"
+            );
+        }
     }
 
     /**
@@ -89,11 +182,6 @@ class PostProcessingProcessData extends InitialProcessData
      */
     private function isValidFloatProperty($number)
     {
-        $result = false;
-        if (!is_bool($number) && !is_string($number) && (float)($number) && $number > 0) {
-            $result = true;
-        }
-
-        return $result;
+        return filter_var($number, FILTER_VALIDATE_FLOAT) !== false;
     }
 }

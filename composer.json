@@ -28,5 +28,8 @@
             "Wirecard\\ExtensionOrderStateModule\\Test\\Unit\\": "tests/unit/",
             "Wirecard\\ExtensionOrderStateModule\\Test\\Support\\": "tests/_support/"
         }
+    },
+    "config": {
+        "process-timeout": 0
     }
 }
