@@ -250,6 +250,8 @@ class OrderStateTest extends Unit
     {
         $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException::class);
         new OrderState($this->createGenericMapper(['X' => 'INVALID_ORDER_STATE_TYPE']), $this->getDefaultPrecision());
+        $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidArgumentException::class);
+        new OrderState($this->createGenericMapper(), 0);
     }
 
     /**
@@ -897,25 +899,25 @@ class OrderStateTest extends Unit
             Constant::ORDER_STATE_PROCESSING
         ];
 
-        $x = 10.94;
-        $y = 12;
+        $numberOne = 10.94;
+        $numberTwo = 12;
 
         yield "Rounding test for Partial refunded context" => [
             Constant::TRANSACTION_TYPE_VOID_PURCHASE,
             Constant::ORDER_STATE_PARTIAL_CAPTURED,
             // $x + $y -> reproduce calculating at runtime causes rounding errors
-            22.94, 10.94, $x + $y, 3.5,
+            22.94, 10.94, $numberOne + $numberTwo, 3.5,
             Constant::ORDER_STATE_PARTIAL_REFUNDED
         ];
 
-        $x = 10.1;
-        $y = 0.2;
+        $numberOne = 10.1;
+        $numberTwo = 0.2;
         yield "Rounding test for Partial refunded context 2" => [
             Constant::TRANSACTION_TYPE_VOID_PURCHASE,
             Constant::ORDER_STATE_PARTIAL_CAPTURED,
             // $x + $y -> reproduce calculating at runtime causes rounding errors
             22.94,
-            $x + $y,
+            $numberOne + $numberTwo,
             12.3,
             2,
             Constant::ORDER_STATE_PARTIAL_REFUNDED
