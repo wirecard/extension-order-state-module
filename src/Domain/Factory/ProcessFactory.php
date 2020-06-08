@@ -35,10 +35,14 @@ class ProcessFactory
      */
     private $inputData;
 
-    public function __construct(InputDataTransferObject $inputData, OrderStateMapper $mapper)
+    /** @var int */
+    private $precision;
+
+    public function __construct(InputDataTransferObject $inputData, OrderStateMapper $mapper, $precision)
     {
         $this->mapper = $mapper;
         $this->inputData = $inputData;
+        $this->precision = $precision;
     }
 
 
@@ -55,9 +59,9 @@ class ProcessFactory
             case Constant::PROCESS_TYPE_INITIAL_NOTIFICATION:
                 return new InitialNotification($this->inputData, $this->mapper);
             case Constant::PROCESS_TYPE_POST_PROCESSING_RETURN:
-                return new PostProcessingReturn($this->inputData, $this->mapper);
+                return new PostProcessingReturn($this->inputData, $this->mapper, $this->precision);
             case Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION:
-                return new PostProcessingNotification($this->inputData, $this->mapper);
+                return new PostProcessingNotification($this->inputData, $this->mapper, $this->precision);
             default:
                 throw new InvalidProcessTypeException("Invalid process type {$this->inputData->getProcessType()}");
         }

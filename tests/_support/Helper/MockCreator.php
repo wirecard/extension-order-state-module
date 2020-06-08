@@ -180,12 +180,13 @@ trait MockCreator
     }
 
     /**
-     * @param array $definition
-     * @param $processType
-     * @param $transactionState
-     * @param $transactionType
      * @param $orderState
+     * @param $transactionType
+     * @param $transactionState
+     * @param array $definition
      * @return InitialProcessData
+     * @throws \Wirecard\ExtensionOrderStateModule\Application\Exception\MapReferenceNotFound
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      * @throws \Exception
      */
@@ -243,6 +244,14 @@ trait MockCreator
             $orderRefundedAmount
         );
 
-        return new PostProcessingProcessData($dto, $mapper);
+        return new PostProcessingProcessData($dto, $mapper, $this->getDefaultPrecision());
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefaultPrecision()
+    {
+        return 2;
     }
 }

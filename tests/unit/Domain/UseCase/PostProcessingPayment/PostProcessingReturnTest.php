@@ -53,7 +53,7 @@ class PostProcessingReturnTest extends \Codeception\Test\Unit
             self::CURRENT_ORDER_STATE => Constant::ORDER_STATE_STARTED,
             "y" => Constant::ORDER_STATE_PENDING,
         ]);
-        $this->process = new PostProcessingReturn($inputDTO, $mapper);
+        $this->process = new PostProcessingReturn($inputDTO, $mapper, $this->getDefaultPrecision());
     }
 
     /**

@@ -11,6 +11,7 @@ namespace Wirecard\ExtensionOrderStateModule\Application\Service;
 
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
 use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
+use Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidArgumentException;
 use Wirecard\ExtensionOrderStateModule\Domain\Factory\ProcessFactory;
 use Wirecard\ExtensionOrderStateModule\Domain\Service\ProcessHandlerService;
 
@@ -43,14 +44,23 @@ class OrderState
      */
     private $mapper;
 
+    /** @var int */
+    private $precision;
+
     /**
      * OrderState constructor.
      * @param OrderStateMapper $mapper
+     * @param int $precision
+     * @throws InvalidArgumentException
      * @since 1.0.0
      */
-    public function __construct(OrderStateMapper $mapper)
+    public function __construct(OrderStateMapper $mapper, $precision)
     {
+        if (!filter_var($precision, FILTER_VALIDATE_INT)) {
+            throw new InvalidArgumentException("Precision value is invalid!");
+        }
         $this->mapper = $mapper;
+        $this->precision = $precision;
     }
 
     /**
@@ -65,7 +75,7 @@ class OrderState
      */
     public function process(InputDataTransferObject $data)
     {
-        $process = (new ProcessFactory($data, $this->mapper))->create();
+        $process = (new ProcessFactory($data, $this->mapper, $this->precision))->create();
         $orderState = (new ProcessHandlerService($process))->handle();
         return $this->mapper->toExternal($orderState);
     }

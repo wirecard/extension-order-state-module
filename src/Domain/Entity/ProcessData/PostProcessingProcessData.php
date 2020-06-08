@@ -41,16 +41,23 @@ class PostProcessingProcessData extends InitialProcessData
     private $orderRefundedAmount = 0.0;
 
     /**
+     * @var int
+     */
+    private $precision;
+
+    /**
      * PostProcessingProcessData constructor.
      * @param InputDataTransferObject $input
      * @param OrderStateMapper $mapper
+     * @param int $precision
      * @throws InvalidPostProcessDataException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidValueObjectException
      * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
      */
-    public function __construct(InputDataTransferObject $input, OrderStateMapper $mapper)
+    public function __construct(InputDataTransferObject $input, OrderStateMapper $mapper, $precision)
     {
         parent::__construct($input, $mapper);
+        $this->precision = $precision;
         $this->loadFromInput($input);
         $this->validate();
     }
@@ -86,6 +93,14 @@ class PostProcessingProcessData extends InitialProcessData
     public function getOrderRefundedAmount()
     {
         return $this->orderRefundedAmount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrecision()
+    {
+        return $this->precision;
     }
 
 

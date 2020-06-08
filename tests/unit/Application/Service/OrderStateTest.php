@@ -48,7 +48,7 @@ class OrderStateTest extends Unit
     protected function _before()
     {
         $this->mapper = $this->createGenericMapper();
-        $this->orderState = new OrderState($this->mapper);
+        $this->orderState = new OrderState($this->mapper, $this->getDefaultPrecision());
     }
 
     /**
@@ -249,7 +249,9 @@ class OrderStateTest extends Unit
     public function testFailingConstructor()
     {
         $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException::class);
-        new OrderState($this->createGenericMapper(['X' => 'INVALID_ORDER_STATE_TYPE']));
+        new OrderState($this->createGenericMapper(['X' => 'INVALID_ORDER_STATE_TYPE']), $this->getDefaultPrecision());
+        $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\InvalidArgumentException::class);
+        new OrderState($this->createGenericMapper(), 0);
     }
 
     /**
@@ -864,6 +866,95 @@ class OrderStateTest extends Unit
         $inputDTO = $this->createDummyInputPostProcessingDTO(
             $processType,
             $transactionState,
+            $transactionType,
+            $this->mapper->toExternal($this->fromOrderStateRegistry($currentOrderState)),
+            $orderTotalAmount,
+            $requestedAmount,
+            $orderCapturedAmount,
+            $orderRefundedAmount
+        );
+
+        $expectedState = $this->mapper->toExternal($this->fromOrderStateRegistry($expectedInternalOrderState));
+        $this->assertEquals($expectedState, $this->orderState->process($inputDTO));
+    }
+
+
+    /**
+     * @return \Generator
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
+    public function floatRoundingDataProvider()
+    {
+        yield "Rounding test for Refunded context" => [
+            Constant::TRANSACTION_TYPE_REFUND_CAPTURE,
+            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            22.94, 10.94, 22.94, 12,
+            Constant::ORDER_STATE_REFUNDED
+        ];
+
+        yield "Rounding test for Processing context" => [
+            Constant::TRANSACTION_TYPE_CAPTURE_AUTHORIZATION,
+            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            22.94, 10.94, 12, 0,
+            Constant::ORDER_STATE_PROCESSING
+        ];
+
+        $numberOne = 10.94;
+        $numberTwo = 12;
+
+        yield "Rounding test for Partial refunded context" => [
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            // $x + $y -> reproduce calculating at runtime causes rounding errors
+            22.94, 10.94, $numberOne + $numberTwo, 3.5,
+            Constant::ORDER_STATE_PARTIAL_REFUNDED
+        ];
+
+        $numberOne = 10.1;
+        $numberTwo = 0.2;
+        yield "Rounding test for Partial refunded context 2" => [
+            Constant::TRANSACTION_TYPE_VOID_PURCHASE,
+            Constant::ORDER_STATE_PARTIAL_CAPTURED,
+            // $x + $y -> reproduce calculating at runtime causes rounding errors
+            22.94,
+            $numberOne + $numberTwo,
+            12.3,
+            2,
+            Constant::ORDER_STATE_PARTIAL_REFUNDED
+        ];
+    }
+
+        /**
+     * @group integration
+     * @small
+     * @dataProvider floatRoundingDataProvider
+     * @covers ::process
+     * @param string $transactionType
+     * @param mixed|int $currentOrderState
+     * @param float $orderTotalAmount
+     * @param float $requestedAmount
+     * @param float $orderCapturedAmount
+     * @param float $orderRefundedAmount
+     * @param string $expectedInternalOrderState
+     * @throws IgnorablePostProcessingFailureException
+     * @throws IgnorableStateException
+     * @throws OrderStateInvalidArgumentException
+     * @throws \Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException
+     * @throws \Exception
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
+    public function testFloatRounding(
+        $transactionType,
+        $currentOrderState,
+        $orderTotalAmount,
+        $requestedAmount,
+        $orderCapturedAmount,
+        $orderRefundedAmount,
+        $expectedInternalOrderState
+    ) {
+        $inputDTO = $this->createDummyInputPostProcessingDTO(
+            Constant::PROCESS_TYPE_POST_PROCESSING_NOTIFICATION,
+            Constant::TRANSACTION_STATE_SUCCESS,
             $transactionType,
             $this->mapper->toExternal($this->fromOrderStateRegistry($currentOrderState)),
             $orderTotalAmount,

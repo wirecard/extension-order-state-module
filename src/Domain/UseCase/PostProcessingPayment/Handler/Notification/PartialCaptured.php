@@ -73,8 +73,10 @@ class PartialCaptured extends NotificationHandler
      */
     private function isCaptureAmountOverRefundAmountOnRefundContext()
     {
-        return $this->processData->getOrderCapturedAmount() >
-            $this->processData->getOrderRefundedAmount() + $this->processData->getTransactionRequestedAmount();
+        return $this->differenceImplicitPrecision(
+            $this->processData->getOrderCapturedAmount(),
+            $this->processData->getOrderRefundedAmount() + $this->processData->getTransactionRequestedAmount()
+        ) > 0;
     }
 
     /**
@@ -90,7 +92,10 @@ class PartialCaptured extends NotificationHandler
      */
     private function isNotFullCapturedAmount()
     {
-        return $this->getCalculatedCaptureTotalAmount() < $this->processData->getOrderTotalAmount();
+        return $this->differenceImplicitPrecision(
+            $this->processData->getOrderTotalAmount(),
+            $this->getCalculatedCaptureTotalAmount()
+        ) > 0.0;
     }
 
     /**
@@ -98,7 +103,10 @@ class PartialCaptured extends NotificationHandler
      */
     private function isNotFullCapturedAmountOnRefundContext()
     {
-        return $this->processData->getOrderCapturedAmount() < $this->processData->getOrderTotalAmount();
+        return $this->differenceImplicitPrecision(
+            $this->processData->getOrderTotalAmount(),
+            $this->processData->getOrderCapturedAmount()
+        ) > 0.0;
     }
 
     /**
@@ -106,8 +114,11 @@ class PartialCaptured extends NotificationHandler
      */
     private function isFullCapturedAndPartialRefunded()
     {
-        return $this->getCalculatedCaptureTotalAmount() === $this->processData->getOrderTotalAmount() &&
-            $this->processData->getOrderRefundedAmount() > 0;
+        $isFullCapturedAmount = $this->isFloatEquals(
+            $this->getCalculatedCaptureTotalAmount(),
+            $this->processData->getOrderTotalAmount()
+        );
+        return $isFullCapturedAmount && $this->processData->getOrderRefundedAmount() > 0.0;
     }
 
     /**
@@ -115,6 +126,9 @@ class PartialCaptured extends NotificationHandler
      */
     private function isCaptureAmountOverRefundAmount()
     {
-        return $this->getCalculatedCaptureTotalAmount() > $this->processData->getOrderRefundedAmount();
+        return $this->differenceImplicitPrecision(
+            $this->getCalculatedCaptureTotalAmount(),
+            $this->processData->getOrderRefundedAmount()
+        ) > 0.0;
     }
 }
