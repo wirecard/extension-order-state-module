@@ -922,7 +922,6 @@ class OrderStateTest extends Unit
             2,
             Constant::ORDER_STATE_PARTIAL_REFUNDED
         ];
-
     }
 
         /**
