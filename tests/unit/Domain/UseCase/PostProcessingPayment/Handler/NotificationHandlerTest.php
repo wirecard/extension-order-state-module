@@ -76,7 +76,7 @@ class NotificationHandlerTest extends \Codeception\Test\Unit
     public function isFullyRefundedDataProvider()
     {
         yield [100, 100, true];
-        yield [100, 99.9999, false];
+        yield [100, 99.99, false];
         yield [100, 30, false];
     }
 

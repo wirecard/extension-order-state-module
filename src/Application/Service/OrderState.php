@@ -43,14 +43,19 @@ class OrderState
      */
     private $mapper;
 
+    /** @var int */
+    private $precision;
+
     /**
      * OrderState constructor.
      * @param OrderStateMapper $mapper
+     * @param int $precision
      * @since 1.0.0
      */
-    public function __construct(OrderStateMapper $mapper)
+    public function __construct(OrderStateMapper $mapper, $precision)
     {
         $this->mapper = $mapper;
+        $this->precision = $precision;
     }
 
     /**
@@ -65,7 +70,7 @@ class OrderState
      */
     public function process(InputDataTransferObject $data)
     {
-        $process = (new ProcessFactory($data, $this->mapper))->create();
+        $process = (new ProcessFactory($data, $this->mapper, $this->precision))->create();
         $orderState = (new ProcessHandlerService($process))->handle();
         return $this->mapper->toExternal($orderState);
     }

@@ -9,6 +9,7 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Helper\Numeric;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\AbstractProcessHandler;
 use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Handler\Notification\Failed;
 
@@ -21,6 +22,8 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Hand
  */
 class NotificationHandler extends AbstractProcessHandler
 {
+    use Numeric;
+
     /**
      * @inheritDoc
      */
@@ -38,10 +41,33 @@ class NotificationHandler extends AbstractProcessHandler
     }
 
     /**
+     * @param float $firstNumber
+     * @param float $secondNumber
+     * @return bool
+     */
+    protected function isFloatEquals($firstNumber, $secondNumber)
+    {
+        return $this->equals($firstNumber, $secondNumber, $this->processData->getPrecision());
+    }
+
+    /**
+     * @param float $firstNumber
+     * @param float $secondNumber
+     * @return float|int
+     */
+    protected function differenceImplicitPrecision($firstNumber, $secondNumber)
+    {
+        return $this->difference($firstNumber, $secondNumber, $this->processData->getPrecision());
+    }
+
+    /**
      * @return bool
      */
     protected function isFullAmountRequested()
     {
-        return $this->processData->getTransactionRequestedAmount() === $this->processData->getOrderTotalAmount();
+        return $this->isFloatEquals(
+            $this->processData->getTransactionRequestedAmount(),
+            $this->processData->getOrderTotalAmount()
+        );
     }
 }

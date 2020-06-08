@@ -107,7 +107,7 @@ class PartialRefundedTest extends \Codeception\Test\Unit
                     Constant::TRANSACTION_STATE_SUCCESS,
                     100,
                     40,
-                    40.001,
+                    40.01,
                     0
                 ];
             }

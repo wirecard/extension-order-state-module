@@ -94,7 +94,7 @@ class CanceledTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_TYPE_VOID_AUTHORIZATION,
             Constant::TRANSACTION_STATE_SUCCESS,
             100,
-            99.999,
+            99.99,
             0,
             0
         ];

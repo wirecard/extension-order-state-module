@@ -53,7 +53,7 @@ class PostProcessingNotificationTest extends \Codeception\Test\Unit
             self::CURRENT_ORDER_STATE => Constant::ORDER_STATE_PROCESSING,
             "y" => Constant::ORDER_STATE_REFUNDED,
         ]);
-        $this->process = new PostProcessingNotification($inputDTO, $mapper);
+        $this->process = new PostProcessingNotification($inputDTO, $mapper, $this->getDefaultPrecision());
     }
 
     /**

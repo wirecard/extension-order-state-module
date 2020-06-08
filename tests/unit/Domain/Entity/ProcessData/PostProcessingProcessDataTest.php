@@ -68,7 +68,7 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
             50,
             50
         );
-        $processData = new PostProcessingProcessData($inputDTO, $this->mapper);
+        $processData = new PostProcessingProcessData($inputDTO, $this->mapper, $this->getDefaultPrecision());
         $this->assertInstanceOf(PostProcessingProcessData::class, $processData);
         $this->assertInstanceOf(ProcessData::class, $processData);
         $this->assertEquals(100, $processData->getOrderTotalAmount());
@@ -131,6 +131,6 @@ class PostProcessingProcessDataTest extends \Codeception\Test\Unit
 
 
         $this->expectException(InvalidPostProcessDataException::class);
-        new PostProcessingProcessData($inputDTO, $this->mapper);
+        new PostProcessingProcessData($inputDTO, $this->mapper, $this->getDefaultPrecision());
     }
 }

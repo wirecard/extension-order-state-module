@@ -95,7 +95,7 @@ class ProcessingTest extends \Codeception\Test\Unit
             Constant::TRANSACTION_STATE_SUCCESS,
             100,
             30,
-            69.99999,
+            69.99,
             0
         ];
 

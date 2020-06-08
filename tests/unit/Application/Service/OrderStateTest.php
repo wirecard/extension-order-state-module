@@ -48,7 +48,7 @@ class OrderStateTest extends Unit
     protected function _before()
     {
         $this->mapper = $this->createGenericMapper();
-        $this->orderState = new OrderState($this->mapper);
+        $this->orderState = new OrderState($this->mapper, $this->getDefaultPrecision());
     }
 
     /**
@@ -249,7 +249,7 @@ class OrderStateTest extends Unit
     public function testFailingConstructor()
     {
         $this->expectException(\Wirecard\ExtensionOrderStateModule\Domain\Exception\NotInRegistryException::class);
-        new OrderState($this->createGenericMapper(['X' => 'INVALID_ORDER_STATE_TYPE']));
+        new OrderState($this->createGenericMapper(['X' => 'INVALID_ORDER_STATE_TYPE']), $this->getDefaultPrecision());
     }
 
     /**

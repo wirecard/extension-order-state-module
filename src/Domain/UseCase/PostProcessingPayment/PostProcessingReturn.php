@@ -9,6 +9,8 @@
 
 namespace Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment;
 
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\InputDataTransferObject;
+use Wirecard\ExtensionOrderStateModule\Domain\Contract\OrderStateMapper;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\Constant;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\InitialProcessData;
 use Wirecard\ExtensionOrderStateModule\Domain\Entity\ProcessData\PostProcessingProcessData;
@@ -22,6 +24,23 @@ use Wirecard\ExtensionOrderStateModule\Domain\UseCase\PostProcessingPayment\Hand
  */
 class PostProcessingReturn extends AbstractProcess
 {
+    /**
+     * @var int
+     */
+    private $precision;
+
+    /**
+     * PostProcessingReturn constructor.
+     * @param InputDataTransferObject $input
+     * @param OrderStateMapper $mapper
+     * @param int $precision
+     */
+    public function __construct(InputDataTransferObject $input, OrderStateMapper $mapper, $precision)
+    {
+        parent::__construct($input, $mapper);
+        $this->precision = $precision;
+    }
+
     /**
      * @return string
      */
@@ -38,7 +57,7 @@ class PostProcessingReturn extends AbstractProcess
      */
     protected function createProcessData()
     {
-        return new PostProcessingProcessData($this->input, $this->mapper);
+        return new PostProcessingProcessData($this->input, $this->mapper, $this->precision);
     }
 
     /**
